@@ -1,16 +1,28 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import { Lato, Tenor_Sans, Mrs_Saint_Delafield } from "next/font/google";
+import "./styles/globals.css";
+import "./styles/global.scss";
+import { Header } from "./src/components/ui/Header/Header";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const lato = Lato({
+  weight: ["100", "300", "400", "700", "900"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-lato",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const tenorSans = Tenor_Sans({
+  weight: ["400"],
+  style: ["normal"],
+  subsets: ["latin"],
+  variable: "--font-tenor-sans",
+});
+
+const mrsSaintDelafield = Mrs_Saint_Delafield({
+  weight: ["400"],
+  style: ["normal"],
+  subsets: ["latin"],
+  variable: "--font-mrs-saint-delafield",
 });
 
 export const metadata: Metadata = {
@@ -26,8 +38,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${lato.variable} ${tenorSans.variable} ${mrsSaintDelafield.variable} antialiased`}
+        style={{ fontFamily: `var(--font-tenor-sans)` }}
       >
+        <div className="mb-[82px] lg:mb-[109px]">
+          <Header />
+        </div>
         {children}
       </body>
     </html>
