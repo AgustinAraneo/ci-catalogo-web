@@ -45,7 +45,7 @@ export default function RootLayout({
         <div className="mb-[82px] lg:mb-[109px]">
           <Header />
         </div>
-        <main className="flex-grow">{children}</main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
