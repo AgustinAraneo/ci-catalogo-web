@@ -3,8 +3,6 @@ import { faqs } from "../src/data/data.faq";
 const FAQPage = () => {
   return (
     <div className="container mx-auto p-6 ">
-      {" "}
-      {/* Agregué `mt-20` para margen superior */}
       <h1 className="text-3xl font-bold mb-8 text-center">
         Preguntas Frecuentes
       </h1>

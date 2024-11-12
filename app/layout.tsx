@@ -42,7 +42,7 @@ export default function RootLayout({
         className={`${lato.variable} ${tenorSans.variable} ${mrsSaintDelafield.variable} antialiased h-full flex flex-col`}
         style={{ fontFamily: `var(--font-tenor-sans)` }}
       >
-        <div>
+        <div className="mb-[82px] lg:mb-[109px]">
           <Header />
         </div>
         <main className="flex-grow">{children}</main>
