@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Lato, Tenor_Sans, Mrs_Saint_Delafield } from "next/font/google";
 import "./styles/globals.css";
 import "./styles/global.scss";
-import { Header } from "./src/components/ui/Header/Header";
-import Footer from "./src/components/ui/Footer/Footer";
+import { Header } from "@/components/ui/Header/Header";
+import { Footer } from "@/components/ui/Footer/Footer";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],

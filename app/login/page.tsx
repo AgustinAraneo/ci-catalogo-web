@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = () => {
     if (!username || !password) {
-      setError('Por favor, complete todos los campos.');
+      setError("Por favor, complete todos los campos.");
       return;
     }
 
@@ -19,15 +19,15 @@ const LoginPage = () => {
       username === process.env.NEXT_PUBLIC_ADMIN_USERNAME &&
       password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
     ) {
-      localStorage.setItem('isLoggedIn', 'true');
-      router.push('/admin');
+      localStorage.setItem("isLoggedIn", "true");
+      router.push("/admin");
     } else {
-      setError('Credenciales incorrectas.');
+      setError("Credenciales incorrectas.");
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleLogin();
     }
   };
