@@ -4,7 +4,7 @@ import React from "react";
 export const HomeContact = () => {
   return (
     <div>
-      <Breadcrum />
+      <Breadcrum page="Contacto" />
     </div>
   );
 };
