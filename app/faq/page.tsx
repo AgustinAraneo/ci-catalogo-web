@@ -1,10 +1,10 @@
-import { Breadcrum } from "@/components/ui/Breadcrum/Breadcrum";
+import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 import { HomeFaq } from "./ui/HomeFaq";
 
 const page = () => {
   return (
     <div>
-      <Breadcrum page="Preguntas Frecuentes" />
+      <Breadcrumb page="Preguntas Frecuentes" />
       <HomeFaq />
     </div>
   );

@@ -4,7 +4,7 @@ interface Props {
   page: string;
 }
 
-export const Breadcrum = ({ page }: Props) => {
+export const Breadcrumb = ({ page }: Props) => {
   return (
     <div className="w-full h-[400px] bg-gray-200 items-center justify-center flex flex-col gap-4 shadow-redcoach-lg mt-[50px]">
       <h2 className="text-6xl font-bold">{page}</h2>

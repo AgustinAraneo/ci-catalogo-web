@@ -1,9 +1,9 @@
-import { Breadcrum } from "@/components/ui/Breadcrum/Breadcrum";
+import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 
 const page = () => {
   return (
     <div>
-      <Breadcrum page="Productos" />
+      <Breadcrumb page="Productos" />
       <p>Productos</p>
     </div>
   );

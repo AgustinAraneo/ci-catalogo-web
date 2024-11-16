@@ -1,10 +1,10 @@
-import { Breadcrum } from "@/components/ui/Breadcrum/Breadcrum";
+import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 import React from "react";
 
 export const HomeContact = () => {
   return (
     <div>
-      <Breadcrum page="Contacto" />
+      <Breadcrumb page="Contacto" />
     </div>
   );
 };
