@@ -1,5 +1,13 @@
 import type { Product } from "@/types/type";
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table/table";
 
 interface ProductTableProps {
   products: Product[];
@@ -8,46 +16,44 @@ interface ProductTableProps {
 export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   return (
     <div className="overflow-x-auto mt-4">
-      <table className="min-w-full bg-white border">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">ID</th>
-            <th className="px-4 py-2 border">Nombre</th>
-            <th className="px-4 py-2 border">Precio</th>
-            <th className="px-4 py-2 border">Talles</th>
-            <th className="px-4 py-2 border">Cantidad</th>
-            <th className="px-4 py-2 border">Link</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Precio</TableHead>
+            <TableHead>Talles</TableHead>
+            <TableHead>Cantidad</TableHead>
+            <TableHead>Link</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {products.length > 0 ? (
             products.map((product) => (
-              <tr key={product.id} className="text-center">
-                <td className="px-4 py-2 border">{product.id}</td>
-                <td className="px-4 py-2 border">{product.title}</td>
-                <td className="px-4 py-2 border">
-                  ${product.price.toFixed(2)}
-                </td>
-                <td className="px-4 py-2 border">{product.sizes.join(", ")}</td>
-                <td className="px-4 py-2 border">
+              <TableRow key={product.id} className="text-center">
+                <TableCell>{product.id}</TableCell>
+                <TableCell>{product.title}</TableCell>
+                <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>{product.sizes.join(", ")}</TableCell>
+                <TableCell>
                   {product.quantity !== null ? product.quantity : "No definido"}
-                </td>
-                <td className="px-4 py-2 border">
+                </TableCell>
+                <TableCell>
                   <a className="text-blue-500" href={`/shop/${product.id}`}>
                     Link
                   </a>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))
           ) : (
-            <tr>
-              <td colSpan={6} className="px-4 py-2 border">
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
                 No hay productos disponibles
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 };
