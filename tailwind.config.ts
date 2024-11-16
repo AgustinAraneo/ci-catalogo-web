@@ -51,6 +51,7 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
         gold: "#c89018",
+        "black-primary": "#1B1E20",
       },
       fontFamily: {
         sans: ["var(--font-tenor-sans)", "sans-serif"],

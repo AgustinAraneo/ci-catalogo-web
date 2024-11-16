@@ -1,10 +1,13 @@
+import { FaInstagram, FaPhone } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+
 export const Footer = () => {
   return (
-    <footer className="bg-pink-200 text-gray-800 py-8">
+    <footer className="bg-black-primary text-white py-8 font-lato">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         {/* Columna Izquierda: Dirección */}
         <div className="mb-4 md:mb-0 text-center md:text-left">
-          <h2 className="font-semibold text-lg">Ubicación</h2>
+          <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
           <a
             href="https://maps.app.goo.gl/7Q9uaFfLsEhoqpLE8"
             target="_blank"
@@ -17,20 +20,16 @@ export const Footer = () => {
 
         {/* Columna Central: Nombre */}
         <div className="mb-4 md:mb-0 text-center">
-          <h2 className="text-2xl font-bold">Chinitha Fine</h2>
+          <h2 className="text-2xl font-bold text-gold">Chinitha Fine</h2>
         </div>
 
         {/* Columna Derecha: Redes Sociales e Información de Contacto */}
         <div className="text-center md:text-right">
-          <h2 className="font-semibold text-lg">Contacto</h2>
+          <h2 className="font-semibold text-lg text-gold">Contacto</h2>
           <div className="flex flex-col items-center md:items-end space-y-2 mt-2">
             {/* Email */}
             <div className="flex items-center space-x-2">
-              <img
-                src="/assets/img/icons/mail.svg"
-                alt="Email Icon"
-                className="w-5 h-5"
-              />
+              <MdEmail className="h-5 w-5 text-gold" />
               <a
                 href="mailto:izquierdoceleste65@gmail.com"
                 target="_blank"
@@ -42,11 +41,7 @@ export const Footer = () => {
             </div>
             {/* Teléfono */}
             <div className="flex items-center space-x-2">
-              <img
-                src="/assets/img/icons/phone.svg"
-                alt="Phone Icon"
-                className="w-5 h-5"
-              />
+              <FaPhone className="h-5 w-5 text-gold rotate-90" />
               <a
                 href="https://wa.me/5491134602955"
                 target="_blank"
@@ -58,11 +53,7 @@ export const Footer = () => {
             </div>
             {/* Instagram */}
             <div className="flex items-center space-x-2">
-              <img
-                src="/assets/img/icons/instagram.svg"
-                alt="Instagram Icon"
-                className="w-5 h-5"
-              />
+              <FaInstagram className="h-5 w-5 text-gold" />
               <a
                 href="https://www.instagram.com/chinitha_fine"
                 target="_blank"

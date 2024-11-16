@@ -15,11 +15,11 @@ interface ProductTableProps {
 
 export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   return (
-    <div className="overflow-x-auto mt-4">
+    <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead className="w-[100px]">Nro. producto</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Precio</TableHead>
             <TableHead>Talles</TableHead>
@@ -30,10 +30,10 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
         <TableBody>
           {products.length > 0 ? (
             products.map((product) => (
-              <TableRow key={product.id} className="text-center">
+              <TableRow key={product.id} className="text-left">
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>${product.price?.toFixed(2)}</TableCell>
                 <TableCell>{product.sizes.join(", ")}</TableCell>
                 <TableCell>
                   {product.quantity !== null ? product.quantity : "No definido"}
