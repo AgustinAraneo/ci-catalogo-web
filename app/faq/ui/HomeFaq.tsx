@@ -1,6 +1,7 @@
 "use client";
 
 import { faqs } from "@/app/src/data/data.faq";
+import { AltArrowIcon } from "@/components/icons/AltArrowIcon";
 import {
   Accordion,
   AccordionContent,
@@ -11,37 +12,26 @@ import {
 export const HomeFaq = () => {
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8 text-center">
+      <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">
         Preguntas Frecuentes
       </h1>
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 font-lato items-start">
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="p-6 bg-pink-100 rounded-lg shadow-md transition duration-300 hover:bg-pink-200"
+            className="p-6 bg-gradient-to-r from-black/90 via-black/80 to-black/90 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-white"
           >
-            {/* TODO: ALAN TERMINALOOOOO 😎 */}
-            <h2 className="text-xl font-semibold mb-2">{faq.title}</h2>
-            <div>{faq.content}</div>
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Is it styled?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It comes with default styles that matches the other
-                  components&apos; aesthetic.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Is it animated?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It&apos;s animated by default, but you can disable it if
-                  you prefer.
+              <AccordionItem value={`item-${index}`} className="border-none">
+                <AccordionTrigger
+                  icon={AltArrowIcon}
+                  classNameIcon="text-white -rotate-90"
+                  className="text-left p-0 hover:no-underline [&[data-state=open]>svg]:!rotate-90 font-bold text-lg xl:text-xl"
+                >
+                  {faq.title}
+                </AccordionTrigger>
+                <AccordionContent className="pt-4 text-gray-300 font-medium ">
+                  {faq.content}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

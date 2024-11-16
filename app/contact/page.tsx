@@ -1,5 +1,12 @@
+import { HomeContact } from "./ui/HomeContact";
+
 const page = () => {
-  return <div>Esto es contact</div>;
+  return (
+    <div>
+      <HomeContact />
+      <div className="h-screen">Esto es contact</div>
+    </div>
+  );
 };
 
 export default page;

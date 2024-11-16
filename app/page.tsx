@@ -3,7 +3,7 @@ export default function Home() {
     <div>
       <div className="bg-sky-200 h-[500px] flex items-center gap-4 flex-col justify-center">
         <p>hola putos</p>
-        <h1 className="font-mrs-saint-delafield">
+        <h1 className="font-mrs-saint-delafield text-4xl">
           Texto con la fuente Mrs Saint Delafield
         </h1>
         <h3 className="font-lato">Soy lato latita</h3>
