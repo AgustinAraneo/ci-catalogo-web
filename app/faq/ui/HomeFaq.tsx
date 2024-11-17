@@ -11,12 +11,13 @@ import {
 
 export const HomeFaq = () => {
   return (
-    <div className="container mx-auto py-10">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 font-lato items-start ">
+    <div className="container mx-auto py-10 px-4 sm:px-8">
+      {/*  */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8 font-lato items-start">
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="shadow-redcoach-lg  bg-gradient-to-r from-black/90 via-black/80 to-black/90 rounded-lg  hover:shadow-xl transition-all duration-300 text-white"
+            className="shadow-redcoach-lg bg-gradient-to-r from-black/90 via-black/80 to-black/90 rounded-lg hover:shadow-xl transition-all duration-300 text-white p-4"
           >
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value={`item-${index}`} className="border-none">
