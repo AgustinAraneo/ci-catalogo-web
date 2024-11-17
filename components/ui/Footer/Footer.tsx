@@ -3,7 +3,7 @@ import { MdEmail } from "react-icons/md";
 
 export const Footer = () => {
   return (
-    <footer className="bg-black-primary text-white py-8 font-lato">
+    <footer className="bg-black-primary text-white py-8 px-6 font-lato"> {/* Añadido `px-6` para margen horizontal */}
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
         {/* Columna Izquierda: Dirección */}
         <div className="mb-4 md:mb-0 text-center md:text-left">
