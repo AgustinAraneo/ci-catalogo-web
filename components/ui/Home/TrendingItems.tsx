@@ -1,7 +1,7 @@
 import type { CategoryItemProps } from "@/types/type";
 
-const CategoryItem = ({ imageSrc, title, bgColor }: CategoryItemProps) => (
-  <div className={`flex-1 ${bgColor} relative group`}>
+const CategoryItem = ({ imageSrc, title, bgType }: CategoryItemProps) => (
+  <div className={`flex-1 ${bgType} bg-cover bg-center relative group`}>
     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity"></div>
     <div className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
       <div className="relative w-full h-full flex items-center justify-center">
@@ -37,18 +37,18 @@ export const TrendingItems = () => {
       <div className="flex w-full pt-8 h-[700px] gap-8">
         <CategoryItem
           imageSrc="/assets/img/top-categories-decor.png"
+          title="Blazers"
+          bgType="bg-banner-trending-1"
+        />
+        <CategoryItem
+          imageSrc="/assets/img/top-categories-decor.png"
+          title="Pantalones"
+          bgType="bg-banner-trending-2"
+        />
+        <CategoryItem
+          imageSrc="/assets/img/top-categories-decor.png"
           title="Remeras"
-          bgColor="bg-blue-500"
-        />
-        <CategoryItem
-          imageSrc="/assets/img/top-categories-decor.png"
-          title="Musculosas"
-          bgColor="bg-red-500"
-        />
-        <CategoryItem
-          imageSrc="/assets/img/top-categories-decor.png"
-          title="Calzas"
-          bgColor="bg-green-500"
+          bgType="bg-banner-trending-3"
         />
       </div>
     </div>

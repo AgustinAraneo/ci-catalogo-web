@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, type ChangeEvent, type FormEvent } from "react";
 
 type FormData = {
   nombre: string;
@@ -15,7 +15,9 @@ export const FormContact = () => {
     mensaje: "",
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -24,8 +26,9 @@ export const FormContact = () => {
     e.preventDefault();
     const { nombre, correo, mensaje } = formData;
     const whatsappMessage = `Hola ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
+    // TODO: CAMBIAR NUMERO POR EL DEL PRIMO Y QUE LO LLENEN DE MENSAJES 😎
     window.open(
-      `https://wa.me/5491124003292?text=${encodeURIComponent(whatsappMessage)}`,
+      `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
       "_blank"
     );
 
@@ -38,16 +41,13 @@ export const FormContact = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-[800px] font-lato">
       {/* Sección de Fondo (gris temporal) */}
-      <div className="w-1/2 bg-gray-400"></div>
+      <div className="w-1/2 bg-banner-contacto bg-cover bg-left"></div>
 
       {/* Sección del Formulario */}
-      <div className="w-1/2 bg-white p-12">
-        <h2 className="text-4xl font-bold text-gold mb-2">Escríbenos</h2>
-        <p className="text-gray-700 mb-8">
-          Dejanos un mensaje. Definitivamente nos pondremos en contacto con usted y responderemos todas sus consultas!
-        </p>
+      <div className="w-1/2 bg-white p-12 flex items-center justify-center flex-col">
+        <h2 className="text-6xl font-bold text-gold pb-6">Escríbenos</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Nombre */}
           <input
@@ -90,8 +90,7 @@ export const FormContact = () => {
             Enviar
           </button>
         </form>
-      </div>      
+      </div>
     </div>
-    
   );
 };

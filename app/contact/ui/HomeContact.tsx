@@ -1,6 +1,6 @@
 import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 import React from "react";
-import { FaMapMarkerAlt, FaPhoneAlt , FaRegClock } from "react-icons/fa";
+import { FaMapMarkerAlt, FaRegClock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 export const HomeContact = () => {
@@ -15,10 +15,11 @@ export const HomeContact = () => {
             <div className="text-white">
               <h3 className="text-lg font-semibold">
                 <a
-                href="https://maps.app.goo.gl/7Q9uaFfLsEhoqpLE8"
-                target="_blank">
+                  href="https://maps.app.goo.gl/7Q9uaFfLsEhoqpLE8"
+                  target="_blank"
+                >
                   Feria “ATLÁNTIDA” - Local 30
-                  </a>
+                </a>
               </h3>
             </div>
           </div>
@@ -43,7 +44,6 @@ export const HomeContact = () => {
             </div>
           </div>
         </div>
-        
       </div>
     </div>
   );

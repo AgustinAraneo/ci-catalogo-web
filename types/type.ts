@@ -61,5 +61,5 @@ export interface NavProps {
 export interface CategoryItemProps {
   imageSrc: string;
   title: string;
-  bgColor: string;
+  bgType: string;
 }

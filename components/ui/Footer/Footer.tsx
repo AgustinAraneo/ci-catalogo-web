@@ -42,9 +42,21 @@ export const Footer = () => {
 
           {/* Métodos de Pago */}
           <div className="flex space-x-4 items-center">
-            <img src="assets/img/icons/visa.svg" alt="Visa" className="h-8 w-auto" />
-            <img src="assets/img/icons/master.svg" alt="MasterCard" className="h-8 w-auto" />
-            <img src="assets/img/icons/efectivo.png" alt="Efectivo" className="h-8 w-auto" />
+            <img
+              src="assets/img/icons/visa.svg"
+              alt="Visa"
+              className="h-8 w-auto"
+            />
+            <img
+              src="assets/img/icons/master.svg"
+              alt="MasterCard"
+              className="h-8 w-auto"
+            />
+            <img
+              src="assets/img/icons/efectivo.png"
+              alt="Efectivo"
+              className="h-8 w-auto"
+            />
           </div>
         </div>
 
@@ -62,7 +74,8 @@ export const Footer = () => {
               rel="noopener noreferrer"
               className="hover:underline"
             >
-              Feria “ATLÁNTIDA” - Local 30 </a>
+              Feria “ATLÁNTIDA” - Local 30{" "}
+            </a>
           </div>
 
           {/* Columna Central: Descripción */}
