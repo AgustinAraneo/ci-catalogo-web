@@ -1,119 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { Button } from "@/components/ui/Button/button";
 import { Label } from "@/components/ui/Label/label";
-import type { ProductFormProps } from "@/types/type";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog/dialog";
+import type { Product } from "@/types/type";
 
-export const ProductForm: React.FC<ProductFormProps> = ({
-  newProduct,
-  onInputChange,
-  onSizeChange,
-  onQuantityChange,
-  onAddProduct,
-}) => {
-  // Validar si el formulario está completo
+interface ProductFormProps {
+  onAddProduct: (newProduct: Product) => void;
+}
+
+export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
+  const [newProduct, setNewProduct] = useState<Product>({
+    title: "",
+    price: 0,
+    sizes: [],
+    quantity: null,
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: name === "price" ? parseFloat(value) || 0 : value,
+    }));
+  };
+
+  const handleSizeChange = (size: string, checked: boolean) => {
+    setNewProduct((prev) => ({
+      ...prev,
+      sizes: checked
+        ? [...prev.sizes, size]
+        : prev.sizes.filter((s) => s !== size),
+    }));
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewProduct((prev) => ({
+      ...prev,
+      quantity: e.target.value ? parseInt(e.target.value) : null,
+    }));
+  };
+
+  const handleSubmit = () => {
+    onAddProduct(newProduct);
+    setNewProduct({ title: "", price: 0, sizes: [], quantity: null });
+  };
+
   const isFormValid =
     newProduct.title.trim() !== "" &&
     newProduct.price > 0 &&
     newProduct.sizes.length > 0;
 
   return (
-    <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-6 border border-gray-200">
-      <h2 className="text-2xl font-bold text-gray-800 text-center">
-        Agregar Producto
-      </h2>
-
-      {/* Título */}
-      <div>
-        <Label htmlFor="title" className="text-gray-700 font-medium">
-          Título
-        </Label>
-        <Input
-          type="text"
-          id="title"
-          name="title"
-          placeholder="Ejemplo: Camiseta deportiva"
-          value={newProduct.title}
-          onChange={onInputChange}
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-
-      {/* Precio */}
-      <div>
-        <Label htmlFor="price" className="text-gray-700 font-medium">
-          Precio
-        </Label>
-        <Input
-          type="number"
-          id="price"
-          name="price"
-          placeholder="Ejemplo: 199.99"
-          value={newProduct.price === 0 ? "" : newProduct.price ?? ""}
-          onChange={(e) => {
-            const value = parseFloat(e.target.value);
-            if (value >= 0 || e.target.value === "") {
-              onInputChange(e);
-            }
-          }}
-          min="0"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-
-      {/* Talles */}
-      <div>
-        <Label className="text-gray-700 font-medium">Talles</Label>
-        <div className="flex flex-wrap gap-4 mt-2">
-          {["S", "M", "L", "XL"].map((size) => (
-            <div key={size} className="flex items-center space-x-2">
-              <Checkbox
-                id={`size-${size}`}
-                checked={newProduct.sizes.includes(size)}
-                onCheckedChange={(checked) =>
-                  onSizeChange(size, checked === true)
-                }
-                className="text-blue-500 focus:ring-blue-500"
-              />
-              <Label htmlFor={`size-${size}`} className="text-gray-600">
-                {size}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Cantidad */}
-      <div>
-        <Label htmlFor="quantity" className="text-gray-700 font-medium">
-          Cantidad
-        </Label>
-        <Input
-          type="number"
-          id="quantity"
-          name="quantity"
-          placeholder="Cantidad"
-          value={newProduct.quantity ?? ""}
-          onChange={onQuantityChange}
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-
-      {/* Botón */}
-      <div className="text-center">
-        <Button
-          onClick={onAddProduct}
-          disabled={!isFormValid} // Deshabilitar si el formulario no es válido
-          className={`px-4 py-2 font-semibold rounded-lg shadow-md focus:ring-2 focus:ring-offset-2 ${
-            isFormValid
-              ? "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-          }`}
-        >
+    <Dialog>
+      <DialogTrigger>
+        <button className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
           Agregar Producto
-        </Button>
-      </div>
-    </div>
+        </button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Agregar Producto</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-6">
+          {/* Título */}
+          <div>
+            <Label htmlFor="title">Título</Label>
+            <Input
+              type="text"
+              id="title"
+              name="title"
+              value={newProduct.title}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: Camiseta deportiva"
+            />
+          </div>
+
+          {/* Precio */}
+          <div>
+            <Label htmlFor="price">Precio</Label>
+            <Input
+              type="number"
+              id="price"
+              name="price"
+              value={newProduct.price || ""}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: 199.99"
+              min="0"
+            />
+          </div>
+
+          {/* Talles */}
+          <div>
+            <Label>Talles</Label>
+            <div className="flex flex-wrap gap-4 mt-2">
+              {["S", "M", "L", "XL"].map((size) => (
+                <div key={size} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`size-${size}`}
+                    checked={newProduct.sizes.includes(size)}
+                    onCheckedChange={(checked) =>
+                      handleSizeChange(size, checked === true)
+                    }
+                  />
+                  <Label htmlFor={`size-${size}`}>{size}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cantidad */}
+          <div>
+            <Label htmlFor="quantity">Cantidad</Label>
+            <Input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={newProduct.quantity ?? ""}
+              onChange={handleQuantityChange}
+              placeholder="Ejemplo: 10"
+              min="0"
+            />
+          </div>
+
+          {/* Botón */}
+          <Button onClick={handleSubmit} disabled={!isFormValid}>
+            Agregar Producto
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
