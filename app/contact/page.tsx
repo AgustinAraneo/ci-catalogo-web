@@ -4,7 +4,6 @@ const page = () => {
   return (
     <div>
       <HomeContact />
-      <div className="h-screen">Esto es contact</div>
     </div>
   );
 };
