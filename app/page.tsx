@@ -1,5 +1,11 @@
-import { Banner } from "@/components/ui/Banner/Banner";
+import { TrendingItems } from "@/components/ui/Home/TrendingItems";
+import { Banner } from "@/components/ui/Home/ui/Banner";
 
 export default function Home() {
-  return <Banner />;
+  return (
+    <div>
+      <Banner />
+      <TrendingItems />
+    </div>
+  );
 }

@@ -1,14 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-interface Product {
-  id: string;
-  title: string;
-  price: number;
-  sizes: string[];
-  quantity: number | null;
-}
+import type { Product } from "@/types/type";
 
 // TODO: SEPARAR LOGICA DEL CLIENTE, PARA QUE SEA SOLO SSR
 

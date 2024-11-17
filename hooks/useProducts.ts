@@ -1,12 +1,5 @@
+import type { Product } from "@/types/type";
 import { useEffect, useState } from "react";
-
-interface Product {
-  id?: string;
-  title: string;
-  price: number;
-  sizes: string[];
-  quantity: number | null;
-}
 
 export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);

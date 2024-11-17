@@ -4,7 +4,7 @@ import { MdEmail } from "react-icons/md";
 export const Footer = () => {
   return (
     <footer className="bg-black-primary text-white py-8 font-lato">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-start">
         {/* Columna Izquierda: Dirección */}
         <div className="mb-4 md:mb-0 text-center md:text-left">
           <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
@@ -21,6 +21,7 @@ export const Footer = () => {
         {/* Columna Central: Nombre */}
         <div className="mb-4 md:mb-0 text-center">
           <h2 className="text-2xl font-bold text-gold">Chinitha Fine</h2>
+          <p>La ropa que te queda, y el precio que te cierra</p>
         </div>
 
         {/* Columna Derecha: Redes Sociales e Información de Contacto */}

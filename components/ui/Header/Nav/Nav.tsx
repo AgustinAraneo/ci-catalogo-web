@@ -2,11 +2,7 @@ import useWindowSize from "@/app/src/utils/windowSize";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { NavItem } from "@/app/src/types/types";
-
-interface NavProps {
-  navItem: NavItem[];
-}
+import type { NavProps } from "@/types/type";
 
 export const Nav: React.FC<NavProps> = ({ navItem }) => {
   const pathname = usePathname();

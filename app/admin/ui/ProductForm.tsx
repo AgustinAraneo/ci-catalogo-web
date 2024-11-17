@@ -3,15 +3,7 @@ import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { Button } from "@/components/ui/Button/button";
 import { Label } from "@/components/ui/Label/label";
-import type { Product } from "@/types/type";
-
-interface ProductFormProps {
-  newProduct: Product;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSizeChange: (size: string, checked: boolean) => void;
-  onQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAddProduct: () => void;
-}
+import type { ProductFormProps } from "@/types/type";
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   newProduct,

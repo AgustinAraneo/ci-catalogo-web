@@ -1,14 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import type { ProductRequestBody } from "@/types/type";
 
 const prisma = new PrismaClient();
-
-interface ProductRequestBody {
-  title: string;
-  price: number;
-  sizes: string[];
-  quantity: number | null;
-}
 
 export async function POST(req: NextRequest) {
   try {

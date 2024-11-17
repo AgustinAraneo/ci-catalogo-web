@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "../Button/button";
+import { Button } from "../../Button/button";
 
 export const Banner = () => {
   return (

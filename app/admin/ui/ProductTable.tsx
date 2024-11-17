@@ -1,4 +1,4 @@
-import type { Product } from "@/types/type";
+import type { ProductTableProps } from "@/types/type";
 import React from "react";
 import {
   Table,
@@ -8,10 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table/table";
-
-interface ProductTableProps {
-  products: Product[];
-}
 
 export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   return (
