@@ -1,4 +1,4 @@
-import type { ProductTableProps } from "@/types/type";
+import type { Product, ProductTableProps } from "@/types/type";
 import React from "react";
 import {
   Table,
@@ -8,24 +8,49 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table/table";
+import { FaEye } from "react-icons/fa";
+import { EditProductDialog } from "./EditProductDialog";
+import { DeleteProductDialog } from "./DeleteProductDialog";
 
-export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
+export const ProductTable: React.FC<ProductTableProps> = ({
+  products,
+  onUpdateProduct,
+  onDeleteProduct,
+}) => {
   return (
     <div className="overflow-x-auto">
-      <Table>
+      <Table className="font-lato">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Nro. producto</TableHead>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Precio</TableHead>
-            <TableHead>Talles</TableHead>
-            <TableHead>Cantidad</TableHead>
-            <TableHead>Link</TableHead>
+            <TableHead className="w-[100px] font-semibold text-gray-500">
+              Nro. producto
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Nombre
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Precio
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Talles
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Cantidad
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Link
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Modificar
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Eliminar
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {products.length > 0 ? (
-            products.map((product) => (
+            products.map((product: Product) => (
               <TableRow key={product.id} className="text-left">
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
@@ -34,16 +59,31 @@ export const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 <TableCell>
                   {product.quantity !== null ? product.quantity : "No definido"}
                 </TableCell>
-                <TableCell>
-                  <a className="text-blue-500" href={`/shop/${product.id}`}>
-                    Link
+                <TableCell className="w-[50px]">
+                  <a
+                    className="text-blue-500 hover:text-blue-400 transition-all flex justify-center"
+                    href={`/shop/${product.id}`}
+                  >
+                    <FaEye className="w-4 h-4" />
                   </a>
+                </TableCell>
+                <TableCell className="w-[70px]">
+                  <EditProductDialog
+                    product={product}
+                    onUpdateProduct={onUpdateProduct}
+                  />
+                </TableCell>
+                <TableCell className="w-[0px]">
+                  <DeleteProductDialog
+                    product={product}
+                    onDeleteProduct={onDeleteProduct}
+                  />
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={8} className="text-center w-full">
                 No hay productos disponibles
               </TableCell>
             </TableRow>

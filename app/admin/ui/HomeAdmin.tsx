@@ -1,22 +1,17 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ProductForm } from "./ProductForm";
+import { useRouter } from "next/navigation";
 import { ProductTable } from "./ProductTable";
 import { LogoutButton } from "./LogoutButton";
 import { useProducts } from "@/hooks/useProducts";
+import { ProductForm } from "./ProductForm";
+import { toast } from "sonner"; // Importa Sonner para las notificaciones
 import type { Product } from "@/types/type";
 
 export const HomeAdmin = () => {
   const router = useRouter();
   const { products, setProducts } = useProducts();
   const [isLoggedTrue, setIsLoggedTrue] = useState<boolean>(false);
-  const [newProduct, setNewProduct] = useState<Product>({
-    title: "",
-    price: 0,
-    sizes: [],
-    quantity: null,
-  });
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
@@ -32,65 +27,86 @@ export const HomeAdmin = () => {
     router.push("/login");
   };
 
-  const handleAddProduct = async () => {
-    const priceNumber =
-      typeof newProduct.price === "string"
-        ? parseFloat(newProduct.price)
-        : newProduct.price;
-
+  const handleAddProduct = async (newProduct: Product) => {
     const res = await fetch("/api/v1/db/add-product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...newProduct, price: priceNumber }),
+      body: JSON.stringify(newProduct),
     });
 
     if (res.ok) {
       const addedProduct = await res.json();
       setProducts((prevProducts) => [...prevProducts, addedProduct]);
-      setNewProduct({ title: "", price: 0, sizes: [], quantity: null });
+      toast.success("Producto agregado con éxito"); // Notificación de éxito
     } else {
-      alert("Error al agregar el producto");
+      toast.error("Error al agregar el producto"); // Notificación de error
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setNewProduct({
-      ...newProduct,
-      [name]: name === "price" ? parseFloat(value) || 0 : value,
+  const handleUpdateProduct = async (updatedProduct: Product) => {
+    const res = await fetch(`/api/v1/db/products/${updatedProduct.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedProduct),
     });
+
+    if (res.ok) {
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === updatedProduct.id ? updatedProduct : p
+        )
+      );
+      toast.success("Producto actualizado con éxito", {
+        duration: 2000,
+        position: "top-center",
+      });
+    } else {
+      toast.error("Error al actualizar el producto", {
+        duration: 2000,
+        position: "top-center",
+      });
+    }
   };
 
-  const handleSizeChange = (size: string, checked: boolean) => {
-    setNewProduct((prevProduct) => ({
-      ...prevProduct,
-      sizes: checked
-        ? [...prevProduct.sizes, size]
-        : prevProduct.sizes.filter((s) => s !== size),
-    }));
-  };
+  const handleDeleteProduct = async (productId: string | undefined) => {
+    if (!productId) {
+      toast.error("Producto no encontrado");
+      return;
+    }
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewProduct({
-      ...newProduct,
-      quantity: e.target.value ? parseInt(e.target.value) : null,
+    const res = await fetch(`/api/v1/db/products/${productId}`, {
+      method: "DELETE",
     });
+
+    if (res.ok) {
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== productId)
+      );
+      toast.success("Producto eliminado con éxito", {
+        duration: 2000,
+        position: "top-center",
+      });
+    } else {
+      toast.error("Error al eliminar el producto", {
+        duration: 2000,
+        position: "top-center",
+      });
+    }
   };
 
   if (!isLoggedTrue) return null;
 
   return (
-    <div className="container mx-auto p-4 mt-20">
+    <div className="container mx-auto p-4 mt-20 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Gestión de Productos</h1>
-      <ProductForm
-        newProduct={newProduct}
-        onInputChange={handleInputChange}
-        onSizeChange={handleSizeChange}
-        onQuantityChange={handleQuantityChange}
-        onAddProduct={handleAddProduct}
+
+      <ProductForm onAddProduct={handleAddProduct} />
+
+      <ProductTable
+        products={products}
+        onUpdateProduct={handleUpdateProduct}
+        onDeleteProduct={handleDeleteProduct}
       />
-      <ProductTable products={products} />
       <LogoutButton onLogout={handleLogout} />
     </div>
   );

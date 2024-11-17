@@ -4,6 +4,7 @@ import "./styles/globals.css";
 import "./styles/global.scss";
 import { Header } from "@/components/ui/Header/Header";
 import { Footer } from "@/components/ui/Footer/Footer";
+import { Toaster } from "sonner";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
@@ -47,6 +48,7 @@ export default function RootLayout({
         </div>
         <main>{children}</main>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

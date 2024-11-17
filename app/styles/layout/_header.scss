@@ -16,7 +16,7 @@ header {
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 101;
+  z-index: 50;
 
   &-top {
     background-color: #1b1e20;
@@ -184,7 +184,7 @@ header {
   top: 72%;
   transform: translateY(-50%);
   right: 15px;
-  z-index: 111;
+  z-index: 50;
   span {
     background-color: #222222;
     display: block;
@@ -227,7 +227,7 @@ header {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 111;
+    z-index: 50;
     width: 100%;
     max-width: 100%;
     background-color: #fff;

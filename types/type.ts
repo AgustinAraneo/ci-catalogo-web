@@ -15,10 +15,21 @@ export interface Product {
   quantity: number | null;
 }
 
-export interface ProductTableProps {
-  products: Product[];
+export interface EditProductDialogProps {
+  product: Product;
+  onUpdateProduct: (product: Product) => void;
 }
 
+export interface DeleteProductDialogProps {
+  product: Product;
+  onDeleteProduct: (id: string | undefined) => void;
+}
+
+export interface ProductTableProps {
+  products: Product[];
+  onUpdateProduct: (updatedProduct: Product) => void;
+  onDeleteProduct: (productId: string | undefined) => void;
+}
 export interface LogoutButtonProps {
   onLogout: () => void;
 }
