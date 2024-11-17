@@ -7,7 +7,7 @@ export const HomeContact = () => {
   return (
     <div>
       <Breadcrumb page="Contacto" />
-      <div className="container mx-auto py-12 px-6">
+      <div className="container mx-auto py-12 px-6 -mt-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Ubicación */}
           <div className="flex items-center bg-black-primary p-6 rounded-lg shadow-md">
@@ -43,6 +43,7 @@ export const HomeContact = () => {
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   );

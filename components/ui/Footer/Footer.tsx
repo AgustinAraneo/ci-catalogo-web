@@ -6,7 +6,7 @@ export const Footer = () => {
     <footer className="bg-black-primary text-white py-8 px-6 font-lato">
       <div className="container mx-auto">
         {/* Sección Superior: Logo, Iconos de Contacto y Métodos de Pago */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
+        <div className="flex flex-col md:flex-row justify-between items-center pb-6 space-y-4 md:space-y-0">
           {/* Iconos de Contacto */}
           <div className="flex space-x-6 items-center">
             <a
