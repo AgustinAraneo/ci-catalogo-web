@@ -10,7 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog/dialog";
+
 import type { Product } from "@/types/type";
+import { Textarea } from "@/components/ui/TextArea/textarea";
 
 interface ProductFormProps {
   onAddProduct: (newProduct: Product) => void;
@@ -19,18 +21,20 @@ interface ProductFormProps {
 export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const [newProduct, setNewProduct] = useState<Product>({
     title: "",
-    description: null,
+    description: "",
     price: 0,
-    discountPrice: null, // Agregar propiedad discountPrice
+    discountPrice: null,
     sizes: [],
     quantity: null,
-    imageUrl: "", // Agregar propiedad imageUrl
-    category: [], // Agregar propiedad category
+    imageUrl: "",
+    category: [],
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
       ...prev,
@@ -70,7 +74,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     onAddProduct(newProduct);
     setNewProduct({
       title: "",
-      description: null,
+      description: "",
       price: 0,
       discountPrice: null,
       sizes: [],
@@ -78,7 +82,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
       imageUrl: "",
       category: [],
     });
-    setIsDialogOpen(false); // Cierra el diálogo al agregar el producto
+    setIsDialogOpen(false);
   };
 
   const isFormValid =
@@ -113,16 +117,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               placeholder="Ejemplo: Camiseta deportiva"
             />
           </div>
-
-          {/* Description */}
+          {/* Descripción */}
           <div>
-            <Label htmlFor="title">Descripcion</Label>
-            <Input
-              type="text"
+            <Label htmlFor="description">Descripción</Label>
+            <Textarea
               id="description"
               name="description"
               value={newProduct.description || ""}
-              onChange={handleInputChange}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                const { name, value } = e.target;
+                setNewProduct((prev) => ({
+                  ...prev,
+                  [name]: value,
+                }));
+              }}
               placeholder="Ejemplo: Camiseta deportiva color negro"
             />
           </div>

@@ -48,9 +48,8 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
 
   const inStock = product && product.quantity && product.quantity > 0;
 
-  return (   
-    
-    <div className="container mx-auto p-8 mt-10">      
+  return (
+    <div className="container mx-auto p-8 mt-10">
       <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 border rounded-lg shadow-lg p-6">
         {product?.discountPrice && (
           <div className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded">
@@ -73,15 +72,14 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
           </p>
           <p className="text-gray-500 mb-4">Código: {product?.id}</p>
 
-         <div className="flex items-center mb-4">
-          {product?.discountPrice && (
-            <p className="line-through text-gray-400 mr-2">${product?.price.toFixed(2)}</p>
-          )}
-          <p className="text-2xl font-bold text-black">
-            ${product?.discountPrice ? product?.discountPrice.toFixed(2) : product?.price.toFixed(2)}
-          </p>
-        </div>
-
+          <div className="flex items-center mb-4">
+            {product?.discountPrice && (
+              <p className="line-through text-gray-400 mr-2">${product?.price.toFixed(2)}</p>
+            )}
+            <p className="text-2xl font-bold text-black">
+              ${product?.discountPrice ? product?.discountPrice.toFixed(2) : product?.price.toFixed(2)}
+            </p>
+          </div>
 
           <div className="mb-6">
             <p className="font-bold mb-2">Talles:</p>
@@ -96,6 +94,14 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
               ))}
             </div>
           </div>
+
+          {/* Descripción (mostrar solo si no es vacío o null) */}
+          {product?.description && product.description.trim() !== "" && (
+            <div className="mb-6">
+              <p className="font-bold mb-2">Descripción:</p>
+              <p className="text-gray-700">{product.description}</p>
+            </div>
+          )}
 
           <div className="mb-6">
             <p className="font-bold mb-2">Síguenos en nuestras redes:</p>
@@ -117,7 +123,7 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
               onClick={handleBuy}
               className="bg-black text-white p-3 rounded flex-1 hover:bg-gold transition"
             >
-              Comprar
+              {inStock ? "Comprar" : "Consultar disponibilidad"}
             </button>
           </div>
         </div>
