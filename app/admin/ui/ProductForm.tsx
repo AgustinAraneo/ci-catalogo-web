@@ -19,7 +19,7 @@ interface ProductFormProps {
 export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const [newProduct, setNewProduct] = useState<Product>({
     title: "",
-    description: "",
+    description: null,
     price: 0,
     discountPrice: null, // Agregar propiedad discountPrice
     sizes: [],
@@ -70,7 +70,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     onAddProduct(newProduct);
     setNewProduct({
       title: "",
-      description: "",
+      description: null,
       price: 0,
       discountPrice: null,
       sizes: [],
@@ -111,6 +111,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               value={newProduct.title}
               onChange={handleInputChange}
               placeholder="Ejemplo: Camiseta deportiva"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <Label htmlFor="title">Descripcion</Label>
+            <Input
+              type="text"
+              id="description"
+              name="description"
+              value={newProduct.description || ""}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: Camiseta deportiva color negro"
             />
           </div>
 
