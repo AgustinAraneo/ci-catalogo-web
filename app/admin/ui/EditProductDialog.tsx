@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
 import type { EditProductDialogProps, Product } from "@/types/type";
+import { Textarea } from "@/components/ui/TextArea/textarea";
 
 export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product,
@@ -82,6 +83,24 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={handleInputChange}
             />
           </div>
+
+        {/* Descripción */}
+        <div>
+          <Label htmlFor="description">Descripción</Label>
+          <Textarea
+            id="description"
+            name="description"
+            value={editedProduct.description || ""}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              const { name, value } = e.target;
+              setEditedProduct((prev) => ({
+                ...prev,
+                [name]: value,
+              }));
+            }}
+            placeholder="Ejemplo: Camiseta deportiva color negro"
+          />
+        </div>
 
           <div>
             <Label htmlFor="price">Precio</Label>
