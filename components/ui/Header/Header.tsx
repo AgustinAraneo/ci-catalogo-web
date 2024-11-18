@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Nav } from "./Nav/Nav";
 
 export const Header = () => {
-  const [promo, setPromo] = useState(true);
   const [fixedNav, setFixedNav] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [height] = useWindowSize();
