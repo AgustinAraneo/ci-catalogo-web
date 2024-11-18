@@ -26,7 +26,6 @@ export const FormContact = () => {
     e.preventDefault();
     const { nombre, correo, mensaje } = formData;
     const whatsappMessage = `Hola ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
-    // TODO: CAMBIAR NUMERO POR EL DEL PRIMO Y QUE LO LLENEN DE MENSAJES 😎
     window.open(
       `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
       "_blank"
@@ -41,22 +40,22 @@ export const FormContact = () => {
   };
 
   return (
-    <div className="flex h-[800px] font-lato">
+    <div className="flex flex-col md:flex-row h-auto md:h-[800px] font-lato">
       {/* Sección de Fondo (gris temporal) */}
-      <div className="w-1/2 bg-banner-contacto bg-cover bg-left"></div>
+      <div className="w-full md:w-1/2 h-64 md:h-full bg-banner-contacto bg-cover bg-left"></div>
 
       {/* Sección del Formulario */}
-      <div className="w-1/2 bg-white p-12 flex items-center justify-center flex-col">
+      <div className="w-full md:w-1/2 bg-white p-6 md:p-12 flex items-center justify-center flex-col">
         <div className="flex flex-col gap-2 pb-6">
-          <h2 className="text-6xl font-bold text-gold text-center">
+          <h2 className="text-4xl md:text-6xl font-bold text-gold text-center">
             Contactanos
           </h2>
-          <h6 className="text-center font-lato  mx-auto">
-            Llená el formulario y enviá tu mensaje por Whataspp, te
+          <h6 className="text-center font-lato mx-auto text-sm md:text-base">
+            Llená el formulario y enviá tu mensaje por WhatsApp, te
             responderemos a la brevedad
           </h6>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
           {/* Nombre */}
           <input
             type="text"

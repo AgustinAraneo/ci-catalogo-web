@@ -17,7 +17,7 @@ export const Footer = () => {
         {/* Sección Superior: Logo, Iconos de Contacto y Métodos de Pago */}
         <div className="flex flex-col md:flex-row justify-between items-center pb-6 space-y-4 md:space-y-0">
           {/* Iconos de Contacto */}
-          <div className="flex space-x-6 items-center">
+          <div className="flex space-x-6 items-center justify-center md:justify-start">
             <a
               href="mailto:izquierdoceleste65@gmail.com"
               target="_blank"
@@ -50,7 +50,7 @@ export const Footer = () => {
           </div>
 
           {/* Métodos de Pago */}
-          <div className="flex space-x-4 items-center">
+          <div className="flex space-x-4 items-center justify-center md:justify-end">
             <FaCcVisa className="h-6 w-6" />
             <FaCcMastercard className="h-6 w-6" />
             <FaRegMoneyBillAlt className="h-6 w-6" />
@@ -61,29 +61,29 @@ export const Footer = () => {
         <hr className="border-gray-700 mb-6" />
 
         {/* Contenido Principal */}
-        <div className="flex flex-col md:flex-row justify-between items-start relative">
+        <div className="flex flex-col md:flex-row justify-around items-center text-center md:text-left space-y-4 md:space-y-0">
           {/* Columna Izquierda: Ubicación */}
-          <div className="mb-4 md:mb-0 text-center md:text-left">
+          <div className="mb-4 md:mb-0">
             <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
             <a
               href="https://maps.app.goo.gl/7Q9uaFfLsEhoqpLE8"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline"
+              className="hover:underline block"
             >
               Feria “ATLÁNTIDA” - Local 30
             </a>
           </div>
 
           {/* Columna Central: Descripción */}
-          <div className="mb-4 md:mb-0 text-center absolute  left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/2 hidden md :block">
-            <p>&ldquo;La ropa que te queda, y el precio que te cierra&rdquo;</p>
+          <div className="mb-4 md:mb-0">
+            <p className="text-center md:text-left">&ldquo;La ropa que te queda, y el precio que te cierra&rdquo;</p>
           </div>
 
           {/* Columna Derecha: Contacto */}
-          <div className="text-center md:text-right">
+          <div className="mb-4 md:mb-0">
             <h2 className="font-semibold text-lg text-gold">Contacto</h2>
-            <div className="flex flex-col items-center md:items-end space-y-2 mt-2">
+            <div className="flex flex-col items-center md:items-start space-y-2 mt-2">
               {/* Email */}
               <div className="flex items-center space-x-2">
                 <MdEmail className="h-5 w-5 text-gold" />
