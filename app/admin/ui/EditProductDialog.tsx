@@ -24,9 +24,10 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     const { name, value } = e.target;
     setEditedProduct((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "discountPrice"
-        ? parseFloat(value) || null
-        : value,
+      [name]:
+        name === "price" || name === "discountPrice"
+          ? parseFloat(value) || null
+          : value,
     }));
   };
 
@@ -125,20 +126,26 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           <div>
             <Label>Categorías</Label>
             <div className="flex flex-wrap gap-4 mt-2">
-              {["Camisetas", "Pantalones", "Zapatos", "Accesorios"].map(
-                (category) => (
-                  <div key={category} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`category-${category}`}
-                      checked={editedProduct.category.includes(category)}
-                      onCheckedChange={(checked) =>
-                        handleCategoryChange(category, checked === true)
-                      }
-                    />
-                    <Label htmlFor={`category-${category}`}>{category}</Label>
-                  </div>
-                )
-              )}
+              {[
+                "Remeras",
+                "Remerones",
+                "Calzas",
+                "Palazos",
+                "Blazers",
+                "Vestidos",
+                "Tops",
+              ].map((category) => (
+                <div key={category} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`category-${category}`}
+                    checked={editedProduct.category.includes(category)}
+                    onCheckedChange={(checked) =>
+                      handleCategoryChange(category, checked === true)
+                    }
+                  />
+                  <Label htmlFor={`category-${category}`}>{category}</Label>
+                </div>
+              ))}
             </div>
           </div>
 
