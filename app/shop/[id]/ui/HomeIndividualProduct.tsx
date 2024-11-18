@@ -48,8 +48,9 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
 
   const inStock = product && product.quantity && product.quantity > 0;
 
-  return (
-    <div className="container mx-auto p-8 mt-10">
+  return (   
+    
+    <div className="container mx-auto p-8 mt-10">      
       <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 border rounded-lg shadow-lg p-6">
         {product?.discountPrice && (
           <div className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded">

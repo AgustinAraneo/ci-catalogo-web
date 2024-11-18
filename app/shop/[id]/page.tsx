@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/type";
 import HomeIndividualProduct from "./ui/HomeIndividualProduct";
+import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 
 export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -39,14 +40,18 @@ export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="container mx-auto p-4 mt-20">
+    <div>
+    <Breadcrumb page="Productos" />
+    <div className="container mx-auto p-4 ">
+      
       <HomeIndividualProduct product={product} />
       <button
         onClick={() => router.push("/admin")}
-        className="bg-blue-500 text-white p-2 rounded mt-4"
+        className="bg-blue-500 text-white p-2 rounded pt-4"
       >
         Volver
       </button>
+    </div>
     </div>
   );
 };
