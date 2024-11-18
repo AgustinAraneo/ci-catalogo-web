@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/types/type";
 import HomeIndividualProduct from "./ui/HomeIndividualProduct";
 import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
+import { InstagramGallery } from "@/app/contact/ui/carrousel contact/CarrouselContact";
 
 export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -42,16 +43,21 @@ export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
   return (
     <div>
     <Breadcrumb page="Productos" />
-    <div className="container mx-auto p-4 ">
+    <div className="container mx-auto p-7 pb-20">
       
       <HomeIndividualProduct product={product} />
       <button
         onClick={() => router.push("/admin")}
-        className="bg-blue-500 text-white p-2 rounded pt-4"
+        className="bg-black text-white p-2 rounded "
       >
         Volver
       </button>
-    </div>
+
+    </div>   
+    <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 pb-5">
+        También puede interesarte:
+    </h2>
+    <InstagramGallery/>
     </div>
   );
 };
