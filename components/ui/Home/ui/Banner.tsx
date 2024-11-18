@@ -4,7 +4,7 @@ import { Button } from "../../Button/button";
 export const Banner = () => {
   return (
     <>
-      <div className="relative z-[1] h-screen bg-gray-400 bg-center bg-no-repeat bg-cover flex items-center">
+      <div className="relative z-[1] h-screen bg-banner-home bg-center bg-no-repeat bg-cover flex items-center">
         <div className="container mx-auto px-4">
           <div className="pl-20">
             <span className="text-[60px] pl-[9px] font-mrs-saint-delafield text-[#c89018]">

@@ -32,10 +32,19 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               Precio
             </TableHead>
             <TableHead className="font-semibold text-gray-500">
+              P. oferta
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
               Talles
             </TableHead>
             <TableHead className="font-semibold text-gray-500">
+              Categoría
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
               Cantidad
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Imagen
             </TableHead>
             <TableHead className="font-semibold text-gray-500 text-center">
               Link
@@ -55,9 +64,26 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
                 <TableCell>${product.price?.toFixed(2)}</TableCell>
-                <TableCell>{product.sizes.join(", ")}</TableCell>
                 <TableCell>
-                  {product.quantity !== null ? product.quantity : "No definido"}
+                  {product.discountPrice !== null
+                    ? `$${product.discountPrice.toFixed(2)}`
+                    : "-"}
+                </TableCell>
+                <TableCell>{product.sizes.join(", ")}</TableCell>
+                <TableCell>{product.category.join(", ")}</TableCell>
+                <TableCell>
+                  {product.quantity !== null ? product.quantity : "-"}
+                </TableCell>
+                <TableCell className="w-[100px]">
+                  {product.imageUrl ? (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.title}
+                      className="w-[50px] h-[50px] object-cover rounded"
+                    />
+                  ) : (
+                    "Sin imagen"
+                  )}
                 </TableCell>
                 <TableCell className="w-[50px]">
                   <a
@@ -83,7 +109,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={8} className="text-center w-full">
+              <TableCell colSpan={9} className="text-center w-full">
                 No hay productos disponibles
               </TableCell>
             </TableRow>

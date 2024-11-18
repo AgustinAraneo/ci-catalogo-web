@@ -20,8 +20,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const [newProduct, setNewProduct] = useState<Product>({
     title: "",
     price: 0,
+    discountPrice: null, // Agregar propiedad discountPrice
     sizes: [],
     quantity: null,
+    imageUrl: "", // Agregar propiedad imageUrl
+    category: [], // Agregar propiedad category
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -30,7 +33,10 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
       ...prev,
-      [name]: name === "price" ? parseFloat(value) || 0 : value,
+      [name]:
+        name === "price" || name === "discountPrice"
+          ? parseFloat(value) || null
+          : value,
     }));
   };
 
@@ -43,6 +49,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     }));
   };
 
+  const handleCategoryChange = (category: string, checked: boolean) => {
+    setNewProduct((prev) => ({
+      ...prev,
+      category: checked
+        ? [...prev.category, category]
+        : prev.category.filter((c) => c !== category),
+    }));
+  };
+
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewProduct((prev) => ({
       ...prev,
@@ -52,7 +67,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
 
   const handleSubmit = () => {
     onAddProduct(newProduct);
-    setNewProduct({ title: "", price: 0, sizes: [], quantity: null });
+    setNewProduct({
+      title: "",
+      price: 0,
+      discountPrice: null,
+      sizes: [],
+      quantity: null,
+      imageUrl: "",
+      category: [],
+    });
     setIsDialogOpen(false); // Cierra el diálogo al agregar el producto
   };
 
@@ -103,6 +126,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
             />
           </div>
 
+          {/* Precio con descuento */}
+          <div>
+            <Label htmlFor="discountPrice">Precio con Descuento</Label>
+            <Input
+              type="number"
+              id="discountPrice"
+              name="discountPrice"
+              value={newProduct.discountPrice || ""}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: 149.99"
+              min="0"
+            />
+          </div>
+
           {/* Talles */}
           <div>
             <Label>Talles</Label>
@@ -120,6 +157,40 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Categorías */}
+          <div>
+            <Label>Categorías</Label>
+            <div className="flex flex-wrap gap-4 mt-2">
+              {["Camisetas", "Pantalones", "Zapatos", "Accesorios"].map(
+                (category) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`category-${category}`}
+                      checked={newProduct.category.includes(category)}
+                      onCheckedChange={(checked) =>
+                        handleCategoryChange(category, checked === true)
+                      }
+                    />
+                    <Label htmlFor={`category-${category}`}>{category}</Label>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Imagen URL */}
+          <div>
+            <Label htmlFor="imageUrl">Imagen URL</Label>
+            <Input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              value={newProduct.imageUrl}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: https://mi-sitio.com/imagen.jpg"
+            />
           </div>
 
           {/* Cantidad */}

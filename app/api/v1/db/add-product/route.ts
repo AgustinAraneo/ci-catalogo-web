@@ -7,7 +7,8 @@ const prisma = new PrismaClient();
 export async function POST(req: NextRequest) {
   try {
     const body: ProductRequestBody = await req.json();
-    const { title, price, sizes, quantity } = body;
+    const { title, price, sizes, quantity, discountPrice, imageUrl, category } =
+      body;
 
     if (!title || price === undefined || !Array.isArray(sizes)) {
       return NextResponse.json(
@@ -20,8 +21,11 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         price,
+        discountPrice: discountPrice !== undefined ? discountPrice : null,
         sizes,
         quantity: quantity !== undefined ? quantity : null,
+        imageUrl: imageUrl || "",
+        category: category || [],
       },
     });
 

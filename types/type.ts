@@ -2,8 +2,11 @@
 export interface ProductRequestBody {
   title: string;
   price: number;
+  discountPrice: number | null;
   sizes: string[];
   quantity: number | null;
+  imageUrl: string;
+  category: string[];
 }
 
 //Products
@@ -11,8 +14,11 @@ export interface Product {
   id?: string;
   title: string;
   price: number;
+  discountPrice: number | null;
   sizes: string[];
   quantity: number | null;
+  imageUrl: string;
+  category: string[];
 }
 
 export interface EditProductDialogProps {

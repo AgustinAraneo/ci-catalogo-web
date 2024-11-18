@@ -40,20 +40,11 @@ export const Header = () => {
     <>
       {/* <!-- BEGIN HEADER --> */}
       <header className="header">
-        {promo && (
-          <div className="header-top">
-            <span>10% de descuento pagando en efectivo</span>
-            <i
-              onClick={() => setPromo(false)}
-              className="header-top-close js-header-top-close icon-close"
-            ></i>
-          </div>
-        )}
         <div className={`header-content ${fixedNav ? "fixed" : ""}`}>
-          <div className="header-logo">
+          <div className="header-logo w-[150px] h-auto">
             <Link href="/">
               <p>
-                <img src={header.logo} alt="" />
+                <img className="w-auto h-auto" src={header.logo} alt="" />
               </p>
             </Link>
           </div>

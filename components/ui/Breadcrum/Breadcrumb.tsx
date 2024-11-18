@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const Breadcrumb = ({ page }: { page: string }) => {
   return (
-    <div className="w-full h-[400px] bg-gray-200 items-center justify-center flex flex-col gap-4 shadow-redcoach-lg mt-[50px]">
+    <div className="w-full h-[450px] bg-gray-200 items-center justify-center flex flex-col gap-4 shadow-redcoach-lg ">
       <h2 className="text-6xl font-bold">{page}</h2>
       <div>
         <p className="font-semibold">

@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { FaInstagram, FaPhone, FaCcVisa, FaCcMastercard, FaRegMoneyBillAlt } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaPhone,
+  FaCcVisa,
+  FaCcMastercard,
+  FaRegMoneyBillAlt,
+} from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 export const Footer = () => {
@@ -55,7 +61,7 @@ export const Footer = () => {
         <hr className="border-gray-700 mb-6" />
 
         {/* Contenido Principal */}
-        <div className="flex flex-col md:flex-row justify-between items-start">
+        <div className="flex flex-col md:flex-row justify-between items-start relative">
           {/* Columna Izquierda: Ubicación */}
           <div className="mb-4 md:mb-0 text-center md:text-left">
             <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
@@ -70,8 +76,8 @@ export const Footer = () => {
           </div>
 
           {/* Columna Central: Descripción */}
-          <div className="mb-4 md:mb-0 text-center">
-            <p>"La ropa que te queda, y el precio que te cierra"</p>
+          <div className="mb-4 md:mb-0 text-center absolute  left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/2 hidden md :block">
+            <p>&ldquo;La ropa que te queda, y el precio que te cierra&rdquo;</p>
           </div>
 
           {/* Columna Derecha: Contacto */}
@@ -123,13 +129,15 @@ export const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center mt-4">
-          <h5>© All rights reserved by
+          <h5>
+            © All rights reserved by
             <a
               href="https://www.nehros.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-1 hover:underline">
-            nehros
+              className="ml-1 hover:underline"
+            >
+              nehros
             </a>
           </h5>
         </div>
