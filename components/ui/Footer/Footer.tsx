@@ -1,4 +1,7 @@
-import { FaInstagram, FaPhone } from "react-icons/fa";
+"use client";
+
+import React from "react";
+import { FaInstagram, FaPhone, FaCcVisa, FaCcMastercard, FaRegMoneyBillAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 export const Footer = () => {
@@ -42,21 +45,9 @@ export const Footer = () => {
 
           {/* Métodos de Pago */}
           <div className="flex space-x-4 items-center">
-            <img
-              src="assets/img/icons/visa.svg"
-              alt="Visa"
-              className="h-8 w-auto"
-            />
-            <img
-              src="assets/img/icons/master.svg"
-              alt="MasterCard"
-              className="h-8 w-auto"
-            />
-            <img
-              src="assets/img/icons/efectivo.png"
-              alt="Efectivo"
-              className="h-8 w-auto"
-            />
+            <FaCcVisa className="h-6 w-6" />
+            <FaCcMastercard className="h-6 w-6" />
+            <FaRegMoneyBillAlt className="h-6 w-6" />
           </div>
         </div>
 
@@ -74,7 +65,7 @@ export const Footer = () => {
               rel="noopener noreferrer"
               className="hover:underline"
             >
-              Feria “ATLÁNTIDA” - Local 30{" "}
+              Feria “ATLÁNTIDA” - Local 30
             </a>
           </div>
 
@@ -83,7 +74,7 @@ export const Footer = () => {
             <p>"La ropa que te queda, y el precio que te cierra"</p>
           </div>
 
-          {/* Columna Derecha: Contacto (iconos alineados horizontalmente) */}
+          {/* Columna Derecha: Contacto */}
           <div className="text-center md:text-right">
             <h2 className="font-semibold text-lg text-gold">Contacto</h2>
             <div className="flex flex-col items-center md:items-end space-y-2 mt-2">
@@ -125,6 +116,22 @@ export const Footer = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Línea Separadora */}
+        <hr className="border-gray-700 mt-4" />
+
+        {/* Copyright */}
+        <div className="text-center mt-4">
+          <h5>© All rights reserved by
+            <a
+              href="https://www.nehros.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 hover:underline">
+            nehros
+            </a>
+          </h5>
         </div>
       </div>
     </footer>
