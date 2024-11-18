@@ -47,13 +47,21 @@ export const FormContact = () => {
 
       {/* Sección del Formulario */}
       <div className="w-1/2 bg-white p-12 flex items-center justify-center flex-col">
-        <h2 className="text-6xl font-bold text-gold pb-6">Escríbenos</h2>
+        <div className="flex flex-col gap-2 pb-6">
+          <h2 className="text-6xl font-bold text-gold text-center">
+            Contactanos
+          </h2>
+          <h6 className="text-center font-lato  mx-auto">
+            Llená el formulario y enviá tu mensaje por Whataspp, te
+            responderemos a la brevedad
+          </h6>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Nombre */}
           <input
             type="text"
             name="nombre"
-            placeholder="Ingrese su nombre"
+            placeholder="Nombre:"
             value={formData.nombre}
             onChange={handleChange}
             className="w-full p-4 rounded-lg border border-gray-300 text-gray-700"
@@ -64,7 +72,7 @@ export const FormContact = () => {
           <input
             type="email"
             name="correo"
-            placeholder="Ingrese su correo electrónico"
+            placeholder="Correo electrónico:"
             value={formData.correo}
             onChange={handleChange}
             className="w-full p-4 rounded-lg border border-gray-300 text-gray-700"
@@ -74,7 +82,7 @@ export const FormContact = () => {
           {/* Mensaje */}
           <textarea
             name="mensaje"
-            placeholder="Ingrese su mensaje"
+            placeholder="Mensaje:"
             value={formData.mensaje}
             onChange={handleChange}
             className="w-full p-4 rounded-lg border border-gray-300 text-gray-700"

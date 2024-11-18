@@ -16,9 +16,15 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   onUpdateProduct,
 }) => {
   const [editedProduct, setEditedProduct] = useState<Product>(product);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSave = () => {
+    onUpdateProduct(editedProduct);
+    setIsOpen(false);
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <button className="flex justify-center w-full">
           <FiEdit className="text-gold hover:text-gold/80 transition duration-150 h-4 w-4" />
@@ -50,14 +56,19 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={(e) =>
                 setEditedProduct({
                   ...editedProduct,
-                  price: parseFloat(e.target.value) || 0,
+                  price: parseFloat(e.target.value),
                 })
               }
             />
           </div>
-          <Button onClick={() => onUpdateProduct(editedProduct)}>
-            Guardar Cambios
-          </Button>
+          <div className="flex justify-end space-x-4">
+            <Button className="bg-gray-300" onClick={() => setIsOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSave} className="bg-blue-500 text-white">
+              Guardar Cambios
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

@@ -24,6 +24,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     quantity: null,
   });
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
@@ -51,6 +53,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const handleSubmit = () => {
     onAddProduct(newProduct);
     setNewProduct({ title: "", price: 0, sizes: [], quantity: null });
+    setIsDialogOpen(false); // Cierra el diálogo al agregar el producto
   };
 
   const isFormValid =
@@ -59,9 +62,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     newProduct.sizes.length > 0;
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <button className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <button
+          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          onClick={() => setIsDialogOpen(true)}
+        >
           Agregar Producto
         </button>
       </DialogTrigger>

@@ -37,9 +37,15 @@ export const HomeAdmin = () => {
     if (res.ok) {
       const addedProduct = await res.json();
       setProducts((prevProducts) => [...prevProducts, addedProduct]);
-      toast.success("Producto agregado con éxito"); // Notificación de éxito
+      toast.success("Producto agregado con éxito", {
+        duration: 3000,
+        position: "top-center",
+      });
     } else {
-      toast.error("Error al agregar el producto"); // Notificación de error
+      toast.error("Error al agregar el producto", {
+        duration: 3000,
+        position: "top-center",
+      });
     }
   };
 
@@ -57,12 +63,12 @@ export const HomeAdmin = () => {
         )
       );
       toast.success("Producto actualizado con éxito", {
-        duration: 2000,
+        duration: 3000,
         position: "top-center",
       });
     } else {
       toast.error("Error al actualizar el producto", {
-        duration: 2000,
+        duration: 3000,
         position: "top-center",
       });
     }
@@ -83,12 +89,12 @@ export const HomeAdmin = () => {
         prevProducts.filter((product) => product.id !== productId)
       );
       toast.success("Producto eliminado con éxito", {
-        duration: 2000,
+        duration: 3000,
         position: "top-center",
       });
     } else {
       toast.error("Error al eliminar el producto", {
-        duration: 2000,
+        duration: 3000,
         position: "top-center",
       });
     }
