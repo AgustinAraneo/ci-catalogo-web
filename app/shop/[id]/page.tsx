@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/type";
-
-// TODO: SEPARAR LOGICA DEL CLIENTE, PARA QUE SEA SOLO SSR
+import HomeIndividualProduct from "./ui/HomeIndividualProduct";
 
 export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -29,7 +28,7 @@ export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
     };
 
     fetchProduct();
-  }, [params.id]); // Dependemos del `id` para que se vuelva a ejecutar si cambia
+  }, [params.id]);
 
   if (loading) {
     return <div>Cargando...</div>;
@@ -41,23 +40,10 @@ export const IndividualItemViem = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="container mx-auto p-4 mt-20">
-      <h1 className="text-2xl font-bold mb-4">{product.title}</h1>
-      <div className="mb-4">
-        <p>
-          <strong>Precio:</strong> ${product.price.toFixed(2)}
-        </p>
-        <p>
-          <strong>Talles:</strong> {product.sizes.join(", ")}
-        </p>
-        <p>
-          <strong>Cantidad:</strong>{" "}
-          {product.quantity !== null ? product.quantity : "No definido"}
-        </p>
-      </div>
-
+      <HomeIndividualProduct product={product} />
       <button
         onClick={() => router.push("/admin")}
-        className="bg-blue-500 text-white p-2 rounded"
+        className="bg-blue-500 text-white p-2 rounded mt-4"
       >
         Volver
       </button>

@@ -9,7 +9,6 @@ export const HomeContact = () => {
       <Breadcrumb page="Contacto" />
       <div className="container mx-auto py-12 px-6 -mt-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Ubicación */}
           <div className="flex items-center bg-black-primary p-6 rounded-lg shadow-md">
             <FaMapMarkerAlt className="h-8 w-8 text-gold mr-4" />
             <div className="text-white">
@@ -24,7 +23,6 @@ export const HomeContact = () => {
             </div>
           </div>
 
-          {/* Contacto */}
           <div className="flex items-center bg-black-primary p-6 rounded-lg shadow-md">
             <div className="mr-4">
               <MdEmail className="h-8 w-8 text-gold" />
@@ -35,7 +33,6 @@ export const HomeContact = () => {
             </div>
           </div>
 
-          {/* Horario */}
           <div className="flex items-center bg-black-primary p-6 rounded-lg shadow-md">
             <FaRegClock className="h-8 w-8 text-gold mr-4" />
             <div className="text-white">

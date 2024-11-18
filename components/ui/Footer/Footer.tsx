@@ -14,9 +14,7 @@ export const Footer = () => {
   return (
     <footer className="bg-black-primary text-white py-8 px-6 font-lato">
       <div className="container mx-auto">
-        {/* Sección Superior: Logo, Iconos de Contacto y Métodos de Pago */}
         <div className="flex flex-col md:flex-row justify-between items-center pb-6 space-y-4 md:space-y-0">
-          {/* Iconos de Contacto */}
           <div className="flex space-x-6 items-center justify-center md:justify-start">
             <a
               href="mailto:izquierdoceleste65@gmail.com"
@@ -44,7 +42,6 @@ export const Footer = () => {
             </a>
           </div>
 
-          {/* Logo */}
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gold">Chinitha Fine</h1>
           </div>
@@ -57,12 +54,9 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Línea Separadora */}
         <hr className="border-gray-700 mb-6" />
 
-        {/* Contenido Principal */}
         <div className="flex flex-col md:flex-row justify-around items-center text-center md:text-left space-y-4 md:space-y-0">
-          {/* Columna Izquierda: Ubicación */}
           <div className="mb-4 md:mb-0">
             <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
             <a
@@ -75,16 +69,13 @@ export const Footer = () => {
             </a>
           </div>
 
-          {/* Columna Central: Descripción */}
           <div className="mb-4 md:mb-0">
             <p className="text-center md:text-left">&ldquo;La ropa que te queda, y el precio que te cierra&rdquo;</p>
           </div>
 
-          {/* Columna Derecha: Contacto */}
           <div className="mb-4 md:mb-0">
             <h2 className="font-semibold text-lg text-gold">Contacto</h2>
             <div className="flex flex-col items-center md:items-start space-y-2 mt-2">
-              {/* Email */}
               <div className="flex items-center space-x-2">
                 <MdEmail className="h-5 w-5 text-gold" />
                 <a
@@ -96,7 +87,6 @@ export const Footer = () => {
                   izquierdoceleste65@gmail.com
                 </a>
               </div>
-              {/* Teléfono */}
               <div className="flex items-center space-x-2">
                 <FaPhone className="h-5 w-5 text-gold rotate-90" />
                 <a
@@ -108,7 +98,6 @@ export const Footer = () => {
                   +54 9 1134602955
                 </a>
               </div>
-              {/* Instagram */}
               <div className="flex items-center space-x-2">
                 <FaInstagram className="h-5 w-5 text-gold" />
                 <a
@@ -124,10 +113,7 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Línea Separadora */}
         <hr className="border-gray-700 mt-4" />
-
-        {/* Copyright */}
         <div className="text-center mt-4">
           <h5>
             © All rights reserved by

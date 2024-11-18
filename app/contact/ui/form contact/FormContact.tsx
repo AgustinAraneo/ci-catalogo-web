@@ -41,10 +41,7 @@ export const FormContact = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-auto md:h-[800px] font-lato">
-      {/* Sección de Fondo (gris temporal) */}
       <div className="w-full md:w-1/2 h-64 md:h-full bg-banner-contacto bg-cover bg-left"></div>
-
-      {/* Sección del Formulario */}
       <div className="w-full md:w-1/2 bg-white p-6 md:p-12 flex items-center justify-center flex-col">
         <div className="flex flex-col gap-2 pb-6">
           <h2 className="text-4xl md:text-6xl font-bold text-gold text-center">
@@ -56,7 +53,6 @@ export const FormContact = () => {
           </h6>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
-          {/* Nombre */}
           <input
             type="text"
             name="nombre"
@@ -67,7 +63,6 @@ export const FormContact = () => {
             required
           />
 
-          {/* Correo */}
           <input
             type="email"
             name="correo"
@@ -78,7 +73,6 @@ export const FormContact = () => {
             required
           />
 
-          {/* Mensaje */}
           <textarea
             name="mensaje"
             placeholder="Mensaje:"
@@ -89,7 +83,6 @@ export const FormContact = () => {
             required
           ></textarea>
 
-          {/* Botón Enviar */}
           <button
             type="submit"
             className="bg-black text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-800 transition duration-300"
