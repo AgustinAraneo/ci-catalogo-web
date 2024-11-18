@@ -73,14 +73,15 @@ const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({ product }
           </p>
           <p className="text-gray-500 mb-4">Código: {product?.id}</p>
 
-          <div className="flex items-center mb-4">
-            {product?.discountPrice !== null && product?.discountPrice !== undefined && (
-              <p className="line-through text-gray-400 mr-2">
-                ${product.discountPrice.toFixed(2)}
-              </p>
-            )}
-            <p className="text-2xl font-bold text-black">${product?.price.toFixed(2)}</p>
-          </div>
+         <div className="flex items-center mb-4">
+          {product?.discountPrice && (
+            <p className="line-through text-gray-400 mr-2">${product?.price.toFixed(2)}</p>
+          )}
+          <p className="text-2xl font-bold text-black">
+            ${product?.discountPrice ? product?.discountPrice.toFixed(2) : product?.price.toFixed(2)}
+          </p>
+        </div>
+
 
           <div className="mb-6">
             <p className="font-bold mb-2">Talles:</p>
