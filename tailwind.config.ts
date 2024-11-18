@@ -14,6 +14,12 @@ const config: Config = {
         "banner-trending-1": 'url("/assets/Productos/Blazers.jpg")',
         "banner-trending-2": 'url("/assets/Productos/Pantalones.jpg")',
         "banner-trending-3": 'url("/assets/Productos/Remeras.jpg")',
+        "banner-trending-4": 'url("/assets/Productos/Blazers.jpg")',
+        "banner-trending-5": 'url("/assets/Productos/Pantalones.jpg")',
+        "banner-trending-6": 'url("/assets/Productos/Remeras.jpg")',
+        "banner-trending-7": 'url("/assets/Productos/Blazers.jpg")',
+        "banner-trending-8": 'url("/assets/Productos/Pantalones.jpg")',
+        "banner-trending-9": 'url("/assets/Productos/Remeras.jpg")',
       },
       colors: {
         background: "hsl(var(--background))",

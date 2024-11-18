@@ -1,4 +1,4 @@
-import { FaInstagram, FaPhone } from "react-icons/fa";
+import { FaInstagram, FaPhone , FaCcVisa , FaCcMastercard , FaRegMoneyBillAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 export const Footer = () => {
@@ -42,21 +42,9 @@ export const Footer = () => {
 
           {/* Métodos de Pago */}
           <div className="flex space-x-4 items-center">
-            <img
-              src="assets/img/icons/visa.svg"
-              alt="Visa"
-              className="h-8 w-auto"
-            />
-            <img
-              src="assets/img/icons/master.svg"
-              alt="MasterCard"
-              className="h-8 w-auto"
-            />
-            <img
-              src="assets/img/icons/efectivo.png"
-              alt="Efectivo"
-              className="h-8 w-auto"
-            />
+          <FaCcVisa  className="h-6 w-6" />
+          <FaCcMastercard  className="h-6 w-6" />
+          <FaRegMoneyBillAlt  className="h-6 w-6" />
           </div>
         </div>
 
