@@ -1,6 +1,7 @@
 //(ENDPOINT PRODUCT)
 export interface ProductRequestBody {
   title: string;
+  description: string | null;
   price: number;
   discountPrice: number | null;
   sizes: string[];
@@ -13,6 +14,7 @@ export interface ProductRequestBody {
 export interface Product {
   id?: string;
   title: string;
+  description: string | null;
   price: number;
   discountPrice: number | null;
   sizes: string[];

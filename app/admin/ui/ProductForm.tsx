@@ -19,6 +19,7 @@ interface ProductFormProps {
 export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const [newProduct, setNewProduct] = useState<Product>({
     title: "",
+    description: "",
     price: 0,
     discountPrice: null, // Agregar propiedad discountPrice
     sizes: [],
@@ -69,6 +70,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     onAddProduct(newProduct);
     setNewProduct({
       title: "",
+      description: "",
       price: 0,
       discountPrice: null,
       sizes: [],
