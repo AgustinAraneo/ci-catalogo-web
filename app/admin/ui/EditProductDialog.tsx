@@ -21,7 +21,9 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   const [editedProduct, setEditedProduct] = useState<Product>(product);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setEditedProduct((prev) => ({
       ...prev,
@@ -73,7 +75,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Editar Producto</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Título */}
           <div>
             <Label htmlFor="title">Título</Label>
             <Input
@@ -83,25 +86,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={handleInputChange}
             />
           </div>
-
-        {/* Descripción */}
-        <div>
-          <Label htmlFor="description">Descripción</Label>
-          <Textarea
-            id="description"
-            name="description"
-            value={editedProduct.description || ""}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              const { name, value } = e.target;
-              setEditedProduct((prev) => ({
-                ...prev,
-                [name]: value,
-              }));
-            }}
-            placeholder="Ejemplo: Camiseta deportiva color negro"
-          />
-        </div>
-
+          {/* Precio */}
           <div>
             <Label htmlFor="price">Precio</Label>
             <Input
@@ -112,7 +97,18 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={handleInputChange}
             />
           </div>
-
+          {/* Descripción */}
+          <div className="md:col-span-2">
+            <Label htmlFor="description">Descripción</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={editedProduct.description || ""}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: Camiseta deportiva color negro"
+            />
+          </div>
+          {/* Precio con Descuento */}
           <div>
             <Label htmlFor="discountPrice">Precio con Descuento</Label>
             <Input
@@ -123,8 +119,29 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={handleInputChange}
             />
           </div>
-
+          {/* Cantidad */}
           <div>
+            <Label htmlFor="quantity">Cantidad</Label>
+            <Input
+              type="number"
+              name="quantity"
+              placeholder="Cantidad"
+              value={editedProduct.quantity ?? ""}
+              onChange={handleQuantityChange}
+            />
+          </div>
+          {/* Imagen URL */}
+          <div className="md:col-span-2">
+            <Label htmlFor="imageUrl">Imagen URL</Label>
+            <Input
+              name="imageUrl"
+              placeholder="URL de la imagen"
+              value={editedProduct.imageUrl}
+              onChange={handleInputChange}
+            />
+          </div>
+          {/* Talles */}
+          <div className="md:col-span-2">
             <Label>Talles</Label>
             <div className="flex flex-wrap gap-4 mt-2">
               {["S", "M", "L", "XL"].map((size) => (
@@ -141,8 +158,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               ))}
             </div>
           </div>
-
-          <div>
+          {/* Categorías */}
+          <div className="md:col-span-2">
             <Label>Categorías</Label>
             <div className="flex flex-wrap gap-4 mt-2">
               {[
@@ -167,29 +184,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               ))}
             </div>
           </div>
-
-          <div>
-            <Label htmlFor="imageUrl">Imagen URL</Label>
-            <Input
-              name="imageUrl"
-              placeholder="URL de la imagen"
-              value={editedProduct.imageUrl}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="quantity">Cantidad</Label>
-            <Input
-              type="number"
-              name="quantity"
-              placeholder="Cantidad"
-              value={editedProduct.quantity ?? ""}
-              onChange={handleQuantityChange}
-            />
-          </div>
-
-          <div className="flex justify-end space-x-4">
+          {/* Botones */}
+          <div className="md:col-span-2 flex justify-end space-x-4">
             <Button className="bg-gray-300" onClick={() => setIsOpen(false)}>
               Cancelar
             </Button>

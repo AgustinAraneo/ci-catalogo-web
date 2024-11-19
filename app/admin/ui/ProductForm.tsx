@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog/dialog";
-
 import type { Product } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 
@@ -104,7 +103,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
         <DialogHeader>
           <DialogTitle>Agregar Producto</DialogTitle>
         </DialogHeader>
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Título */}
           <div>
             <Label htmlFor="title">Título</Label>
@@ -117,24 +116,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               placeholder="Ejemplo: Camiseta deportiva"
             />
           </div>
-          {/* Descripción */}
-          <div>
-            <Label htmlFor="description">Descripción</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={newProduct.description || ""}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                const { name, value } = e.target;
-                setNewProduct((prev) => ({
-                  ...prev,
-                  [name]: value,
-                }));
-              }}
-              placeholder="Ejemplo: Camiseta deportiva color negro"
-            />
-          </div>
-
           {/* Precio */}
           <div>
             <Label htmlFor="price">Precio</Label>
@@ -148,7 +129,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               min="0"
             />
           </div>
-
+          {/* Descripción */}
+          <div className="md:col-span-2">
+            <Label htmlFor="description">Descripción</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={newProduct.description || ""}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: Camiseta deportiva color negro"
+            />
+          </div>
           {/* Precio con descuento */}
           <div>
             <Label htmlFor="discountPrice">Precio con Descuento</Label>
@@ -162,9 +153,33 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               min="0"
             />
           </div>
-
-          {/* Talles */}
+          {/* Cantidad */}
           <div>
+            <Label htmlFor="quantity">Cantidad</Label>
+            <Input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={newProduct.quantity ?? ""}
+              onChange={handleQuantityChange}
+              placeholder="Ejemplo: 10"
+              min="0"
+            />
+          </div>
+          {/* Imagen URL */}
+          <div className="md:col-span-2">
+            <Label htmlFor="imageUrl">Imagen URL</Label>
+            <Input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              value={newProduct.imageUrl}
+              onChange={handleInputChange}
+              placeholder="Ejemplo: https://mi-sitio.com/imagen.jpg"
+            />
+          </div>
+          {/* Talles */}
+          <div className="md:col-span-2">
             <Label>Talles</Label>
             <div className="flex flex-wrap gap-4 mt-2">
               {["S", "M", "L", "XL"].map((size) => (
@@ -181,9 +196,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               ))}
             </div>
           </div>
-
           {/* Categorías */}
-          <div>
+          <div className="md:col-span-2">
             <Label>Categorías</Label>
             <div className="flex flex-wrap gap-4 mt-2">
               {[
@@ -208,38 +222,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               ))}
             </div>
           </div>
-
-          {/* Imagen URL */}
-          <div>
-            <Label htmlFor="imageUrl">Imagen URL</Label>
-            <Input
-              type="text"
-              id="imageUrl"
-              name="imageUrl"
-              value={newProduct.imageUrl}
-              onChange={handleInputChange}
-              placeholder="Ejemplo: https://mi-sitio.com/imagen.jpg"
-            />
-          </div>
-
-          {/* Cantidad */}
-          <div>
-            <Label htmlFor="quantity">Cantidad</Label>
-            <Input
-              type="number"
-              id="quantity"
-              name="quantity"
-              value={newProduct.quantity ?? ""}
-              onChange={handleQuantityChange}
-              placeholder="Ejemplo: 10"
-              min="0"
-            />
-          </div>
-
           {/* Botón */}
-          <Button onClick={handleSubmit} disabled={!isFormValid}>
-            Agregar Producto
-          </Button>
+          <div className="md:col-span-2">
+            <Button onClick={handleSubmit} disabled={!isFormValid}>
+              Agregar Producto
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
