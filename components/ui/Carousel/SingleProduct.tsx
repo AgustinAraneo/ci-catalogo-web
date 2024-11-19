@@ -1,14 +1,16 @@
 import React from "react";
-import Image from "next/image";
+import type { Product } from "@/types/type";
 
-export const SingleProduct = ({ product }: any) => {
+type SingleProductProps = {
+  product: Product;
+};
+
+export const SingleProduct = ({ product }: SingleProductProps) => {
   return (
     <div className="relative mx-4">
       <div className="relative w-[200px] h-[120px] overflow-hidden mx-auto">
-        <Image
+        <img
           src={product.imageUrl}
-          quality={100}
-          priority={true}
           width={200}
           height={120}
           alt={product.title}
