@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Carousel } from "../../Carousel/Carousel";
+import type { Product } from "@/types/type";
 
 export const TrendingProducts = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -18,7 +19,7 @@ export const TrendingProducts = () => {
         const data = await response.json();
         setAllProducts(data);
 
-        const filteredProducts = data.filter((product: any) =>
+        const filteredProducts = data.filter((product: Product) =>
           product.category.includes(filterItem)
         );
         setProducts(filteredProducts);
@@ -31,7 +32,7 @@ export const TrendingProducts = () => {
   }, []);
 
   useEffect(() => {
-    const filteredProducts = allProducts.filter((product: any) =>
+    const filteredProducts = allProducts.filter((product: Product) =>
       product.category.includes(filterItem)
     );
     setProducts(filteredProducts);
@@ -55,7 +56,7 @@ export const TrendingProducts = () => {
         </h2>
         <p className="max-w-xl mx-auto text-gray-600">
           Nourish your skin with toxin-free cosmetic products. With offers that
-          you can't refuse.
+          you can&apos;t refuse.
         </p>
       </div>
       <div className="px-4">

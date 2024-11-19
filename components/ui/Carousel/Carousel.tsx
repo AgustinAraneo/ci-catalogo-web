@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { SingleProduct } from "./SingleProduct";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import type { Product } from "@/types/type";
 
-export const Carousel = ({ products }: any) => {
+export const Carousel = ({ products }: { products: Product[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productsPerView, setProductsPerView] = useState(4);
   const totalProducts = products.length;
@@ -61,7 +62,7 @@ export const Carousel = ({ products }: any) => {
             width: `${totalProducts * itemTotalWidth}px`,
           }}
         >
-          {products.map((product: any) => (
+          {products.map((product: Product) => (
             <div
               key={product.id}
               className="flex-shrink-0"

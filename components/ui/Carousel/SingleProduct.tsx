@@ -1,9 +1,5 @@
 import React from "react";
-import type { Product } from "@/types/type";
-
-type SingleProductProps = {
-  product: Product;
-};
+import type { SingleProductProps } from "@/types/type";
 
 export const SingleProduct = ({ product }: SingleProductProps) => {
   return (

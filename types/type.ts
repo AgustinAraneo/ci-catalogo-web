@@ -49,6 +49,11 @@ export interface ProductFormProps {
   onQuantityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAddProduct: () => void;
 }
+
+export type SingleProductProps = {
+  product: Product;
+};
+
 //Nav
 export interface SubNavItem {
   name: string;
