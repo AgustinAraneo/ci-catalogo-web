@@ -1,16 +1,13 @@
-import React from "react";
 import type { SingleProductProps } from "@/types/type";
 
 export const SingleProduct = ({ product }: SingleProductProps) => {
   return (
     <div className="relative mx-4">
-      <div className="relative w-[200px] h-[120px] overflow-hidden mx-auto">
+      <div className="relative w-[220px] h-[320px] overflow-hidden mx-auto rounded-lg shadow-md">
         <img
           src={product.imageUrl}
-          width={200}
-          height={120}
           alt={product.title}
-          className="object-cover w-full h-full transition-transform duration-500"
+          className="object-fill w-full h-full"
         />
       </div>
       <div className="text-center mt-4">
