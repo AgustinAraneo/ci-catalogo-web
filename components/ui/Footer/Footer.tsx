@@ -44,6 +44,9 @@ export const Footer = () => {
 
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gold">Chinitha Fine</h1>
+            <p className="text-center md:text-left">
+              &ldquo;La ropa que te queda, y el precio que te cierra&rdquo;
+            </p>
           </div>
 
           {/* Métodos de Pago */}
@@ -56,7 +59,7 @@ export const Footer = () => {
 
         <hr className="border-gray-700 mb-6" />
 
-        <div className="flex flex-col md:flex-row justify-around items-center text-center md:text-left space-y-4 md:space-y-0">
+        <div className="flex flex-col md:flex-row relative justify-between items-center w-full text-center md:text-left space-y-4 md:space-y-0">
           <div className="mb-4 md:mb-0">
             <h2 className="font-semibold text-lg text-gold">Ubicación</h2>
             <a
@@ -69,8 +72,8 @@ export const Footer = () => {
             </a>
           </div>
 
-          <div className="mb-4 md:mb-0">
-            <p className="text-center md:text-left">&ldquo;La ropa que te queda, y el precio que te cierra&rdquo;</p>
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block">
+            <img className="w-40" src="assets/img/logos/blanco.png" />
           </div>
 
           <div className="mb-4 md:mb-0">
@@ -121,9 +124,9 @@ export const Footer = () => {
               href="https://www.nehros.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-1 hover:underline"
+              className="ml-1 hover:underline text-[#9747FF] font-medium"
             >
-              nehros
+              Nehros
             </a>
           </h5>
         </div>
