@@ -12,6 +12,7 @@ const config: Config = {
       backgroundImage: {
         "banner-contacto": 'url("/assets/Banners/contacto.jpg")',
         "banner-home": 'url("/assets/Banners/inicio.jpg")',
+        "banner-discount": 'url("/assets/Banners/home.jpg")',
         "banner-trending-1": 'url("/assets/Productos/Blazers.jpg")',
         "banner-trending-2": 'url("/assets/Productos/Pantalones.jpg")',
         "banner-trending-3": 'url("/assets/Productos/Remeras.jpg")',
