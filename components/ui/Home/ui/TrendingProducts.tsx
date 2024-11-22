@@ -5,8 +5,8 @@ import { Carousel } from "../../Carousel/Carousel";
 import type { Product } from "@/types/type";
 
 export const TrendingProducts = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [filterItem, setFilterItem] = useState("Remeras");
 
   useEffect(() => {
@@ -17,14 +17,59 @@ export const TrendingProducts = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setAllProducts(data);
 
-        const filteredProducts = data.filter((product: Product) =>
+        // Obtener la URL de descarga de cada imagen desde GitHub
+        const productsWithImages = await Promise.all(
+          data.map(async (product: Product) => {
+            if (product.imageUrl) {
+              try {
+                const imageResponse = await fetch(
+                  `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${product.imageUrl}`,
+                  {
+                    method: "GET",
+                    headers: {
+                      Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+
+                if (!imageResponse.ok) {
+                  throw new Error(
+                    `HTTP error! status: ${imageResponse.status}`
+                  );
+                }
+
+                const imageData = await imageResponse.json();
+                const downloadUrl = imageData.download_url;
+
+                if (downloadUrl) {
+                  product.imageUrl = downloadUrl;
+                } else {
+                  console.error(
+                    "No se encontró la URL de descarga para la imagen:",
+                    product.imageUrl
+                  );
+                }
+              } catch (error) {
+                console.error(
+                  "Error al obtener la imagen desde GitHub:",
+                  error
+                );
+              }
+            }
+            return product;
+          })
+        );
+
+        setAllProducts(productsWithImages);
+
+        const filteredProducts = productsWithImages.filter((product: Product) =>
           product.category.includes(filterItem)
         );
         setProducts(filteredProducts);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error al obtener los productos:", error);
       }
     };
 
