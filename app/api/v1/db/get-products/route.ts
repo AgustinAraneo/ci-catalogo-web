@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
@@ -14,7 +16,12 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json(products, { status: 200 });
+    return NextResponse.json(products, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    });
   } catch (error) {
     console.error("Error al obtener productos:", error);
     return NextResponse.json(
