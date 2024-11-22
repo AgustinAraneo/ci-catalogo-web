@@ -1,5 +1,5 @@
+import React, { useState, useEffect } from "react";
 import type { Product, ProductTableProps } from "@/types/type";
-import React from "react";
 import {
   Table,
   TableBody,
@@ -17,6 +17,44 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   onUpdateProduct,
   onDeleteProduct,
 }) => {
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+
+  const GITHUB_REPO = "Nehros-admin/ci-catalog-photos";
+  const GITHUB_BRANCH = "main"; 
+  const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN; 
+
+  useEffect(() => {
+    const fetchImageFromGitHub = async (fileName: string, productId: string) => {
+      const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${fileName}?ref=${GITHUB_BRANCH}`;
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setImageUrls((prev) => ({
+            ...prev,
+            [productId]: data.download_url,
+          }));
+        } else {
+          console.error(`Error fetching image: ${fileName}`, response.status);
+        }
+      } catch (error) {
+        console.error(`Error fetching image: ${fileName}`, error);
+      }
+    };
+
+    products.forEach((product) => {
+      if (product.id && product.imageUrl && !imageUrls[product.id]) {
+        fetchImageFromGitHub(product.imageUrl, product.id);
+      }
+    });
+  }, [products]);
+
   return (
     <div className="overflow-x-auto">
       <Table className="font-lato">
@@ -25,27 +63,15 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             <TableHead className="w-[100px] font-semibold text-gray-500">
               Nro. producto
             </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Nombre
-            </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Precio
-            </TableHead>
+            <TableHead className="font-semibold text-gray-500">Nombre</TableHead>
+            <TableHead className="font-semibold text-gray-500">Precio</TableHead>
             <TableHead className="font-semibold text-gray-500">
               P. oferta
             </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Talles
-            </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Categoría
-            </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Cantidad
-            </TableHead>
-            <TableHead className="font-semibold text-gray-500">
-              Imagen
-            </TableHead>
+            <TableHead className="font-semibold text-gray-500">Talles</TableHead>
+            <TableHead className="font-semibold text-gray-500">Categoría</TableHead>
+            <TableHead className="font-semibold text-gray-500">Cantidad</TableHead>
+            <TableHead className="font-semibold text-gray-500">Imagen</TableHead>
             <TableHead className="font-semibold text-gray-500 text-center">
               Link
             </TableHead>
@@ -75,14 +101,20 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   {product.quantity !== null ? product.quantity : "-"}
                 </TableCell>
                 <TableCell className="w-[100px]">
-                  {product.imageUrl ? (
+                  {product.id && imageUrls[product.id] ? (
                     <img
-                      src={product.imageUrl}
+                      src={imageUrls[product.id]}
                       alt={product.title}
                       className="w-[50px] h-[50px] object-cover rounded"
+                      onError={(e) => {
+                        console.error(
+                          `Error loading image: ${imageUrls}`
+                        );
+                        e.currentTarget.src = "/fallback-image.png"; 
+                      }}
                     />
                   ) : (
-                    "Sin imagen"
+                    "Cargando..."
                   )}
                 </TableCell>
                 <TableCell className="w-[50px]">
@@ -109,7 +141,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={9} className="text-center w-full">
+              <TableCell colSpan={11} className="text-center w-full">
                 No hay productos disponibles
               </TableCell>
             </TableRow>

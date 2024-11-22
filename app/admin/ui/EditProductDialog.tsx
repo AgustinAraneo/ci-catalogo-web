@@ -13,6 +13,7 @@ import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
 import type { EditProductDialogProps, Product } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
+import { v4 as uuidv4 } from "uuid";
 
 export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product,
@@ -20,6 +21,9 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
 }) => {
   const [editedProduct, setEditedProduct] = useState<Product>(product);
   const [isOpen, setIsOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isFileSizeValid, setIsFileSizeValid] = useState(true);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,10 +63,128 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     }));
   };
 
-  const handleSave = () => {
-    onUpdateProduct(editedProduct);
-    setIsOpen(false);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      if (selectedFile.size > 25 * 1024 * 1024) {
+        setIsFileSizeValid(false);
+      } else {
+        setIsFileSizeValid(true);
+        setFile(selectedFile);
+      }
+    }
   };
+
+  const deleteOldImageFromGitHub = async (fileName: string) => {
+    if (!fileName) return;
+
+    const response = await fetch(
+      `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Error al obtener la información del archivo para eliminarlo");
+      return;
+    }
+
+    const data = await response.json();
+    const sha = data.sha; // Obtiene el SHA del archivo
+
+    await fetch(
+      `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "Eliminación de imagen antigua desde Next.js",
+          sha,
+        }),
+      }
+    );
+  };
+
+  const uploadImageToGitHub = async () => {
+    if (!file) return null;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    return new Promise<string>((resolve, reject) => {
+      reader.onload = async () => {
+        const base64File = reader.result?.toString().split(",")[1];
+        if (!base64File) {
+          reject("Error al leer el archivo");
+          return;
+        }
+
+        const uniqueId = uuidv4();
+        const fileName = `${uniqueId}-${file.name}`;
+
+        const response = await fetch(
+          `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: "Actualización de imagen desde Next.js",
+              content: base64File,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          setUploadProgress(100);
+          resolve(fileName); // Devuelve el nombre completo del archivo
+        } else {
+          reject("Error al subir la imagen a GitHub");
+        }
+      };
+      reader.onerror = () => reject("Error al leer el archivo");
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      if (file) {
+        setUploadProgress(0);
+
+        // Eliminar la imagen antigua si existe
+        if (editedProduct.imageUrl) {
+          await deleteOldImageFromGitHub(editedProduct.imageUrl);
+        }
+
+        // Subir la nueva imagen
+        const newImageUrl = await uploadImageToGitHub();
+        if (newImageUrl) {
+          editedProduct.imageUrl = newImageUrl; // Actualiza el URL de la imagen
+        }
+      }
+
+      onUpdateProduct(editedProduct);
+      setIsOpen(false);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const isFormValid =
+    editedProduct.title.trim() !== "" &&
+    editedProduct.price > 0 &&
+    editedProduct.sizes.length > 0 &&
+    isFileSizeValid;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -130,15 +252,28 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               onChange={handleQuantityChange}
             />
           </div>
-          {/* Imagen URL */}
+          {/* Subir nueva imagen */}
           <div className="md:col-span-2">
-            <Label htmlFor="imageUrl">Imagen URL</Label>
+            <Label htmlFor="image">Subir Nueva Imagen</Label>
             <Input
-              name="imageUrl"
-              placeholder="URL de la imagen"
-              value={editedProduct.imageUrl}
-              onChange={handleInputChange}
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleFileChange}
             />
+            {uploadProgress > 0 && (
+              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            )}
+            {!isFileSizeValid && (
+              <p className="text-red-500 text-sm mt-2">
+                El archivo supera el tamaño máximo permitido de 25 MB.
+              </p>
+            )}
           </div>
           {/* Talles */}
           <div className="md:col-span-2">
@@ -189,7 +324,13 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
             <Button className="bg-gray-300" onClick={() => setIsOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleSave} className="bg-blue-500 text-white">
+            <Button
+              onClick={handleSave}
+              disabled={!isFormValid}
+              className={`${
+                isFormValid ? "bg-blue-500 text-white" : "bg-gray-300"
+              }`}
+            >
               Guardar Cambios
             </Button>
           </div>
