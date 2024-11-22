@@ -142,13 +142,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
 
   const isFileSizeValid = file ? file.size <= 25 * 1024 * 1024 : true;
 
-  const isFormValid =
+    const isFormValid =
     newProduct.title.trim() !== "" &&
     newProduct.price > 0 &&
     newProduct.sizes.length > 0 &&
     isFileSizeValid;
-  
-  const fileSizeErrorMessage = file && !isFileSizeValid ? "El archivo supera el tamaño máximo permitido de 25 MB." : "";
+
   
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -1,35 +1,56 @@
-import Link from "next/link";
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Product } from "@/types/type";
 import { HomeIndividualProduct } from "./ui/HomeIndividualProduct";
 import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
 import { InstagramGallery } from "@/app/contact/ui/carrousel contact/CarrouselContact";
 
-export default async function IndividualItemView({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/db/products/${params.id}`,
-    {
-      cache: "no-store",
-    }
-  );
+const IndividualItemView = ({ params }: { params: { id: string } }) => {
+  const router = useRouter();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  if (!res.ok) {
-    return <div>Producto no encontrado</div>;
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/v1/db/products/${params.id}`);
+        if (res.ok) {
+          const data: Product = await res.json();
+          setProduct(data);
+        } else {
+          alert("Producto no encontrado");
+        }
+      } catch (error) {
+        console.error("Error al obtener el producto:", error);
+        alert("Error al cargar el producto");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [params.id]);
+
+  if (loading) {
+    return <div>Cargando...</div>;
   }
 
-  const product: Product = await res.json();
+  if (!product) {
+    return <div>Producto no encontrado</div>;
+  }
 
   return (
     <div>
       <Breadcrumb page="Productos" />
       <div className="container mx-auto p-7 pb-20">
         <HomeIndividualProduct product={product} />
-        <Link href="/admin">
-          <p className="bg-black text-white p-2 rounded">Volver</p>
-        </Link>
+        <button
+          onClick={() => router.push("/admin")}
+          className="bg-black text-white p-2 rounded"
+        >
+          Volver
+        </button>
       </div>
       <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 pb-5">
         También puede interesarte:
@@ -37,4 +58,6 @@ export default async function IndividualItemView({
       <InstagramGallery />
     </div>
   );
-}
+};
+
+export default IndividualItemView;

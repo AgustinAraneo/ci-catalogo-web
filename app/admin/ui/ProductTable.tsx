@@ -110,7 +110,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                         console.error(
                           `Error loading image: ${imageUrls}`
                         );
-                        e.currentTarget.src = "/fallback-image.png"; 
+                        e.currentTarget.src = "/assets/Productos/fallback-image.jpg"; 
                       }}
                     />
                   ) : (

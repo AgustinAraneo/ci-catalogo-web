@@ -11,12 +11,46 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
   const [loading, setLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (product) {
-      setLoading(false);
-    }
+    const fetchImageFromGitHub = async () => {
+      if (product?.imageUrl) {
+        const GITHUB_REPO = "Nehros-admin/ci-catalog-photos";
+        const GITHUB_BRANCH = "main";
+        const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+  
+        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${product.imageUrl}?ref=${GITHUB_BRANCH}`;
+  
+        try {
+          const response = await fetch(url, {
+            headers: {
+              Authorization: `Bearer ${GITHUB_TOKEN}`,
+            },
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            setImageUrl(data.download_url); 
+          } else {
+            console.error(`Error fetching image from GitHub: ${product.imageUrl}`, response.status);
+            setImageUrl(null);
+          }
+        } catch (error) {
+          console.error("Error fetching image:", error);
+          setImageUrl(null); 
+        } finally {
+          setLoading(false); 
+        }
+      } else {
+        setImageUrl(null);
+        setLoading(false);
+      }
+    };
+  
+    fetchImageFromGitHub();
   }, [product]);
+  
 
   const handleBuy = () => {
     const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product?.title}"`;
@@ -61,7 +95,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 
         <div className="w-full md:w-1/3">
           <img
-            src={product?.imageUrl}
+            src={imageUrl || "/assets/Productos/fallback-image.jpg"}
             alt={product?.title}
             className="w-full h-auto object-cover rounded"
           />
@@ -76,7 +110,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           >
             {inStock ? "EN STOCK" : "SIN STOCK"}
           </p>
-          <p className="text-gray-500 mb-4">Código: {product?.id}</p>
+          <p className="text-gray-500 pb-4 break-words">Código: {product?.id}</p>
 
           <div className="flex items-center mb-4">
             {product?.discountPrice && (
