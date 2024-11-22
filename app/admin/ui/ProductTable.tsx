@@ -19,7 +19,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   onDeleteProduct,
 }) => {
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const GITHUB_REPO = "Nehros-admin/ci-catalog-photos";
   const GITHUB_BRANCH = "main";
@@ -27,55 +27,56 @@ export const ProductTable: React.FC<ProductTableProps> = ({
 
   useEffect(() => {
     const fetchImages = async () => {
-      try {
-        const imagePromises = products.map((product) => {
-          if (product.id && product.imageUrl) {
-            const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${product.imageUrl}?ref=${GITHUB_BRANCH}`;
-            return fetch(url, {
-              headers: {
-                Authorization: `Bearer ${GITHUB_TOKEN}`,
-              },
+      setLoading(true);
+
+      const imagePromises = products.map((product) => {
+        if (product.id && product.imageUrl) {
+          const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${product.imageUrl}?ref=${GITHUB_BRANCH}`;
+          return fetch(url, {
+            headers: {
+              Authorization: `Bearer ${GITHUB_TOKEN}`,
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json().then((data) => ({
+                  productId: product.id,
+                  downloadUrl: data.download_url,
+                }));
+              }
+              console.error(
+                `Error fetching image for product ${product.id}: ${response.status}`
+              );
+              return null;
             })
-              .then((response) => {
-                if (response.ok) {
-                  return response.json().then((data) => ({
-                    productId: product.id,
-                    downloadUrl: data.download_url,
-                  }));
-                }
-                console.error(
-                  `Error fetching image for product ${product.id}: ${response.status}`
-                );
-                return null;
-              })
-              .catch((error) => {
-                console.error(
-                  `Error fetching image for product ${product.id}:`,
-                  error
-                );
-                return null;
-              });
-          }
-          return null;
-        });
+            .catch((error) => {
+              console.error(
+                `Error fetching image for product ${product.id}:`,
+                error
+              );
+              return null;
+            });
+        }
+        return null;
+      });
 
-        const results = await Promise.all(imagePromises);
-        const updatedImageUrls = results.reduce((acc, result) => {
-          if (result && result.productId) {
-            acc[result.productId] = result.downloadUrl;
-          }
-          return acc;
-        }, {} as Record<string, string>);
+      const results = await Promise.all(imagePromises);
+      const updatedImageUrls = results.reduce((acc, result) => {
+        if (result && result.productId) {
+          acc[result.productId] = result.downloadUrl;
+        }
+        return acc;
+      }, {} as Record<string, string>);
 
-        setImageUrls(updatedImageUrls);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      } finally {
-        setLoading(false); 
-      }
+      setImageUrls((prev) => ({ ...prev, ...updatedImageUrls }));
+      setLoading(false); // Indica que las imágenes han sido cargadas
     };
 
-    fetchImages();
+    if (products.length > 0) {
+      fetchImages();
+    } else {
+      setLoading(false);
+    }
   }, [products]);
 
   if (loading) {
@@ -129,7 +130,6 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   <p className="text-gray-500 italic">Sin imagen</p>
                 )}
               </TableCell>
-
               <TableCell className="w-[50px]">
                 <a
                   className="text-blue-500 hover:text-blue-400 transition-all flex justify-center"
