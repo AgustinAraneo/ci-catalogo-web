@@ -73,7 +73,7 @@ export const Footer = () => {
           </div>
 
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:block">
-            <img className="w-40" src="assets/img/logos/blanco.png" />
+            <img className="w-40" src="/assets/img/logos/blanco.png" />
           </div>
 
           <div className="mb-4 md:mb-0">
