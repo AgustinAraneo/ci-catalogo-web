@@ -16,7 +16,6 @@ export async function GET() {
       );
     }
 
-    // Agrega un header para evitar caché
     return NextResponse.json(products, {
       status: 200,
       headers: {

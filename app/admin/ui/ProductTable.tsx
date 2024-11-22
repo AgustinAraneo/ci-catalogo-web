@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import React, { useState, useEffect } from "react";
 import type { Product, ProductTableProps } from "@/types/type";
 import {
@@ -91,16 +93,36 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             <TableHead className="w-[100px] font-semibold text-gray-500">
               Nro. producto
             </TableHead>
-            <TableHead className="font-semibold text-gray-500">Nombre</TableHead>
-            <TableHead className="font-semibold text-gray-500">Precio</TableHead>
-            <TableHead className="font-semibold text-gray-500">P. oferta</TableHead>
-            <TableHead className="font-semibold text-gray-500">Talles</TableHead>
-            <TableHead className="font-semibold text-gray-500">Categoría</TableHead>
-            <TableHead className="font-semibold text-gray-500">Cantidad</TableHead>
-            <TableHead className="font-semibold text-gray-500">Imagen</TableHead>
-            <TableHead className="font-semibold text-gray-500 text-center">Link</TableHead>
-            <TableHead className="font-semibold text-gray-500 text-center">Modificar</TableHead>
-            <TableHead className="font-semibold text-gray-500 text-center">Eliminar</TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Nombre
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Precio
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              P. oferta
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Talles
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Categoría
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Cantidad
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500">
+              Imagen
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Link
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Modificar
+            </TableHead>
+            <TableHead className="font-semibold text-gray-500 text-center">
+              Eliminar
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -139,10 +161,16 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 </a>
               </TableCell>
               <TableCell className="w-[70px]">
-                <EditProductDialog product={product} onUpdateProduct={onUpdateProduct} />
+                <EditProductDialog
+                  product={product}
+                  onUpdateProduct={onUpdateProduct}
+                />
               </TableCell>
               <TableCell className="w-[0px]">
-                <DeleteProductDialog product={product} onDeleteProduct={onDeleteProduct} />
+                <DeleteProductDialog
+                  product={product}
+                  onDeleteProduct={onDeleteProduct}
+                />
               </TableCell>
             </TableRow>
           ))}
