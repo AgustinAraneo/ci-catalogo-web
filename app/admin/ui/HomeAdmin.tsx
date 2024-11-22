@@ -5,7 +5,7 @@ import { ProductTable } from "./ProductTable";
 import { LogoutButton } from "./LogoutButton";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductForm } from "./ProductForm";
-import { toast } from "sonner"; // Importa Sonner para las notificaciones
+import { toast } from "sonner";
 import type { Product } from "@/types/type";
 
 export const HomeAdmin = () => {
