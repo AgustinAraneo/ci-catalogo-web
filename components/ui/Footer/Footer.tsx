@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
 import {
   FaInstagram,
@@ -7,6 +8,7 @@ import {
   FaCcVisa,
   FaCcMastercard,
   FaRegMoneyBillAlt,
+  FaRedhat 
 } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
@@ -54,6 +56,9 @@ export const Footer = () => {
             <FaCcVisa className="h-6 w-6" />
             <FaCcMastercard className="h-6 w-6" />
             <FaRegMoneyBillAlt className="h-6 w-6" />
+            <Link href="/login">
+            <FaRedhat className="h-6 w-6 cursor-pointer" />
+            </Link>
           </div>
         </div>
 
