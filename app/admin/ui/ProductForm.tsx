@@ -194,38 +194,37 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
           </div>
           {/* Botón de carga de imagen */}
           <div className="md:col-span-2">
-            <Label htmlFor="image">Imagen</Label>
-            <div className="flex items-center space-x-4 mt-2">
-              {/* Input de archivo oculto */}
-              <input
-                type="file"
-                id="image"
-                name="image"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              {/* Botón para abrir el selector de archivo */}
-              <label
-                htmlFor="image"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600"
-              >
-                Subir Imagen
-              </label>
-              {/* Texto indicando el archivo seleccionado */}
-              <span className="text-gray-600 text-sm">
-                {file ? file.name : "Ningún archivo seleccionado"}
-              </span>
-            </div>
-            {uploadProgress > 0 && (
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
-                <div
-                  className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-            )}
+          <Label htmlFor="image">Imagen</Label>
+          <div className="flex items-center space-x-4 mt-2">
+            {/* Input de archivo oculto */}
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            {/* Botón estilizado con shadcn */}
+            <Button
+              variant="default"
+              onClick={() => document.getElementById("image")?.click()}
+            >
+              Subir Imagen
+            </Button>
+            {/* Texto indicando el archivo seleccionado */}
+            <span className="text-gray-600 text-sm">
+              {file ? file.name : "Ningún archivo seleccionado"}
+            </span>
           </div>
-
+          {uploadProgress > 0 && (
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
           {/* Talles */}
           <div className="md:col-span-2">
             <Label>Talles</Label>

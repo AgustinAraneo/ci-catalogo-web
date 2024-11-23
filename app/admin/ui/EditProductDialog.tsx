@@ -176,12 +176,27 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           {/* Subir nueva imagen */}
           <div className="md:col-span-2">
             <Label htmlFor="image">Subir Nueva Imagen</Label>
-            <Input
-              type="file"
-              id="image"
-              name="image"
-              onChange={handleFileChange}
-            />
+            <div className="flex items-center space-x-4 mt-2">
+              {/* Input de archivo oculto */}
+              <input
+                type="file"
+                id="image"
+                name="image"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {/* Botón estilizado con shadcn */}
+              <Button
+                variant="default"
+                onClick={() => document.getElementById("image")?.click()}
+              >
+                Subir Imagen
+              </Button>
+              {/* Texto dinámico del archivo */}
+              <span className="text-gray-600 text-sm">
+                {file ? file.name : "Ningún archivo seleccionado"}
+              </span>
+            </div>
             {uploadProgress > 0 && (
               <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
                 <div
@@ -196,6 +211,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               </p>
             )}
           </div>
+
           {/* Talles */}
           <div className="md:col-span-2">
             <Label>Talles</Label>
