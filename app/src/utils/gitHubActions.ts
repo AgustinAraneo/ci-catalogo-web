@@ -18,6 +18,7 @@ export const fetchImageUrls = async (
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
+      cache: "no-store",
     })
       .then(async (response) => {
         if (response.ok) {
