@@ -11,6 +11,18 @@ export interface ProductRequestBody {
 }
 
 //Products
+export interface ProductNeedId {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  discountPrice: number | null;
+  sizes: string[];
+  quantity: number | null;
+  imageUrl: string;
+  category: string[];
+}
+
 export interface Product {
   id?: string;
   title: string;

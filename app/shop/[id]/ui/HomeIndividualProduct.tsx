@@ -12,7 +12,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
   // Pasar el producto completo (con id y imageUrl)
-  const { imageUrls, loading } = useImageLoader(
+  const { imageUrls } = useImageLoader(
     product ? [{ id: product.id, imageUrl: product.imageUrl }] : []
   );
 
@@ -26,28 +26,6 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
       "_blank"
     );
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen container mx-auto p-8 mt-10">
-        <div className="flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8">
-          <div className="w-full md:w-1/3 bg-gray-300 h-64 rounded animate-pulse"></div>
-          <div className="w-full md:w-1/2 space-y-4">
-            <div className="h-8 bg-gray-300 rounded w-3/4 animate-pulse"></div>
-            <div className="h-6 bg-gray-300 rounded w-1/4 animate-pulse"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse"></div>
-            <div className="h-6 bg-gray-300 rounded w-1/3 animate-pulse"></div>
-            <div className="flex space-x-2">
-              <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
-              <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
-              <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
-            </div>
-            <div className="h-12 bg-gray-300 rounded w-full animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const inStock = product && product.quantity && product.quantity > 0;
 

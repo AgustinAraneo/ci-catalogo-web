@@ -3,22 +3,24 @@
 import React, { useEffect, useState } from "react";
 import { Carousel } from "../../Carousel/Carousel";
 import type { Product } from "@/types/type";
+import { filterList } from "@/app/src/data/data.categorys";
 
 export const TrendingProducts = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [filterItem, setFilterItem] = useState("Remeras");
+  const [loading, setLoading] = useState(true); // Estado para el skeleton
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true); // Inicia la carga
         const response = await fetch("/api/v1/db/get-products");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
 
-        // Obtener la URL de descarga de cada imagen desde GitHub
         const productsWithImages = await Promise.all(
           data.map(async (product: Product) => {
             if (product.imageUrl) {
@@ -31,6 +33,7 @@ export const TrendingProducts = () => {
                       Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
                       "Content-Type": "application/json",
                     },
+                    cache: "no-store",
                   }
                 );
 
@@ -70,6 +73,8 @@ export const TrendingProducts = () => {
         setProducts(filteredProducts);
       } catch (error) {
         console.error("Error al obtener los productos:", error);
+      } finally {
+        setLoading(false); // Finaliza la carga
       }
     };
 
@@ -82,16 +87,6 @@ export const TrendingProducts = () => {
     );
     setProducts(filteredProducts);
   }, [filterItem, allProducts]);
-
-  const filterList = [
-    { name: "Remeras", value: "Remeras" },
-    { name: "Calzas", value: "Calzas" },
-    { name: "Palazos", value: "Palazos" },
-    { name: "Remerones", value: "Remerones" },
-    { name: "Blazers", value: "Blazers" },
-    { name: "Tops", value: "Tops" },
-    { name: "Vestidos", value: "Vestidos" },
-  ];
 
   return (
     <section className="overflow-x-hidden pt-20 pb-16">
@@ -122,7 +117,18 @@ export const TrendingProducts = () => {
           ))}
         </ul>
         <div className="mx-auto max-w-7xl overflow-hidden">
-          <Carousel products={products} />
+          {loading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-full h-48 bg-gray-200 animate-pulse rounded"
+                ></div>
+              ))}
+            </div>
+          ) : (
+            <Carousel products={products} />
+          )}
         </div>
       </div>
     </section>
