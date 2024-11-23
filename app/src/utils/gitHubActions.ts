@@ -5,6 +5,8 @@ const REPO = "Nehros-admin/ci-catalog-photos";
 const BRANCH = "main";
 const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN || "";
 
+console.log(TOKEN);
+
 export const fetchImageUrls = async (
   products: { id: string; imageUrl?: string }[]
 ): Promise<Record<string, string>> => {
