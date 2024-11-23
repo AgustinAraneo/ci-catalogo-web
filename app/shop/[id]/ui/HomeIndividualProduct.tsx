@@ -1,8 +1,9 @@
-"use client";
 import React from "react";
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 import type { Product } from "@/types/type";
 import { useImageLoader } from "@/hooks/useImageLoader";
+import { Button } from "@/components/ui/Button/button";
+import { useRouter } from "next/navigation";
 
 type HomeIndividualProductProps = {
   product: Product | null;
@@ -11,6 +12,7 @@ type HomeIndividualProductProps = {
 export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
+  const { imageUrls } = useImageLoader(
   // Pasar el producto completo (con id y imageUrl)
   const { imageUrls } = useImageLoader(
     product ? [{ id: product.id, imageUrl: product.imageUrl }] : []
@@ -18,6 +20,8 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 
   const imageUrl =
     imageUrls[product?.id || ""] || "/assets/Productos/fallback-image.jpg";
+
+  const router = useRouter();
 
   const handleBuy = () => {
     const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product?.title}"`;
@@ -30,19 +34,18 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   const inStock = product && product.quantity && product.quantity > 0;
 
   return (
-    <div className="container mx-auto p-8 mt-10">
-      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 border rounded-lg shadow-lg p-6">
-        {product?.discountPrice && (
-          <div className="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded">
-            SALE
-          </div>
-        )}
-
-        <div className="w-full md:w-1/3">
+    <div className="container mx-auto p-8 pt-10 flex flex-col items-center">
+      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 p-6">
+        <div className="relative w-full md:w-2/3">
+          {product?.discountPrice && (
+            <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded">
+              SALE
+            </div>
+          )}
           <img
             src={imageUrl || "/assets/Productos/fallback-image.jpg"}
             alt={product?.title}
-            className="w-full h-auto object-cover rounded"
+            className="w-full h-auto object-cover"
           />
         </div>
 
@@ -94,39 +97,58 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           )}
 
-          <div className="mb-6">
-            <p className="font-bold mb-2">Síguenos en nuestras redes:</p>
-            <div className="flex space-x-4">
-              <a
-                href="https://wa.me/5491171466601"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaWhatsapp className="text-2xl text-green-600 hover:text-green-800" />
-              </a>
-              <a
-                href="https://www.instagram.com/chinitha_fine"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram className="text-2xl text-pink-500 hover:text-pink-700" />
-              </a>
-              <a href="mailto:izquierdoceleste65@gmail.com">
-                <FaEnvelope className="text-2xl text-gray-600 hover:text-gray-800" />
-              </a>
+          <div className="mb-6 flex items-center space-x-4">
+            <p className="font-bold">Síguenos en nuestras redes:</p>
+            <div className="flex space-x-2">
+              <div className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                <a
+                  href="https://wa.me/5491171466601"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaWhatsapp className="text-2xl text-green-600 hover:text-green-800" />
+                </a>
+              </div>
+              <div className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                <a
+                  href="https://www.instagram.com/chinitha_fine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaInstagram className="text-2xl text-pink-500 hover:text-pink-700" />
+                </a>
+              </div>
+              <div className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                <a href="mailto:izquierdoceleste65@gmail.com">
+                  <FaEnvelope className="text-2xl text-gray-600 hover:text-gray-800" />
+                </a>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end">
-            <button
-              onClick={handleBuy}
-              className="bg-black text-white p-3 rounded flex-1 hover:bg-gold transition"
-            >
-              {inStock ? "Comprar" : "Consultar disponibilidad"}
-            </button>
-          </div>
+          <div className="flex justify-start mt-4 space-x-2">
+          <Button
+            variant="default"
+            className="bg-black text-white px-6 py-2 rounded-md text-sm hover:bg-yellow-500 hover:text-black transition-all"
+            onClick={handleBuy}
+          >
+            {inStock ? "Comprar" : "Consultar disponibilidad"}
+          </Button>
+
+          <Button
+            variant="outline"
+            className="bg-white border border-black text-black hover:bg-gray-200 hover:text-black transition-all px-6 py-2 rounded"
+            onClick={() => router.push("/shop")}
+          >
+            Volver
+          </Button>
+        </div>
+
+
         </div>
       </div>
+
+
     </div>
   );
 };
