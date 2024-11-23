@@ -13,7 +13,10 @@ import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
 import type { EditProductDialogProps, Product } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
-import { v4 as uuidv4 } from "uuid";
+import {
+  deleteOldImageFromGitHub,
+  uploadImageToGitHub,
+} from "@/app/src/utils/gitHubActions";
 
 export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product,
@@ -75,87 +78,6 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     }
   };
 
-  const deleteOldImageFromGitHub = async (fileName: string) => {
-    if (!fileName) return;
-
-    const response = await fetch(
-      `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.error("Error al obtener la información del archivo para eliminarlo");
-      return;
-    }
-
-    const data = await response.json();
-    const sha = data.sha; // Obtiene el SHA del archivo
-
-    await fetch(
-      `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: "Eliminación de imagen antigua desde Next.js",
-          sha,
-        }),
-      }
-    );
-  };
-
-  const uploadImageToGitHub = async () => {
-    if (!file) return null;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    return new Promise<string>((resolve, reject) => {
-      reader.onload = async () => {
-        const base64File = reader.result?.toString().split(",")[1];
-        if (!base64File) {
-          reject("Error al leer el archivo");
-          return;
-        }
-
-        const uniqueId = uuidv4();
-        const fileName = `${uniqueId}-${file.name}`;
-
-        const response = await fetch(
-          `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: "Actualización de imagen desde Next.js",
-              content: base64File,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          setUploadProgress(100);
-          resolve(fileName); // Devuelve el nombre completo del archivo
-        } else {
-          reject("Error al subir la imagen a GitHub");
-        }
-      };
-      reader.onerror = () => reject("Error al leer el archivo");
-    });
-  };
-
   const handleSave = async () => {
     try {
       if (file) {
@@ -167,10 +89,9 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
         }
 
         // Subir la nueva imagen
-        const newImageUrl = await uploadImageToGitHub();
-        if (newImageUrl) {
-          editedProduct.imageUrl = newImageUrl; // Actualiza el URL de la imagen
-        }
+        const newImageUrl = await uploadImageToGitHub(file);
+        editedProduct.imageUrl = newImageUrl;
+        setUploadProgress(100);
       }
 
       onUpdateProduct(editedProduct);

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/Dialog/dialog";
 import type { Product } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
-import { v4 as uuidv4 } from "uuid";
+import { uploadImageToGitHub } from "@/app/src/utils/gitHubActions";
 
 interface ProductFormProps {
   onAddProduct: (newProduct: Product) => void;
@@ -34,11 +34,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "discountPrice" ? parseFloat(value) || null : value,
+      [name]:
+        name === "price" || name === "discountPrice"
+          ? parseFloat(value) || null
+          : value,
     }));
   };
 
@@ -73,55 +78,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     }
   };
 
-  const uploadImageToGitHub = async () => {
-    if (!file) return null;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    return new Promise<string>((resolve, reject) => {
-      reader.onload = async () => {
-        const base64File = reader.result?.toString().split(",")[1];
-        if (!base64File) {
-          reject("Error al leer el archivo");
-          return;
-        }
-
-        const uniqueId = uuidv4();
-        const fileName = `${uniqueId}-${file.name}`;
-
-        const response = await fetch(
-          `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${fileName}`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              message: "Subida de imagen desde Next.js",
-              content: base64File,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          setUploadProgress(100);
-          resolve(fileName); // Devolver el nombre completo del archivo
-        } else {
-          reject("Error al subir la imagen a GitHub");
-        }
-      };
-      reader.onerror = () => reject("Error al leer el archivo");
-    });
-  };
-
   const handleSubmit = async () => {
     try {
+      if (!file) {
+        alert("Debes seleccionar un archivo antes de subirlo.");
+        return;
+      }
+
       setUploadProgress(0);
-      const imageUrl = await uploadImageToGitHub();
+      const imageUrl = await uploadImageToGitHub(file);
       if (imageUrl) {
-        onAddProduct({ ...newProduct, imageUrl }); 
+        onAddProduct({ ...newProduct, imageUrl });
         setNewProduct({
           title: "",
           description: "",
@@ -142,13 +109,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
 
   const isFileSizeValid = file ? file.size <= 25 * 1024 * 1024 : true;
 
-    const isFormValid =
+  const isFormValid =
     newProduct.title.trim() !== "" &&
     newProduct.price > 0 &&
     newProduct.sizes.length > 0 &&
     isFileSizeValid;
 
-  
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>

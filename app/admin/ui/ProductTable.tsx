@@ -1,6 +1,3 @@
-export const revalidate = 0;
-
-import React, { useState, useEffect } from "react";
 import type { Product, ProductTableProps } from "@/types/type";
 import {
   Table,
@@ -14,72 +11,14 @@ import { FaEye } from "react-icons/fa";
 import { EditProductDialog } from "./EditProductDialog";
 import { DeleteProductDialog } from "./DeleteProductDialog";
 import { ProductTableLoading } from "./ProductTableLoading/ProductTableLoading";
+import { useImageLoader } from "@/hooks/useImageLoader";
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,
   onUpdateProduct,
   onDeleteProduct,
 }) => {
-  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-
-  const GITHUB_REPO = "Nehros-admin/ci-catalog-photos";
-  const GITHUB_BRANCH = "main";
-  const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      setLoading(true);
-
-      const imagePromises = products.map((product) => {
-        if (product.id && product.imageUrl) {
-          const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${product.imageUrl}?ref=${GITHUB_BRANCH}`;
-          return fetch(url, {
-            headers: {
-              Authorization: `Bearer ${GITHUB_TOKEN}`,
-            },
-          })
-            .then((response) => {
-              if (response.ok) {
-                return response.json().then((data) => ({
-                  productId: product.id,
-                  downloadUrl: data.download_url,
-                }));
-              }
-              console.error(
-                `Error fetching image for product ${product.id}: ${response.status}`
-              );
-              return null;
-            })
-            .catch((error) => {
-              console.error(
-                `Error fetching image for product ${product.id}:`,
-                error
-              );
-              return null;
-            });
-        }
-        return null;
-      });
-
-      const results = await Promise.all(imagePromises);
-      const updatedImageUrls = results.reduce((acc, result) => {
-        if (result && result.productId) {
-          acc[result.productId] = result.downloadUrl;
-        }
-        return acc;
-      }, {} as Record<string, string>);
-
-      setImageUrls((prev) => ({ ...prev, ...updatedImageUrls }));
-      setLoading(false); // Indica que las imágenes han sido cargadas
-    };
-
-    if (products.length > 0) {
-      fetchImages();
-    } else {
-      setLoading(false);
-    }
-  }, [products]);
+  const { imageUrls, loading } = useImageLoader(products);
 
   if (loading) {
     return <ProductTableLoading />;

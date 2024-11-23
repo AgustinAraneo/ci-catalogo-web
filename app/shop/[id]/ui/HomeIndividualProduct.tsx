@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 import type { Product } from "@/types/type";
+import { useImageLoader } from "@/hooks/useImageLoader";
 
 type HomeIndividualProductProps = {
   product: Product | null;
@@ -10,47 +11,13 @@ type HomeIndividualProductProps = {
 export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
-  const [loading, setLoading] = useState(true);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  // Pasar el producto completo (con id y imageUrl)
+  const { imageUrls, loading } = useImageLoader(
+    product ? [{ id: product.id, imageUrl: product.imageUrl }] : []
+  );
 
-  useEffect(() => {
-    const fetchImageFromGitHub = async () => {
-      if (product?.imageUrl) {
-        const GITHUB_REPO = "Nehros-admin/ci-catalog-photos";
-        const GITHUB_BRANCH = "main";
-        const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-  
-        const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${product.imageUrl}?ref=${GITHUB_BRANCH}`;
-  
-        try {
-          const response = await fetch(url, {
-            headers: {
-              Authorization: `Bearer ${GITHUB_TOKEN}`,
-            },
-          });
-  
-          if (response.ok) {
-            const data = await response.json();
-            setImageUrl(data.download_url); 
-          } else {
-            console.error(`Error fetching image from GitHub: ${product.imageUrl}`, response.status);
-            setImageUrl(null);
-          }
-        } catch (error) {
-          console.error("Error fetching image:", error);
-          setImageUrl(null); 
-        } finally {
-          setLoading(false); 
-        }
-      } else {
-        setImageUrl(null);
-        setLoading(false);
-      }
-    };
-  
-    fetchImageFromGitHub();
-  }, [product]);
-  
+  const imageUrl =
+    imageUrls[product?.id || ""] || "/assets/Productos/fallback-image.jpg";
 
   const handleBuy = () => {
     const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product?.title}"`;
@@ -110,7 +77,9 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           >
             {inStock ? "EN STOCK" : "SIN STOCK"}
           </p>
-          <p className="text-gray-500 pb-4 break-words">Código: {product?.id}</p>
+          <p className="text-gray-500 pb-4 break-words">
+            Código: {product?.id}
+          </p>
 
           <div className="flex items-center mb-4">
             {product?.discountPrice && (
@@ -140,7 +109,6 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           </div>
 
-          {/* Descripción (mostrar solo si no es vacío o null) */}
           {product?.description && product.description.trim() !== "" && (
             <div className="mb-6">
               <p className="font-bold mb-2">Descripción:</p>
