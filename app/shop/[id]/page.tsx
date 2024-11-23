@@ -73,21 +73,20 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
   return (
     <div>
       <Breadcrumb page="Productos" />
-      <div className="container mx-auto p-7 pb-20">
-        <HomeIndividualProduct product={product} />
-        <button
-          onClick={() => router.push("/admin")}
-          className="bg-black text-white p-2 rounded"
-        >
-          Volver
-        </button>
+      <div className="container mx-auto flex flex-col items-center p-7 pb-20">
+        <div className="w-full max-w-5xl">
+          <HomeIndividualProduct product={product} />
+        </div>     
+  
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          También puede interesarte:
+        </h2>
+  
+        <div className="w-full max-w-5xl">
+          <InstagramGallery />
+        </div>
       </div>
-      <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 pb-5">
-        También puede interesarte:
-      </h2>
-      <InstagramGallery />
-
-      {/* Diálogo de error */}
+  
       {error && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
@@ -99,7 +98,7 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
               <Button
                 onClick={() => {
                   setIsDialogOpen(false);
-                  router.push("/shop"); // Redirige a la página de productos
+                  router.push("/shop");
                 }}
                 className="bg-blue-500 text-white"
               >
@@ -111,6 +110,7 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
       )}
     </div>
   );
+  
 };
 
 export default IndividualItemView;
