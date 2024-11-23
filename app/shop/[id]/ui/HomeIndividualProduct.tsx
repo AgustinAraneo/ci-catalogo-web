@@ -13,8 +13,6 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
   const { imageUrls } = useImageLoader(
-  // Pasar el producto completo (con id y imageUrl)
-  const { imageUrls } = useImageLoader(
     product ? [{ id: product.id, imageUrl: product.imageUrl }] : []
   );
 
