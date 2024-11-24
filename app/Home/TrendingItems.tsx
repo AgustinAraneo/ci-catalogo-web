@@ -22,7 +22,7 @@ export const TrendingItems = () => {
   return (
     <div className="flex flex-col text-center">
       {/* Títulos */}
-      <h3 className="font-mrs-saint-delafield text-[50px] text-gold -mb-2">
+      <h3 className="font-mrs-saint-delafield text-[50px] text-gold pt-5 pb-2">
         Colecciones populares
       </h3>
       <h5 className="text-[54px] font-medium text-black-primary leading-[54px]">

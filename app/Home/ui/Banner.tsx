@@ -1,5 +1,5 @@
+import { Button } from "@/components/ui/Button/button";
 import Link from "next/link";
-import { Button } from "../../Button/button";
 
 export const Banner = () => {
   return (

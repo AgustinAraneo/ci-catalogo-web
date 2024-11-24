@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Carousel } from "../../Carousel/Carousel";
 import type { Product } from "@/types/type";
 import { filterList } from "@/app/src/data/data.categorys";
+import { Carousel } from "@/components/ui/Carousel/Carousel";
 
 export const TrendingProducts = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -74,7 +74,7 @@ export const TrendingProducts = () => {
       } catch (error) {
         console.error("Error al obtener los productos:", error);
       } finally {
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
 
@@ -90,8 +90,8 @@ export const TrendingProducts = () => {
 
   return (
     <section className="overflow-x-hidden pt-20 pb-16">
-      <div className="text-center mb-8 px-4">
-        <h2 className="font-mrs-saint-delafield text-4xl sm:text-5xl text-gold mb-4">
+      <div className="text-center pb-8 px-4">
+        <h2 className="font-mrs-saint-delafield text-6xl sm:text-6xl text-gold pb-5">
           Los más buscados
         </h2>
         <p className="max-w-xl mx-auto text-gray-600">
@@ -100,7 +100,7 @@ export const TrendingProducts = () => {
         </p>
       </div>
       <div className="px-4">
-        <ul className="flex justify-center mb-6 flex-wrap">
+        <ul className="flex justify-center pb-6 flex-wrap p-2">
           {filterList.map((item) => (
             <li key={item.value} className="mx-1 my-1">
               <button
@@ -122,7 +122,7 @@ export const TrendingProducts = () => {
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
                   key={index}
-                  className="w-full h-48 bg-gray-200 animate-pulse rounded"
+                  className="w-full h-48 bg-gray-200 animate-pulse rounded p-2"
                 ></div>
               ))}
             </div>
