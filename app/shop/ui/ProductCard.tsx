@@ -15,7 +15,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, imageUrl }) => {
           <img
             src={imageUrl}
             alt={product.title}
-            className="w-full h-[315px] object-cover rounded-md mb-4"
+            className="w-full h-[315px] object-cover rounded-md mb-4 transition-transform duration-300 transform hover:scale-105 hover:translate-x-1 hover:translate-y-1"
           />
         ) : (
           <p className="text-gray-500 italic mb-4">Sin imagen</p>

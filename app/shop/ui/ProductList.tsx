@@ -22,7 +22,7 @@ export const ProductList: React.FC<ProductListProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
-            className="border p-4 rounded shadow"
+            className="border p-4 rounded shadow-redcoach-lg"
           >
             <ProductCard
               key={product.id}

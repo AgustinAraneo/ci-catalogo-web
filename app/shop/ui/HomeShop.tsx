@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useImageLoader } from "@/hooks/useImageLoader";
 import type { ProductNeedId } from "@/types/type";
 import { Filters } from "./Filters";
@@ -87,13 +87,30 @@ export const HomeShop = () => {
     applyFilters();
   }, [products, selectedCategory, priceRange, searchQuery]);
 
+  const getCategoryCounts = (products: ProductNeedId[]) => {
+    const categoryCounts: Record<string, number> = {};
+    products.forEach((product) => {
+      if (Array.isArray(product.category)) {
+        product.category.forEach((cat) => {
+          categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        });
+      } else if (product.category) {
+        categoryCounts[product.category] =
+          (categoryCounts[product.category] || 0) + 1;
+      }
+    });
+    return categoryCounts;
+  };
+
+  const categoryCounts = useMemo(() => getCategoryCounts(products), [products]);
+
   if (loading || imagesLoading)
     return <div className="text-center py-10">Cargando productos...</div>;
   if (error)
     return <div className="text-center py-10 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="flex">
+    <div className="flex container mx-auto py-20 gap-8">
       <Filters
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
@@ -101,10 +118,10 @@ export const HomeShop = () => {
         setPriceRange={setPriceRange}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        priceLimits={priceLimits} // Pasamos los límites de precios calculados
+        priceLimits={priceLimits}
+        categoryCounts={categoryCounts}
       />
-      <main className="w-3/4 p-4">
-        <h1 className="text-3xl font-bold text-center mb-6">Productos</h1>
+      <main className="w-3/4">
         <ProductList products={filteredProducts} imageUrls={imageUrls} />
       </main>
     </div>
