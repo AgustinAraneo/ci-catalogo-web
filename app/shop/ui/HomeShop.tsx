@@ -13,8 +13,28 @@ export const HomeShop = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { imageUrls, loading: imagesLoading } = useImageLoader(products);
+
+  // Calcula el precio mínimo y máximo de los productos filtrados
+  const [priceLimits, setPriceLimits] = useState<[number, number]>([0, 10000]);
+
+  useEffect(() => {
+    const calculatePriceLimits = () => {
+      if (products.length > 0) {
+        const prices = products.map((product) => product.price);
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        setPriceLimits([minPrice, maxPrice]);
+
+        // Si el rango actual está fuera de los nuevos límites, lo ajustamos
+        setPriceRange([minPrice, maxPrice]);
+      }
+    };
+
+    calculatePriceLimits();
+  }, [products]); // Dependemos solo de `products`
 
   // Fetch products
   useEffect(() => {
@@ -39,25 +59,33 @@ export const HomeShop = () => {
     const applyFilters = () => {
       let result = products;
 
+      // Filtro por categoría
       if (selectedCategory) {
-        result = result.filter(
-          (product) =>
-            Array.isArray(product.category)
-              ? product.category.includes(selectedCategory) // Verifica si incluye la categoría seleccionada
-              : product.category === selectedCategory // Si no es un array, usa comparación directa
+        result = result.filter((product) =>
+          Array.isArray(product.category)
+            ? product.category.includes(selectedCategory)
+            : product.category === selectedCategory
         );
       }
 
+      // Filtro por rango de precios
       result = result.filter(
         (product) =>
           product.price >= priceRange[0] && product.price <= priceRange[1]
       );
 
+      // Filtro por búsqueda
+      if (searchQuery) {
+        result = result.filter((product) =>
+          product.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
       setFilteredProducts(result);
     };
 
     applyFilters();
-  }, [products, selectedCategory, priceRange]);
+  }, [products, selectedCategory, priceRange, searchQuery]);
 
   if (loading || imagesLoading)
     return <div className="text-center py-10">Cargando productos...</div>;
@@ -71,6 +99,9 @@ export const HomeShop = () => {
         setSelectedCategory={setSelectedCategory}
         priceRange={priceRange}
         setPriceRange={setPriceRange}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        priceLimits={priceLimits} // Pasamos los límites de precios calculados
       />
       <main className="w-3/4 p-4">
         <h1 className="text-3xl font-bold text-center mb-6">Productos</h1>
