@@ -32,9 +32,9 @@ export const Filters: FC<FiltersProps> = ({
   );
 
   return (
-    <div className="relative">
+    <div className="relative md:w-1/4">
       {/* DESKTOP */}
-      <aside className="hidden md:w-1/4 md:flex flex-col gap-10 font-lato">
+      <aside className="hidden md:flex flex-col gap-10 font-lato">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h3 className="font-semibold font-sans text-xl leading-6">
