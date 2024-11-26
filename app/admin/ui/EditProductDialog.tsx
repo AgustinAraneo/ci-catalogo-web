@@ -83,12 +83,10 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
       if (file) {
         setUploadProgress(0);
 
-        // Eliminar la imagen antigua si existe
         if (editedProduct.imageUrl) {
           await deleteOldImageFromGitHub(editedProduct.imageUrl);
         }
 
-        // Subir la nueva imagen
         const newImageUrl = await uploadImageToGitHub(file);
         editedProduct.imageUrl = newImageUrl;
         setUploadProgress(100);
@@ -107,172 +105,176 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     editedProduct.sizes.length > 0 &&
     isFileSizeValid;
 
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button className="flex justify-center w-full">
-          <FiEdit className="text-gold hover:text-gold/80 transition duration-150 h-4 w-4" />
-        </button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Editar Producto</DialogTitle>
-        </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Título */}
-          <div>
-            <Label htmlFor="title">Título</Label>
-            <Input
-              name="title"
-              placeholder="Nombre del producto"
-              value={editedProduct.title}
-              onChange={handleInputChange}
-            />
-          </div>
-          {/* Precio */}
-          <div>
-            <Label htmlFor="price">Precio</Label>
-            <Input
-              type="number"
-              name="price"
-              placeholder="Precio"
-              value={editedProduct.price}
-              onChange={handleInputChange}
-            />
-          </div>
-          {/* Descripción */}
-          <div className="md:col-span-2">
-            <Label htmlFor="description">Descripción</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={editedProduct.description || ""}
-              onChange={handleInputChange}
-              placeholder="Ejemplo: Camiseta deportiva color negro"
-            />
-          </div>
-          {/* Precio con Descuento */}
-          <div>
-            <Label htmlFor="discountPrice">Precio con Descuento</Label>
-            <Input
-              type="number"
-              name="discountPrice"
-              placeholder="Precio con descuento"
-              value={editedProduct.discountPrice || ""}
-              onChange={handleInputChange}
-            />
-          </div>
-          {/* Cantidad */}
-          <div>
-            <Label htmlFor="quantity">Cantidad</Label>
-            <Input
-              type="number"
-              name="quantity"
-              placeholder="Cantidad"
-              value={editedProduct.quantity ?? ""}
-              onChange={handleQuantityChange}
-            />
-          </div>
-          {/* Subir nueva imagen */}
-          <div className="md:col-span-2">
-            <Label htmlFor="image">Subir Nueva Imagen</Label>
-            <div className="flex items-center space-x-4 mt-2">
-              {/* Input de archivo oculto */}
-              <input
-                type="file"
-                id="image"
-                name="image"
-                onChange={handleFileChange}
-                className="hidden"
+return (
+  <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <DialogTrigger asChild>
+      <button className="flex justify-center w-full">
+        <FiEdit className="text-gold hover:text-gold/80 transition duration-150 h-4 w-4" />
+      </button>
+    </DialogTrigger>
+    <DialogContent className="max-h-screen overflow-y-auto max-w-xs sm:max-w-sm mx-auto">
+      <DialogHeader>
+        <DialogTitle>Editar Producto</DialogTitle>
+      </DialogHeader>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Título */}
+        <div>
+          <Label htmlFor="title">Título</Label>
+          <Input
+            name="title"
+            placeholder="Nombre del producto"
+            value={editedProduct.title}
+            onChange={handleInputChange}
+            className="w-full"
+          />
+        </div>
+        {/* Precio */}
+        <div>
+          <Label htmlFor="price">Precio</Label>
+          <Input
+            type="number"
+            name="price"
+            placeholder="Precio"
+            value={editedProduct.price}
+            onChange={handleInputChange}
+            className="w-full"
+          />
+        </div>
+        {/* Precio con Descuento */}
+        <div>
+          <Label htmlFor="discountPrice">Precio con Descuento</Label>
+          <Input
+            type="number"
+            name="discountPrice"
+            placeholder="Precio con descuento"
+            value={editedProduct.discountPrice || ""}
+            onChange={handleInputChange}
+            className="w-full"
+          />
+        </div>
+        {/* Cantidad */}
+        <div>
+          <Label htmlFor="quantity">Cantidad</Label>
+          <Input
+            type="number"
+            name="quantity"
+            placeholder="Cantidad"
+            value={editedProduct.quantity ?? ""}
+            onChange={handleQuantityChange}
+            className="w-full"
+          />
+        </div>
+        {/* Descripción */}
+        <div className="md:col-span-2">
+          <Label htmlFor="description">Descripción</Label>
+          <Textarea
+            id="description"
+            name="description"
+            value={editedProduct.description || ""}
+            onChange={handleInputChange}
+            placeholder="Ejemplo: Camiseta deportiva color negro"
+            className="w-full"
+          />
+        </div>
+        {/* Imagen */}
+        <div className="md:col-span-2">
+          <Label htmlFor="image">Imagen Actual</Label>
+          {editedProduct.imageUrl && (
+            <div className="flex justify-center mb-4">
+              <img
+                src={editedProduct.imageUrl}
+                alt="Producto actual"
+                className="max-h-32"
               />
-              {/* Botón estilizado con shadcn */}
-              <Button
-                variant="default"
-                onClick={() => document.getElementById("image")?.click()}
-              >
-                Subir Imagen
-              </Button>
-              {/* Texto dinámico del archivo */}
-              <span className="text-gray-600 text-sm">
-                {file ? file.name : "Ningún archivo seleccionado"}
-              </span>
             </div>
-            {uploadProgress > 0 && (
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
-                <div
-                  className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-            )}
-            {!isFileSizeValid && (
-              <p className="text-red-500 text-sm mt-2">
-                El archivo supera el tamaño máximo permitido de 25 MB.
-              </p>
-            )}
-          </div>
-
-          {/* Talles */}
-          <div className="md:col-span-2">
-            <Label>Talles</Label>
-            <div className="flex flex-wrap gap-4 mt-2">
-              {["S", "M", "L", "XL"].map((size) => (
-                <div key={size} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`size-${size}`}
-                    checked={editedProduct.sizes.includes(size)}
-                    onCheckedChange={(checked) =>
-                      handleSizeChange(size, checked === true)
-                    }
-                  />
-                  <Label htmlFor={`size-${size}`}>{size}</Label>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Categorías */}
-          <div className="md:col-span-2">
-            <Label>Categorías</Label>
-            <div className="flex flex-wrap gap-4 mt-2">
-              {[
-                "Remeras",
-                "Remerones",
-                "Calzas",
-                "Palazos",
-                "Blazers",
-                "Vestidos",
-                "Tops",
-              ].map((category) => (
-                <div key={category} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`category-${category}`}
-                    checked={editedProduct.category.includes(category)}
-                    onCheckedChange={(checked) =>
-                      handleCategoryChange(category, checked === true)
-                    }
-                  />
-                  <Label htmlFor={`category-${category}`}>{category}</Label>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Botones */}
-          <div className="md:col-span-2 flex justify-end space-x-4">
-            <Button className="bg-gray-300" onClick={() => setIsOpen(false)}>
-              Cancelar
-            </Button>
+          )}
+          <Label htmlFor="image">Subir Nueva Imagen</Label>
+          <div className="flex items-center space-x-4 mt-2">
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleFileChange}
+              className="hidden"
+            />
             <Button
-              onClick={handleSave}
-              disabled={!isFormValid}
-              className={`${
-                isFormValid ? "bg-blue-500 text-white" : "bg-gray-300"
-              }`}
+              variant="default"
+              onClick={() => document.getElementById("image")?.click()}
             >
-              Guardar Cambios
+              Subir Imagen
             </Button>
+            <span className="text-gray-600 text-sm">
+              {file ? file.name : "Ningún archivo seleccionado"}
+            </span>
+          </div>
+          {uploadProgress > 0 && (
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+          )}
+          {!isFileSizeValid && (
+            <p className="text-red-500 text-sm mt-2">
+              El archivo supera el tamaño máximo permitido de 25 MB.
+            </p>
+          )}
+        </div>
+        {/* Talles */}
+        <div className="md:col-span-2">
+          <Label>Talles</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {["S", "M", "L", "XL"].map((size) => (
+              <div key={size} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`size-${size}`}
+                  checked={editedProduct.sizes.includes(size)}
+                  onCheckedChange={(checked) =>
+                    handleSizeChange(size, checked === true)
+                  }
+                />
+                <Label htmlFor={`size-${size}`}>{size}</Label>
+              </div>
+            ))}
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
-  );
+        {/* Categorías */}
+        <div className="md:col-span-2">
+          <Label>Categorías</Label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {["Remeras", "Remerones", "Calzas"].map((category) => (
+              <div key={category} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`category-${category}`}
+                  checked={editedProduct.category.includes(category)}
+                  onCheckedChange={(checked) =>
+                    handleCategoryChange(category, checked === true)
+                  }
+                />
+                <Label htmlFor={`category-${category}`}>{category}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Botones */}
+        <div className="md:col-span-2 flex justify-end space-x-4">
+          <Button className="bg-gray-300" onClick={() => setIsOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={!isFormValid}
+            className={`${
+              isFormValid ? "bg-blue-500 text-white" : "bg-gray-300"
+            }`}
+          >
+            Guardar Cambios
+          </Button>
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
+);
+
 };
