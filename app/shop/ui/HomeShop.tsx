@@ -110,7 +110,7 @@ export const HomeShop = () => {
     return <div className="text-center py-10 text-red-500">Error: {error}</div>;
 
   return (
-    <div className="flex container mx-auto py-20 gap-8">
+    <div className="flex container 2xl:max-w-[1440px] mx-auto py-20 md:gap-10">
       <Filters
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
@@ -121,7 +121,7 @@ export const HomeShop = () => {
         priceLimits={priceLimits}
         categoryCounts={categoryCounts}
       />
-      <main className="w-3/4">
+      <main className="w-full px-6 md:px-0 md:w-3/4">
         <ProductList products={filteredProducts} imageUrls={imageUrls} />
       </main>
     </div>

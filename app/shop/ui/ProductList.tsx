@@ -13,7 +13,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   imageUrls,
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
       <AnimatePresence>
         {products.map((product) => (
           <motion.div
@@ -22,7 +22,7 @@ export const ProductList: React.FC<ProductListProps> = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
-            className="border p-4 rounded shadow-redcoach-lg"
+            className=""
           >
             <ProductCard
               key={product.id}
