@@ -2,10 +2,17 @@ import Link from "next/link";
 import type { SingleProductProps } from "@/types/type";
 
 export const SingleProduct = ({ product }: SingleProductProps) => {
+  const isOnSale = product.discountPrice && product.discountPrice < product.price;
+
   return (
     <Link href={`/shop/${product.id}`}>
       <div className="relative mx-4 cursor-pointer">
-        <div className="relative w-[220px] h-[320px] overflow-hidden mx-auto rounded-lg shadow-md">
+        <div className="relative w-[290px] h-[420px] overflow-hidden mx-auto rounded-lg shadow-md">
+          {isOnSale && (
+            <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded">
+              SALE
+            </div>
+          )}
           <img
             src={product.imageUrl}
             alt={product.title}
