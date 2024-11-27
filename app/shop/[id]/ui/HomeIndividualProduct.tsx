@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 import type { Product } from "@/types/type";
 import { useImageLoader } from "@/hooks/useImageLoader";
@@ -31,19 +31,50 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 
   const inStock = product && product.quantity && product.quantity > 0;
 
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseEnter = () => {
+    setIsZoomed(true);
+  };
+
+  type MouseEventHandler = React.MouseEvent<HTMLDivElement, MouseEvent>;
+
+  const handleMouseMove = (e: MouseEventHandler): void => {
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+    setZoomPosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+  };
+
   return (
     <div className="container mx-auto p-8 pt-10 flex flex-col items-center">
       <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 p-6">
-        <div className="relative w-full md:w-2/3">
+        <div
+          className="relative w-full md:w-2/3 h-auto overflow-hidden"
+          onMouseEnter={handleMouseEnter}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
           {product?.discountPrice && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded">
+            <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded font-lato">
               SALE
             </div>
           )}
           <img
             src={imageUrl || "/assets/Productos/fallback-image.jpg"}
             alt={product?.title}
-            className="w-full h-auto object-cover"
+            className={`w-full h-auto object-cover transition-transform duration-300 ${
+              isZoomed ? "scale-150" : "scale-100"
+            }`}
+            style={{
+              transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+            }}
           />
         </div>
 
@@ -125,28 +156,24 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           </div>
 
           <div className="flex justify-start mt-4 space-x-2">
-          <Button
-            variant="default"
-            className="bg-black text-white px-6 py-2 rounded-md text-sm hover:bg-yellow-500 hover:text-black transition-all"
-            onClick={handleBuy}
-          >
-            {inStock ? "Comprar" : "Consultar disponibilidad"}
-          </Button>
+            <Button
+              variant="default"
+              className="bg-black text-white px-6 py-2 rounded-md text-sm hover:bg-yellow-500 hover:text-black transition-all"
+              onClick={handleBuy}
+            >
+              {inStock ? "Comprar" : "Consultar disponibilidad"}
+            </Button>
 
-          <Button
-            variant="outline"
-            className="bg-white border border-black text-black hover:bg-gray-200 hover:text-black transition-all px-6 py-2 rounded"
-            onClick={() => router.push("/shop")}
-          >
-            Volver
-          </Button>
-        </div>
-
-
+            <Button
+              variant="outline"
+              className="bg-white border border-black text-black hover:bg-gray-200 hover:text-black transition-all px-6 py-2 rounded"
+              onClick={() => router.push("/shop")}
+            >
+              Volver
+            </Button>
+          </div>
         </div>
       </div>
-
-
     </div>
   );
 };
