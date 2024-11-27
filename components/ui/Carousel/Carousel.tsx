@@ -8,7 +8,7 @@ export const Carousel = ({ products }: { products: Product[] }) => {
   const [productsPerView, setProductsPerView] = useState(4);
   const totalProducts = products.length;
 
-  const itemWidth = 200;
+  const itemWidth = 295;
   const itemMargin = 16;
   const itemTotalWidth = itemWidth + itemMargin * 2;
 

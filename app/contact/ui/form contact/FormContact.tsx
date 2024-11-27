@@ -25,7 +25,7 @@ export const FormContact = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const { nombre, correo, mensaje } = formData;
-    const whatsappMessage = `Hola ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
+    const whatsappMessage = `Hola soy ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
     window.open(
       `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
       "_blank"

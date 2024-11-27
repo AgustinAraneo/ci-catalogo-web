@@ -2,73 +2,38 @@
 
 import React, { useEffect, useState } from "react";
 import type { Product } from "@/types/type";
-import { filterList } from "@/app/src/data/data.categorys";
 import { Carousel } from "@/components/ui/Carousel/Carousel";
 
 export const TrendingProducts = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [filterItem, setFilterItem] = useState("Remeras");
-  const [loading, setLoading] = useState(true); // Estado para el skeleton
+  const [categoriesWithProducts, setCategoriesWithProducts] = useState<
+    string[]
+  >([]);
+  const [filterItem, setFilterItem] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true); // Inicia la carga
+        setLoading(true);
         const response = await fetch("/api/v1/db/get-products");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        const uniqueCategories = new Set<string>();
+        data.forEach((product: Product) => {
+          product.category.forEach((cat: string) => uniqueCategories.add(cat));
+        });
 
-        const productsWithImages = await Promise.all(
-          data.map(async (product: Product) => {
-            if (product.imageUrl) {
-              try {
-                const imageResponse = await fetch(
-                  `https://api.github.com/repos/Nehros-admin/ci-catalog-photos/contents/${product.imageUrl}`,
-                  {
-                    method: "GET",
-                    headers: {
-                      Authorization: `Bearer ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-                      "Content-Type": "application/json",
-                    },
-                    cache: "no-store",
-                  }
-                );
+        setCategoriesWithProducts(Array.from(uniqueCategories));
+        setAllProducts(data);
+        const initialCategory = Array.from(uniqueCategories)[0] || "";
+        setFilterItem(initialCategory);
 
-                if (!imageResponse.ok) {
-                  throw new Error(
-                    `HTTP error! status: ${imageResponse.status}`
-                  );
-                }
-
-                const imageData = await imageResponse.json();
-                const downloadUrl = imageData.download_url;
-
-                if (downloadUrl) {
-                  product.imageUrl = downloadUrl;
-                } else {
-                  console.error(
-                    "No se encontró la URL de descarga para la imagen:",
-                    product.imageUrl
-                  );
-                }
-              } catch (error) {
-                console.error(
-                  "Error al obtener la imagen desde GitHub:",
-                  error
-                );
-              }
-            }
-            return product;
-          })
-        );
-
-        setAllProducts(productsWithImages);
-
-        const filteredProducts = productsWithImages.filter((product: Product) =>
-          product.category.includes(filterItem)
+        const filteredProducts = data.filter((product: Product) =>
+          product.category.includes(initialCategory)
         );
         setProducts(filteredProducts);
       } catch (error) {
@@ -101,17 +66,17 @@ export const TrendingProducts = () => {
       </div>
       <div className="px-4">
         <ul className="flex justify-center pb-6 flex-wrap p-2">
-          {filterList.map((item) => (
-            <li key={item.value} className="mx-1 my-1">
+          {categoriesWithProducts.map((category) => (
+            <li key={category} className="mx-1 my-1">
               <button
-                onClick={() => setFilterItem(item.value)}
+                onClick={() => setFilterItem(category)}
                 className={`px-4 py-2 border text-sm sm:text-base rounded ${
-                  item.value === filterItem
+                  category === filterItem
                     ? "bg-pink-600 text-white border-pink-600"
                     : "bg-gray-100 text-gray-700 border-gray-200"
                 } hover:opacity-80`}
               >
-                {item.name}
+                {category}
               </button>
             </li>
           ))}
