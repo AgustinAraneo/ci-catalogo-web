@@ -13,13 +13,13 @@ export const Banner = () => {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-tight sm:leading-snug mt-4">
               Estilo y Comodidad
             </h1>
-            <p className="max-w-full sm:max-w-md lg:max-w-[465px] text-base sm:text-lg lg:text-[20px] leading-relaxed sm:leading-normal mt-4 font-tenor-sans pl-2 lg:pl-3">
+            <p className="max-w-full sm:max-w-md lg:max-w-[465px] text-base sm:text-lg lg:text-[20px] leading-relaxed sm:leading-normal mt-4 font-tenor-sans pl-2 lg:pl-3 pb-4">
               Ropa pensada para vos, con telas que cuidan tu piel y diseños que
               acompañan tu día a día. Aprovechá nuestras ofertas y llevate lo
               mejor.
             </p>
             <Link href="/shop">
-              <Button className="text-white font-bold py-2 px-4 mt-4 rounded-xl bg-primary hover:bg-primary/90">
+              <Button className="text-white font-bold !py-2 h-full !px-8 text-lg font-lato rounded-[8px] bg-primary hover:bg-primary/90 transition-all">
                 Ver Productos
               </Button>
             </Link>
