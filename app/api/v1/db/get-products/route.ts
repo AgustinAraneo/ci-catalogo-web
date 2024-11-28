@@ -7,9 +7,13 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      orderBy: {
+        createdAt: "desc", 
+      },
+    });
 
-    if (products.length === 0) {
+    if (!products || products.length === 0) {
       return NextResponse.json(
         { message: "No hay productos disponibles." },
         { status: 404 }
@@ -19,14 +23,17 @@ export async function GET() {
     return NextResponse.json(products, {
       status: 200,
       headers: {
-        "Cache-Control": "no-store",
+        "Cache-Control": "no-store", 
       },
     });
   } catch (error) {
     console.error("Error al obtener productos:", error);
+
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect(); 
   }
 }

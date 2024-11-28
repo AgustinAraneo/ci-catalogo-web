@@ -21,29 +21,33 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(`/api/v1/db/products/${params.id}`);
-        if (res.ok) {
-          const data: Product = await res.json();
-          setProduct(data);
-          setError(null); // Limpia errores previos si la solicitud tiene éxito
-        } else {
-          setError("Producto no encontrado");
-          setIsDialogOpen(true); // Abre el diálogo si hay un error
-        }
-      } catch (error) {
-        console.error("Error al obtener el producto:", error);
-        setError("Error al cargar el producto");
-        setIsDialogOpen(true); // Abre el diálogo si hay un error
-      } finally {
-        setLoading(false);
+  // Función para cargar el producto
+  const fetchProduct = async () => {
+    setLoading(true);
+    setError(null); // Limpia el estado de error antes de intentar cargar
+    try {
+      const res = await fetch(`/api/v1/db/products/${params.id}`);
+      if (res.ok) {
+        const data: Product = await res.json();
+        setProduct(data);
+      } else {
+        setError("Producto no encontrado");
+        setIsDialogOpen(true); // Abre el diálogo si no se encuentra el producto
       }
-    };
+    } catch (err) {
+      console.error("Error al obtener el producto:", err);
+      setError("Error al cargar el producto");
+      setIsDialogOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProduct();
-  }, [params.id]);
+  useEffect(() => {
+    if (params.id) {
+      fetchProduct();
+    }
+  }, [params.id]); // Solo depende de `params.id`
 
   if (loading) {
     return (
@@ -76,17 +80,17 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
       <div className="container mx-auto flex flex-col items-center p-7 pb-20">
         <div className="w-full max-w-5xl">
           <HomeIndividualProduct product={product} />
-        </div>     
-  
+        </div>
+
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           También puede interesarte:
         </h2>
-  
+
         <div className="w-full max-w-5xl">
           <InstagramGallery />
         </div>
       </div>
-  
+
       {error && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
@@ -98,7 +102,7 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
               <Button
                 onClick={() => {
                   setIsDialogOpen(false);
-                  router.push("/shop");
+                  router.push("/shop"); // Redirige al usuario si hay error
                 }}
                 className="bg-blue-500 text-white"
               >
@@ -110,7 +114,6 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
       )}
     </div>
   );
-  
 };
 
 export default IndividualItemView;

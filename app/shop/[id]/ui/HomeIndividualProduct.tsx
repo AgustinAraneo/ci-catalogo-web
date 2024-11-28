@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 import type { Product } from "@/types/type";
-import { useImageLoader } from "@/hooks/useImageLoader";
 import { Button } from "@/components/ui/Button/button";
 import { useRouter } from "next/navigation";
 
@@ -12,35 +11,32 @@ type HomeIndividualProductProps = {
 export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
-  const { imageUrls } = useImageLoader(
-    product ? [{ id: product.id, imageUrl: product.imageUrl }] : []
-  );
-
-  const imageUrl =
-    imageUrls[product?.id || ""] || "/assets/Productos/fallback-image.jpg";
-
   const router = useRouter();
 
+  const imageUrl =
+    product?.imageUrl || "/assets/Productos/fallback-image.jpg";
+
   const handleBuy = () => {
-    const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product?.title}"`;
-    window.open(
-      `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
-      "_blank"
-    );
+    if (product) {
+      const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product.title}"`;
+      window.open(
+        `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
+        "_blank"
+      );
+    }
   };
 
-  const inStock = product && product.quantity && product.quantity > 0;
+  const inStock = product?.quantity && product.quantity > 0;
 
+  // Image zoom state
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseEnter = () => {
-    setIsZoomed(true);
-  };
+  const handleMouseEnter = () => setIsZoomed(true);
 
-  type MouseEventHandler = React.MouseEvent<HTMLDivElement, MouseEvent>;
-
-  const handleMouseMove = (e: MouseEventHandler): void => {
+  const handleMouseMove = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
     const { left, top, width, height } =
       e.currentTarget.getBoundingClientRect();
     const x = ((e.pageX - left) / width) * 100;
@@ -48,9 +44,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
     setZoomPosition({ x, y });
   };
 
-  const handleMouseLeave = () => {
-    setIsZoomed(false);
-  };
+  const handleMouseLeave = () => setIsZoomed(false);
 
   return (
     <div className="container mx-auto p-8 pt-10 flex flex-col items-center">
@@ -67,8 +61,8 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           )}
           <img
-            src={imageUrl || "/assets/Productos/fallback-image.jpg"}
-            alt={product?.title}
+            src={imageUrl}
+            alt={product?.title || "Producto"}
             className={`w-full h-auto object-cover transition-transform duration-300 ${
               isZoomed ? "scale-150" : "scale-100"
             }`}
@@ -94,13 +88,13 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           <div className="flex items-center mb-4">
             {product?.discountPrice && (
               <p className="line-through text-gray-400 mr-2">
-                ${product?.price.toFixed(2)}
+                ${product.price.toFixed(2)}
               </p>
             )}
             <p className="text-2xl font-bold text-black">
               $
               {product?.discountPrice
-                ? product?.discountPrice.toFixed(2)
+                ? product.discountPrice.toFixed(2)
                 : product?.price.toFixed(2)}
             </p>
           </div>
@@ -119,13 +113,14 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           </div>
 
-          {product?.description && product.description.trim() !== "" && (
+          {product?.description && (
             <div className="mb-6">
               <p className="font-bold mb-2">Descripción:</p>
               <p className="text-gray-700">{product.description}</p>
             </div>
           )}
 
+          {/* Social Media Links */}
           <div className="mb-6 flex items-center space-x-4">
             <p className="font-bold">Síguenos en nuestras redes:</p>
             <div className="flex space-x-2">

@@ -58,16 +58,11 @@ export async function POST(req: NextRequest) {
     console.log("Sizes procesados:", sizesArray);
     console.log("Categorías procesadas:", categoryArray);
 
-    // Manejar la carga del archivo
-    // Manejar la carga del archivo
-    // Reemplaza esta parte del bloque try-catch dentro de la lógica de manejo del archivo:
 
-    // Manejar la carga del archivo
     let imageUrl = "";
     if (file) {
       console.log("Procesando archivo para subir a Cloudflare R2...");
 
-      // Sanitizar el nombre del archivo
       const sanitizedFilename = file.filename
         .toLowerCase()
         .replace(/\s+/g, "_")
@@ -95,13 +90,11 @@ export async function POST(req: NextRequest) {
       const command = new PutObjectCommand(uploadParams);
       await s3Client.send(command);
 
-      // Generar la URL utilizando tu dominio personalizado
       const encodedFileKey = encodeURIComponent(fileKey);
       imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
       console.log("Archivo subido exitosamente:", imageUrl);
     }
 
-    // Guardar el producto en la base de datos
     console.log("Guardando producto en la base de datos...");
     const newProduct = await prisma.product.create({
       data: {
@@ -129,7 +122,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Definir interfaces para los campos y archivos
 interface FormFields {
   title?: string;
   description?: string;
@@ -152,7 +144,6 @@ interface FormFiles {
   [key: string]: FormFile;
 }
 
-// Función para parsear el formulario usando Busboy
 async function parseFormData(
   req: NextRequest
 ): Promise<{ fields: FormFields; files: FormFiles }> {
@@ -193,7 +184,6 @@ async function parseFormData(
     );
 
     busboy.on("field", (fieldname: string, val: string) => {
-      // Manejar campos que pueden ser arrays
       if (fields[fieldname]) {
         if (Array.isArray(fields[fieldname])) {
           (fields[fieldname] as string[]).push(val);
@@ -213,7 +203,6 @@ async function parseFormData(
       reject(err);
     });
 
-    // Convertir el cuerpo de la solicitud a un Node.js Stream
     const reader = req.body?.getReader();
 
     const stream = new Readable({

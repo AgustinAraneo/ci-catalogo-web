@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { fetchImageUrls } from "@/app/src/utils/gitHubActions";
 
 export const useImageLoader = (
   products: { id?: string; imageUrl?: string }[]
@@ -18,16 +17,21 @@ export const useImageLoader = (
       return;
     }
 
-    const fetchImages = async () => {
+    const loadImages = () => {
       setLoading(true);
-      const urls = await fetchImageUrls(
-        validProducts.map(({ id, imageUrl }) => ({ id: id!, imageUrl }))
-      );
-      setImageUrls((prev) => ({ ...prev, ...urls }));
+
+      const urls = validProducts.reduce<Record<string, string>>((acc, product) => {
+        if (product.id && product.imageUrl) {
+          acc[product.id] = product.imageUrl;
+        }
+        return acc;
+      }, {});
+
+      setImageUrls(urls);
       setLoading(false);
     };
 
-    fetchImages();
+    loadImages();
   }, [products]);
 
   return { imageUrls, loading };

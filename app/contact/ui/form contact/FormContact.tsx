@@ -15,16 +15,36 @@ export const FormContact = () => {
     mensaje: "",
   });
 
+  const [error, setError] = useState<string>("");
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Limpia el error si el usuario empieza a escribir
+    if (error) {
+      setError("");
+    }
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const { nombre, correo, mensaje } = formData;
+
+    // Validar campos
+    if (!nombre || !correo || !mensaje) {
+      setError("Por favor, complete todos los campos.");
+      return;
+    }
+
+    if (mensaje.length < 10) {
+      setError("El mensaje debe tener al menos 10 caracteres.");
+      return;
+    }
+
+    // Enviar mensaje a WhatsApp
     const whatsappMessage = `Hola soy ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
     window.open(
       `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
@@ -45,7 +65,7 @@ export const FormContact = () => {
       <div className="w-full md:w-1/2 bg-white p-6 md:p-12 flex items-center justify-center flex-col">
         <div className="flex flex-col gap-2 pb-6">
           <h2 className="text-4xl md:text-6xl font-bold text-gold text-center">
-            Contactanos
+            Contáctanos
           </h2>
           <h6 className="text-center font-lato mx-auto text-sm md:text-base">
             Llená el formulario y enviá tu mensaje por WhatsApp, te
@@ -53,6 +73,9 @@ export const FormContact = () => {
           </h6>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
+          {error && (
+            <div className="text-red-500 text-sm mb-4">{error}</div>
+          )}
           <input
             type="text"
             name="nombre"
