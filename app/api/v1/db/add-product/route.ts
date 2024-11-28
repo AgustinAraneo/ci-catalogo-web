@@ -60,6 +60,9 @@ export async function POST(req: NextRequest) {
 
     // Manejar la carga del archivo
     // Manejar la carga del archivo
+    // Reemplaza esta parte del bloque try-catch dentro de la lógica de manejo del archivo:
+
+    // Manejar la carga del archivo
     let imageUrl = "";
     if (file) {
       console.log("Procesando archivo para subir a Cloudflare R2...");
@@ -92,9 +95,9 @@ export async function POST(req: NextRequest) {
       const command = new PutObjectCommand(uploadParams);
       await s3Client.send(command);
 
-      // Codificar el fileKey al construir la URL
+      // Generar la URL utilizando tu dominio personalizado
       const encodedFileKey = encodeURIComponent(fileKey);
-      imageUrl = `https://${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
+      imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
       console.log("Archivo subido exitosamente:", imageUrl);
     }
 
