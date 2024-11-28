@@ -27,26 +27,12 @@ export const HomeAdmin = () => {
     router.push("/login");
   };
 
-  const handleAddProduct = async (newProduct: Product) => {
-    const res = await fetch("/api/v1/db/add-product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newProduct),
+  const handleAddProduct = (addedProduct: Product) => {
+    setProducts((prevProducts) => [...prevProducts, addedProduct]);
+    toast.success("Producto agregado con éxito", {
+      duration: 3000,
+      position: "top-center",
     });
-
-    if (res.ok) {
-      const addedProduct = await res.json();
-      setProducts((prevProducts) => [...prevProducts, addedProduct]);
-      toast.success("Producto agregado con éxito", {
-        duration: 3000,
-        position: "top-center",
-      });
-    } else {
-      toast.error("Error al agregar el producto", {
-        duration: 3000,
-        position: "top-center",
-      });
-    }
   };
 
   const handleUpdateProduct = async (updatedProduct: Product) => {
