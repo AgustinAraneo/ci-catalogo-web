@@ -32,6 +32,20 @@ const LoginPage = () => {
     }
   };
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    if (error) {
+      setError(""); // Limpia el mensaje de error si existe
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (error) {
+      setError(""); // Limpia el mensaje de error si existe
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-pink-300 to-white">
       <div className="p-8 bg-white shadow-lg rounded-lg max-w-sm w-full">
@@ -45,7 +59,7 @@ const LoginPage = () => {
           type="text"
           placeholder="Usuario"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={handleUsernameChange}
           onKeyPress={handleKeyPress}
           className="border border-gray-300 p-3 mb-4 w-full rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
@@ -53,7 +67,7 @@ const LoginPage = () => {
           type="password"
           placeholder="Contraseña"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={handlePasswordChange}
           onKeyPress={handleKeyPress}
           className="border border-gray-300 p-3 mb-6 w-full rounded focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
