@@ -5,6 +5,8 @@ import "./styles/global.scss";
 import { Footer } from "@/components/ui/Footer/Footer";
 import { Toaster } from "sonner";
 import { HeaderContainer } from "@/components/ui/Header/HeaderContainer";
+import "../lib/fontAwesome";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 
 const lato = Lato({
   weight: ["100", "300", "400", "700", "900"],
