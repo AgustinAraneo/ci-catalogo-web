@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import type { Product } from "@/types/type";
 import { Carousel } from "@/components/ui/Carousel/Carousel";
+import { useProducts } from "@/hooks/useProducts";
 
 export const TrendingProducts = () => {
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const { products: allProducts } = useProducts();
   const [products, setProducts] = useState<Product[]>([]);
   const [categoriesWithProducts, setCategoriesWithProducts] = useState<
     string[]
@@ -14,43 +15,31 @@ export const TrendingProducts = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/v1/db/get-products");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        const uniqueCategories = new Set<string>();
-        data.forEach((product: Product) => {
-          product.category.forEach((cat: string) => uniqueCategories.add(cat));
-        });
+    if (allProducts.length > 0) {
+      const uniqueCategories = new Set<string>();
+      allProducts.forEach((product: Product) => {
+        product.category.forEach((cat: string) => uniqueCategories.add(cat));
+      });
 
-        setCategoriesWithProducts(Array.from(uniqueCategories));
-        setAllProducts(data);
-        const initialCategory = Array.from(uniqueCategories)[0] || "";
-        setFilterItem(initialCategory);
+      setCategoriesWithProducts(Array.from(uniqueCategories));
+      const initialCategory = Array.from(uniqueCategories)[0] || "";
+      setFilterItem(initialCategory);
 
-        const filteredProducts = data.filter((product: Product) =>
-          product.category.includes(initialCategory)
-        );
-        setProducts(filteredProducts);
-      } catch (error) {
-        console.error("Error al obtener los productos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+      const filteredProducts = allProducts.filter((product: Product) =>
+        product.category.includes(initialCategory)
+      );
+      setProducts(filteredProducts);
+      setLoading(false);
+    }
+  }, [allProducts]);
 
   useEffect(() => {
-    const filteredProducts = allProducts.filter((product: Product) =>
-      product.category.includes(filterItem)
-    );
-    setProducts(filteredProducts);
+    if (allProducts.length > 0) {
+      const filteredProducts = allProducts.filter((product: Product) =>
+        product.category.includes(filterItem)
+      );
+      setProducts(filteredProducts);
+    }
   }, [filterItem, allProducts]);
 
   return (
