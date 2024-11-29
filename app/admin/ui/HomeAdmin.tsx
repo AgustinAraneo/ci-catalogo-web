@@ -37,61 +37,67 @@ export const HomeAdmin = () => {
 
   const handleUpdateProduct = async (updatedProduct: Product, file?: File) => {
     try {
-      // Verifica que el ID sea válido
       if (!updatedProduct.id) {
-        toast.error("El producto no tiene un ID válido.");
+        toast.error("El producto no tiene un ID válido.", {
+          duration: 3000,
+          position: "top-center",
+        });
         return;
       }
-  
-      // Crear el FormData con validaciones
+
       const formData = new FormData();
       if (updatedProduct.title) formData.append("title", updatedProduct.title);
-      if (updatedProduct.price) formData.append("price", String(updatedProduct.price));
-      if (updatedProduct.quantity !== null && updatedProduct.quantity !== undefined) {
+      if (updatedProduct.price)
+        formData.append("price", String(updatedProduct.price));
+      if (
+        updatedProduct.quantity !== null &&
+        updatedProduct.quantity !== undefined
+      ) {
         formData.append("quantity", String(updatedProduct.quantity));
       }
-      if (updatedProduct.sizes) formData.append("sizes", JSON.stringify(updatedProduct.sizes));
-      if (updatedProduct.category) formData.append("category", JSON.stringify(updatedProduct.category));
-      if (updatedProduct.description) formData.append("description", updatedProduct.description);
+      if (updatedProduct.sizes)
+        formData.append("sizes", JSON.stringify(updatedProduct.sizes));
+      if (updatedProduct.category)
+        formData.append("category", JSON.stringify(updatedProduct.category));
+      if (updatedProduct.description)
+        formData.append("description", updatedProduct.description);
       if (
         updatedProduct.discountPrice !== null &&
         updatedProduct.discountPrice !== undefined
       ) {
         formData.append("discountPrice", String(updatedProduct.discountPrice));
       }
-  
-      // Adjuntar imagen si existe
       if (file) {
         formData.append("image", file);
       }
-  
-      // Realizar la solicitud PUT
+
       const res = await fetch(`/api/v1/db/products/${updatedProduct.id}`, {
         method: "PUT",
         body: formData,
       });
-  
-      // Manejo de la respuesta
+
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Error desconocido al actualizar el producto.");
+        const errorData = await res.json().catch(() => null);
+        throw new Error(
+          (errorData && errorData.error) ||
+            "Error desconocido al actualizar el producto."
+        );
       }
-  
-      // Actualizar el producto en el estado local
-      const productFromServer = await res.json();
+
+      const responseData = await res.json();
+      const productFromServer = responseData.updatedProduct || responseData;
+
       setProducts((prevProducts) =>
         prevProducts.map((p) =>
           p.id === updatedProduct.id ? productFromServer : p
         )
       );
-  
-      // Mostrar mensaje de éxito
+
       toast.success("Producto actualizado con éxito", {
         duration: 3000,
         position: "top-center",
       });
     } catch (error) {
-      // Manejo de errores con tipado seguro
       if (error instanceof Error) {
         console.error("Error al actualizar el producto:", error.message);
         toast.error(error.message, {
@@ -107,12 +113,14 @@ export const HomeAdmin = () => {
       }
     }
   };
-  
 
   const handleDeleteProduct = async (productId: string | undefined) => {
     if (!productId) {
-      toast.error("Producto no encontrado");
-      return;
+      toast.error("Producto no encontrado", {
+        duration: 3000,
+        position: "top-center",
+      });
+      throw new Error("Producto no encontrado");
     }
 
     const res = await fetch(`/api/v1/db/products/${productId}`, {
@@ -128,10 +136,15 @@ export const HomeAdmin = () => {
         position: "top-center",
       });
     } else {
-      toast.error("Error al eliminar el producto", {
+      const errorData = await res.json().catch(() => null);
+      const errorMessage =
+        (errorData && errorData.error) ||
+        "Error desconocido al eliminar el producto.";
+      toast.error(errorMessage, {
         duration: 3000,
         position: "top-center",
       });
+      throw new Error(errorMessage);
     }
   };
 

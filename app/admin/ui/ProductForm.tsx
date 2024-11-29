@@ -274,22 +274,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
             </div>
             {/* Categorías */}
             <div className="md:col-span-2">
-            <Label>Categorías</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {filterList.map((category) => (
-                <div key={category.value} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`category-${category.value}`}
-                    checked={newProduct.category.includes(category.value)}
-                    onCheckedChange={(checked) =>
-                      handleCategoryChange(category.value, checked === true)
-                    }
-                  />
-                  <Label htmlFor={`category-${category.value}`}>{category.name}</Label>
-                </div>
-              ))}
+              <Label>Categorías</Label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {filterList.map((category) => (
+                  <div
+                    key={category.value}
+                    className="flex items-center space-x-2"
+                  >
+                    <Checkbox
+                      id={`category-${category.value}`}
+                      checked={newProduct.category.includes(category.value)}
+                      onCheckedChange={(checked) =>
+                        handleCategoryChange(category.value, checked === true)
+                      }
+                    />
+                    <Label htmlFor={`category-${category.value}`}>
+                      {category.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
             {/* Botón */}
             <div className="md:col-span-2">
               <Button

@@ -15,25 +15,18 @@ export const DeleteProductDialog: React.FC<DeleteProductDialogProps> = ({
   onDeleteProduct,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/db/products/${product.id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Error al eliminar el producto: ${response.statusText}`
-        );
-      }
-
-      onDeleteProduct(product.id);
-
+      await onDeleteProduct(product.id);
       setIsOpen(false);
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
       alert("Ocurrió un error al eliminar el producto. Intenta nuevamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,12 +45,14 @@ export const DeleteProductDialog: React.FC<DeleteProductDialogProps> = ({
           <Button
             onClick={handleDelete}
             className="bg-red-500 text-white hover:bg-red-600"
+            disabled={isLoading}
           >
-            Eliminar
+            {isLoading ? "Eliminando..." : "Eliminar"}
           </Button>
           <Button
             onClick={() => setIsOpen(false)}
             className="hover:bg-gray-200"
+            disabled={isLoading}
           >
             Cancelar
           </Button>
