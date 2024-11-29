@@ -71,7 +71,7 @@ export default function HeaderMobile() {
             <MotionConfig
               transition={{
                 type: "spring",
-                bounce: 0.1,
+                bounce: 0.05,
               }}
             >
               <motion.div
@@ -81,18 +81,18 @@ export default function HeaderMobile() {
                     x: "-100%",
                     transition: {
                       type: "spring",
-                      bounce: 0.1,
+                      bounce: 0.05,
                       when: "afterChildren",
-                      staggerChildren: 0.25,
+                      staggerChildren: 0.01,
                     },
                   },
                   show: {
                     x: "0%",
                     transition: {
                       type: "spring",
-                      bounce: 0.1,
+                      bounce: 0.05,
                       when: "beforeChildren",
-                      staggerChildren: 0.25,
+                      staggerChildren: 0.01,
                     },
                   },
                 }}
