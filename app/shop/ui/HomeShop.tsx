@@ -100,14 +100,24 @@ export const HomeShop = () => {
 
   if (loading || imagesLoading)
     return (
-      <div className="py-20 flex container mx-auto 2xl:max-w-[1440px]">
-        <div className="w-full flex gap-10 ">
-          <Skeleton className="h-[550px] w-[371px]" />
-
-          <div className="grid md:grid-cols-3 gap-10 md:w-3/4">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <Skeleton key={i} className="h-[315px] w-[323px]" />
+      <div>
+        <div className="block md:hidden relative">
+          <div className="w-full px-6 flex flex-col gap-10 py-20 ">
+            <Skeleton className="h-[32px] w-[32px] rounded-full absolute top-10 left-6" />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-[315px] w-full" />
             ))}
+          </div>
+        </div>
+        <div className="hidden py-20 md:flex container mx-auto 2xl:max-w-[1440px]">
+          <div className="w-full flex gap-10 ">
+            <Skeleton className="h-[550px] w-[371px]" />
+
+            <div className="grid md:grid-cols-3 gap-10 md:w-3/4">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <Skeleton key={i} className="h-[315px] w-[323px]" />
+              ))}
+            </div>
           </div>
         </div>
       </div>

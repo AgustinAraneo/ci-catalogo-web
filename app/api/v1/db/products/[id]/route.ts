@@ -11,7 +11,6 @@ import Busboy from "busboy";
 import { Readable } from "stream";
 import type { ProductRequestBody } from "@/types/type";
 
-
 const prisma = new PrismaClient();
 
 const s3Client = new S3Client({
@@ -245,7 +244,9 @@ export async function PUT(
     }
 
     if (fields.price) {
-      const priceValue = Array.isArray(fields.price) ? fields.price[0] : fields.price;
+      const priceValue = Array.isArray(fields.price)
+        ? fields.price[0]
+        : fields.price;
       const parsedPrice = parseFloat(priceValue);
       if (isNaN(parsedPrice)) {
         throw new Error("El precio no es válido");
@@ -274,7 +275,9 @@ export async function PUT(
     }
 
     if (fields.sizes) {
-      const sizesValue = Array.isArray(fields.sizes) ? fields.sizes[0] : fields.sizes;
+      const sizesValue = Array.isArray(fields.sizes)
+        ? fields.sizes[0]
+        : fields.sizes;
       try {
         data.sizes = JSON.parse(sizesValue);
         if (!Array.isArray(data.sizes)) {
@@ -307,7 +310,9 @@ export async function PUT(
 
     if (files.image) {
       try {
-        const existingProduct = await prisma.product.findUnique({ where: { id } });
+        const existingProduct = await prisma.product.findUnique({
+          where: { id },
+        });
 
         if (existingProduct?.imageUrl) {
           const imageKey = existingProduct.imageUrl.split("/").pop();

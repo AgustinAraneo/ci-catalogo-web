@@ -21,7 +21,7 @@ export const Discount = () => {
               país.
             </p>
           </div>
-          <Link href="/shop">
+          <Link href="/contact">
             <Button className="text-white font-bold !py-2 h-full !px-8 text-lg font-lato rounded-[8px] bg-primary hover:bg-primary/90 transition-all">
               Contactanos
             </Button>
