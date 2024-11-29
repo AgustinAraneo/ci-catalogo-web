@@ -19,11 +19,7 @@ import { useProducts } from "@/hooks/useProducts";
 
 const IndividualItemView = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const {
-    products: allProducts,
-    loading: productsLoading,
-    error: productsError,
-  } = useProducts();
+  const { products: allProducts, loading: productsLoading } = useProducts();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
