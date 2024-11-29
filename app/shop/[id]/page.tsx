@@ -133,13 +133,6 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
           )}
         </div>
 
-        <h2 className="text-2xl font-bold text-center pb-6 text-gray-800">
-          También puede interesarte:
-        </h2>
-
-        <div className="w-full max-w-6xl">
-          <InstagramGallery />
-        </div>
       </div>
 
       {error && (
@@ -163,7 +156,9 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
           </DialogContent>
         </Dialog>
       )}
+      <InstagramGallery />
     </div>
+    
   );
 };
 
