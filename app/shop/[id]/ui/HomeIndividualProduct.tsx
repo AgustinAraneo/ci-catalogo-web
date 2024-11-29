@@ -168,7 +168,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             >
               <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-500 to-yellow-500 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
               <span className="relative z-10">
-                {inStock ? "Comprar" : "Consultar disponibilidad"}
+                {inStock ? "Comprar" : "Consultar"}
               </span>
             </Button>
 
