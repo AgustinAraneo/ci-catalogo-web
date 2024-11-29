@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/Dialog/dialog";
 import { Button } from "@/components/ui/Button/button";
+import { Skeleton } from "@/components/ui/Skeleton/skeleton"; // Importamos el componente Skeleton
 import { useProducts } from "@/hooks/useProducts";
 
 const IndividualItemView = ({ params }: { params: { id: string } }) => {
@@ -93,18 +94,19 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
         <Breadcrumb page="Productos" />
         <div className="min-h-screen container mx-auto p-8 mt-10">
           <div className="flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8">
-            <div className="w-full md:w-1/3 bg-gray-300 h-64 rounded animate-pulse"></div>
+            {/* Componente Skeleton */}
+            <Skeleton className="w-full md:w-1/3 h-64" />
             <div className="w-full md:w-1/2 space-y-4">
-              <div className="h-8 bg-gray-300 rounded w-3/4 animate-pulse"></div>
-              <div className="h-6 bg-gray-300 rounded w-1/4 animate-pulse"></div>
-              <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse"></div>
-              <div className="h-6 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-6 w-1/3" />
               <div className="flex space-x-2">
-                <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
-                <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
-                <div className="h-8 bg-gray-300 rounded w-12 animate-pulse"></div>
+                <Skeleton className="h-8 w-12" />
+                <Skeleton className="h-8 w-12" />
+                <Skeleton className="h-8 w-12" />
               </div>
-              <div className="h-12 bg-gray-300 rounded w-full animate-pulse"></div>
+              <Skeleton className="h-12 w-full" />
             </div>
           </div>
         </div>
@@ -132,7 +134,6 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
             </p>
           )}
         </div>
-
       </div>
 
       {error && (
@@ -158,7 +159,6 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
       )}
       <InstagramGallery />
     </div>
-    
   );
 };
 
