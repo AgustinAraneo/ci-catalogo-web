@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/type";
 import { HomeIndividualProduct } from "./ui/HomeIndividualProduct";
 import { Breadcrumb } from "@/components/ui/Breadcrum/Breadcrumb";
+import { Carousel } from "@/components/ui/Carousel/Carousel";
 import { InstagramGallery } from "@/app/contact/ui/carrousel contact/CarrouselContact";
 import {
   Dialog,
@@ -13,18 +15,23 @@ import {
   DialogFooter,
 } from "@/components/ui/Dialog/dialog";
 import { Button } from "@/components/ui/Button/button";
+import { useProducts } from "@/hooks/useProducts";
 
 const IndividualItemView = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
+  const {
+    products: allProducts,
+    loading: productsLoading,
+    error: productsError,
+  } = useProducts();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  // Función para cargar el producto
   const fetchProduct = async () => {
     setLoading(true);
-    setError(null); // Limpia el estado de error antes de intentar cargar
+    setError(null);
     try {
       const res = await fetch(`/api/v1/db/products/${params.id}`);
       if (res.ok) {
@@ -32,7 +39,7 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
         setProduct(data);
       } else {
         setError("Producto no encontrado");
-        setIsDialogOpen(true); // Abre el diálogo si no se encuentra el producto
+        setIsDialogOpen(true);
       }
     } catch (err) {
       console.error("Error al obtener el producto:", err);
@@ -47,9 +54,44 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
     if (params.id) {
       fetchProduct();
     }
-  }, [params.id]); // Solo depende de `params.id`
+  }, [params.id]);
 
-  if (loading) {
+  const getRelatedProducts = (
+    products: Product[],
+    currentProduct: Product | null
+  ) => {
+    if (!currentProduct || !currentProduct.category) return [];
+    return products.filter(
+      (p) =>
+        p.id !== currentProduct.id &&
+        p.category.some((cat) => currentProduct.category.includes(cat))
+    );
+  };
+
+  const getRandomProducts = (
+    products: Product[],
+    excludedProducts: Product[],
+    count: number
+  ) => {
+    const availableProducts = products.filter(
+      (p) => !excludedProducts.some((ep) => ep.id === p.id)
+    );
+    const shuffled = [...availableProducts].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  const relatedProducts = getRelatedProducts(allProducts, product);
+
+  const displayProducts = [
+    ...relatedProducts,
+    ...getRandomProducts(
+      allProducts,
+      relatedProducts,
+      Math.max(0, 3 - relatedProducts.length)
+    ),
+  ].slice(0, 3);
+
+  if (loading || productsLoading) {
     return (
       <div>
         <Breadcrumb page="Productos" />
@@ -82,6 +124,19 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
           <HomeIndividualProduct product={product} />
         </div>
 
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 pt-12">
+          Productos relacionados
+        </h2>
+        <div className="w-full max-w-5xl pb-12">
+          {displayProducts.length > 0 ? (
+            <Carousel products={displayProducts} />
+          ) : (
+            <p className="text-gray-500 text-center">
+              No hay productos disponibles en este momento.
+            </p>
+          )}
+        </div>
+
         <h2 className="text-2xl font-bold text-center pb-6 text-gray-800">
           También puede interesarte:
         </h2>
@@ -102,7 +157,7 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
               <Button
                 onClick={() => {
                   setIsDialogOpen(false);
-                  router.push("/shop"); // Redirige al usuario si hay error
+                  router.push("/shop");
                 }}
                 className="bg-blue-500 text-white"
               >
