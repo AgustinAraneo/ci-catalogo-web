@@ -38,21 +38,19 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      if (filteredProducts.length < 3) {
+      const placeholdersNeeded = 4 - filteredProducts.length;
+
+      if (placeholdersNeeded > 0) {
         const placeholders = Array.from(
-          { length: 4 - filteredProducts.length },
-          (_, index) => {
-            const randomProduct =
-              filteredProducts[index % filteredProducts.length];
-            return {
-              ...randomProduct,
-              id: `placeholder-${index}`,
-              title: "PRÓXIMAMENTE",
-              description: "Nuevos productos en camino",
-              price: 0,
-              discountPrice: 0,
-            };
-          }
+          { length: placeholdersNeeded },
+          (_, index) => ({
+            ...filteredProducts[index % filteredProducts.length],
+            id: `placeholder-${index}`,
+            title: "PRÓXIMAMENTE",
+            description: "Nuevos productos en camino",
+            price: 0,
+            discountPrice: 0,
+          })
         );
         setProducts([...filteredProducts, ...placeholders]);
       } else {
@@ -69,9 +67,9 @@ export const TrendingProducts = () => {
         <h2 className="font-mrs-saint-delafield text-6xl sm:text-6xl text-gold pb-5">
           Los más buscados
         </h2>
-        <p className="max-w-xl mx-auto text-gray-600">
-          Nourish your skin with toxin-free cosmetic products. With offers that
-          you can&apos;t refuse.
+        <p className="max-w-xl mx-auto text-gray-900 font-medium">
+          ¡No te pierdas los productos más deseados y las ofertas que están
+          arrasando! Descubre lo que todos quieren ahora mismo.
         </p>
       </div>
       <div className="px-4">
