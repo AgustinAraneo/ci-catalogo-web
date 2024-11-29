@@ -38,7 +38,26 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      setProducts(filteredProducts);
+      const placeholdersNeeded = 4 - filteredProducts.length;
+
+      if (placeholdersNeeded > 0) {
+        const placeholders = Array.from(
+          { length: placeholdersNeeded },
+          (_, index) => ({
+            ...filteredProducts[index % filteredProducts.length],
+            id: `placeholder-${index}`,
+            title: "PRÓXIMAMENTE",
+            description: "Nuevos productos en camino",
+            price: 0,
+            discountPrice: 0,
+          })
+        );
+        setProducts([...filteredProducts, ...placeholders]);
+      } else {
+        setProducts(filteredProducts);
+      }
+
+      setLoading(false);
     }
   }, [filterItem, allProducts]);
 
@@ -48,9 +67,9 @@ export const TrendingProducts = () => {
         <h2 className="font-mrs-saint-delafield text-6xl sm:text-6xl text-gold pb-5">
           Los más buscados
         </h2>
-        <p className="max-w-xl mx-auto text-gray-600">
-          Nourish your skin with toxin-free cosmetic products. With offers that
-          you can&apos;t refuse.
+        <p className="max-w-xl mx-auto text-gray-900 font-medium">
+          ¡No te pierdas los productos más deseados y las ofertas que están
+          arrasando! Descubre lo que todos quieren ahora mismo.
         </p>
       </div>
       <div className="px-4">
@@ -59,7 +78,7 @@ export const TrendingProducts = () => {
             <li key={category} className="mx-1 my-1">
               <button
                 onClick={() => setFilterItem(category)}
-                className={`px-4 py-2 border text-sm sm:text-base rounded ${
+                className={`px-4 py-2 border text-sm sm:text-base rounded w-32 ${
                   category === filterItem
                     ? "bg-pink-600 text-white border-pink-600"
                     : "bg-gray-100 text-gray-700 border-gray-200"
