@@ -77,16 +77,16 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
   return (
     <div>
       <Breadcrumb page="Productos" />
-      <div className="container mx-auto flex flex-col items-center p-7 pb-20">
-        <div className="w-full max-w-5xl">
+      <div className="container mx-auto flex flex-col items-center py-10 md:py-20 gap-10">
+        <div className="w-full max-w-6xl">
           <HomeIndividualProduct product={product} />
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+        <h2 className="text-2xl font-bold text-center pb-6 text-gray-800">
           También puede interesarte:
         </h2>
 
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-6xl">
           <InstagramGallery />
         </div>
       </div>

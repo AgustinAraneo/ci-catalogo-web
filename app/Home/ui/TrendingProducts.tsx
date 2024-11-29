@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { Product } from "@/types/type";
 import { Carousel } from "@/components/ui/Carousel/Carousel";
 import { useProducts } from "@/hooks/useProducts";
+import { Skeleton } from "@/components/ui/Skeleton/skeleton";
 
 export const TrendingProducts = () => {
   const { products: allProducts } = useProducts();
@@ -91,13 +92,17 @@ export const TrendingProducts = () => {
         </ul>
         <div className="mx-auto max-w-7xl overflow-hidden">
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="w-full h-48 bg-gray-200 animate-pulse rounded p-2"
-                ></div>
-              ))}
+            <div className="flex flex-col gap-6">
+              <div className="flex gap-4 justify-center">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <Skeleton key={index} className="w-[128px] h-[42px]" />
+                ))}
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <Skeleton key={index} className="w-[290px] h-[420px]" />
+                ))}
+              </div>
             </div>
           ) : (
             <Carousel products={products} />

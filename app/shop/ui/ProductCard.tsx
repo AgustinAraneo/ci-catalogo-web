@@ -12,7 +12,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, imageUrl }) => {
     <Link href={`/shop/${product.id}`}>
       <div className="relative flex flex-col text-center">
         {product.discountPrice && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded shadow-md z-[10] font-lato">
+          <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 text-sm rounded shadow-md z-[10] font-lato">
             SALE
           </div>
         )}

@@ -4,6 +4,7 @@ import { useImageLoader } from "@/hooks/useImageLoader";
 import type { ProductNeedId } from "@/types/type";
 import { Filters } from "./Filters";
 import { ProductList } from "./ProductList";
+import { Skeleton } from "@/components/ui/Skeleton/skeleton";
 
 export const HomeShop = () => {
   const [products, setProducts] = useState<ProductNeedId[]>([]);
@@ -17,7 +18,6 @@ export const HomeShop = () => {
 
   const { imageUrls, loading: imagesLoading } = useImageLoader(products);
 
-  // Calcula el precio mínimo y máximo de los productos filtrados
   const [priceLimits, setPriceLimits] = useState<[number, number]>([0, 10000]);
 
   useEffect(() => {
@@ -27,16 +27,13 @@ export const HomeShop = () => {
         const minPrice = Math.min(...prices);
         const maxPrice = Math.max(...prices);
         setPriceLimits([minPrice, maxPrice]);
-
-        // Si el rango actual está fuera de los nuevos límites, lo ajustamos
         setPriceRange([minPrice, maxPrice]);
       }
     };
 
     calculatePriceLimits();
-  }, [products]); // Dependemos solo de `products`
+  }, [products]);
 
-  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -59,7 +56,6 @@ export const HomeShop = () => {
     const applyFilters = () => {
       let result = products;
 
-      // Filtro por categoría
       if (selectedCategory) {
         result = result.filter((product) =>
           Array.isArray(product.category)
@@ -68,13 +64,11 @@ export const HomeShop = () => {
         );
       }
 
-      // Filtro por rango de precios
       result = result.filter(
         (product) =>
           product.price >= priceRange[0] && product.price <= priceRange[1]
       );
 
-      // Filtro por búsqueda
       if (searchQuery) {
         result = result.filter((product) =>
           product.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -105,7 +99,20 @@ export const HomeShop = () => {
   const categoryCounts = useMemo(() => getCategoryCounts(products), [products]);
 
   if (loading || imagesLoading)
-    return <div className="text-center py-10">Cargando productos...</div>;
+    return (
+      <div className="py-20 flex container mx-auto 2xl:max-w-[1440px]">
+        <div className="w-full flex gap-10 ">
+          <Skeleton className="h-[550px] w-[371px]" />
+
+          <div className="grid md:grid-cols-3 gap-10 md:w-3/4">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <Skeleton key={i} className="h-[315px] w-[323px]" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
   if (error)
     return <div className="text-center py-10 text-red-500">Error: {error}</div>;
 

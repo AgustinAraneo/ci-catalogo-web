@@ -13,14 +13,15 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 }) => {
   const router = useRouter();
 
-  const imageUrl =
-    product?.imageUrl || "/assets/Productos/fallback-image.jpg";
+  const imageUrl = product?.imageUrl || "/assets/Productos/fallback-image.jpg";
 
   const handleBuy = () => {
     if (product) {
       const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product.title}"`;
       window.open(
-        `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
+        `https://wa.me/5491171466601?text=${encodeURIComponent(
+          whatsappMessage
+        )}`,
         "_blank"
       );
     }
@@ -47,8 +48,8 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   const handleMouseLeave = () => setIsZoomed(false);
 
   return (
-    <div className="container mx-auto p-8 pt-10 flex flex-col items-center">
-      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8 p-6">
+    <div className="container mx-auto  flex flex-col items-center px-4 md:px-0">
+      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:justify-between w-full">
         <div
           className="relative w-full md:w-2/3 h-auto overflow-hidden"
           onMouseEnter={handleMouseEnter}
@@ -56,14 +57,14 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           onMouseLeave={handleMouseLeave}
         >
           {product?.discountPrice && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 text-sm rounded font-lato">
+            <div className="absolute top-2 left-2  bg-red-500 text-white px-3 py-1 text-sm rounded font-lato z-[10]">
               SALE
             </div>
           )}
           <img
             src={imageUrl}
             alt={product?.title || "Producto"}
-            className={`w-full h-auto object-cover transition-transform duration-300 ${
+            className={`w-full h-auto object-cover object-center transition-transform duration-300 w-full md:w-[550px] h-[55vh] md:h-[500px] ${
               isZoomed ? "scale-150" : "scale-100"
             }`}
             style={{
@@ -72,12 +73,12 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
           />
         </div>
 
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-[60%]">
           <h1 className="text-3xl font-bold mb-4">{product?.title}</h1>
           <p
             className={`text-xl font-semibold ${
               inStock ? "text-green-600" : "text-red-600"
-            } mb-2`}
+            } pb-2`}
           >
             {inStock ? "EN STOCK" : "SIN STOCK"}
           </p>
@@ -85,17 +86,26 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             Código: {product?.id}
           </p>
 
-          <div className="flex items-center mb-4">
+          <div className="flex gap-2 font-lato">
             {product?.discountPrice && (
-              <p className="line-through text-gray-400 mr-2">
-                ${product.price.toFixed(2)}
+              <p className="text-lg font-bold text-black-primary">
+                {new Intl.NumberFormat("es-AR", {
+                  style: "currency",
+                  currency: "ARS",
+                }).format(product?.discountPrice)}
               </p>
             )}
-            <p className="text-2xl font-bold text-black">
-              $
-              {product?.discountPrice
-                ? product.discountPrice.toFixed(2)
-                : product?.price.toFixed(2)}
+            <p
+              className={`text-lg font-bold ${
+                product?.discountPrice
+                  ? "line-through text-gray-500"
+                  : "text-black-primary"
+              }`}
+            >
+              {new Intl.NumberFormat("es-AR", {
+                style: "currency",
+                currency: "ARS",
+              }).format(product?.price ?? 0)}
             </p>
           </div>
 
@@ -150,21 +160,27 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-start mt-4 space-x-2">
+          <div className="flex gap-4 items-center pt-4">
             <Button
               variant="default"
-              className="bg-black text-white px-6 py-2 rounded-md text-sm hover:bg-yellow-500 hover:text-black transition-all"
+              className="relative w-[110px] inline-flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-black rounded-md transition duration-300 overflow-hidden group"
               onClick={handleBuy}
             >
-              {inStock ? "Comprar" : "Consultar disponibilidad"}
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-500 to-yellow-500 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
+              <span className="relative z-10">
+                {inStock ? "Comprar" : "Consultar disponibilidad"}
+              </span>
             </Button>
 
             <Button
               variant="outline"
-              className="bg-white border border-black text-black hover:bg-gray-200 hover:text-black transition-all px-6 py-2 rounded"
+              className="relative w-[110px] inline-flex items-center justify-center px-6 py-2 text-sm font-medium text-black border border-black rounded overflow-hidden group transition-all"
               onClick={() => router.push("/shop")}
             >
-              Volver
+              <span className="absolute inset-0 bg-gray-700 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+              <span className="relative z-10 group-hover:text-white">
+                Volver
+              </span>
             </Button>
           </div>
         </div>
