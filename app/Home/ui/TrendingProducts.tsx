@@ -38,7 +38,28 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      setProducts(filteredProducts);
+      if (filteredProducts.length < 3) {
+        const placeholders = Array.from(
+          { length: 4 - filteredProducts.length },
+          (_, index) => {
+            const randomProduct =
+              filteredProducts[index % filteredProducts.length];
+            return {
+              ...randomProduct,
+              id: `placeholder-${index}`,
+              title: "PRÓXIMAMENTE",
+              description: "Nuevos productos en camino",
+              price: 0,
+              discountPrice: 0,
+            };
+          }
+        );
+        setProducts([...filteredProducts, ...placeholders]);
+      } else {
+        setProducts(filteredProducts);
+      }
+
+      setLoading(false);
     }
   }, [filterItem, allProducts]);
 
@@ -59,7 +80,7 @@ export const TrendingProducts = () => {
             <li key={category} className="mx-1 my-1">
               <button
                 onClick={() => setFilterItem(category)}
-                className={`px-4 py-2 border text-sm sm:text-base rounded ${
+                className={`px-4 py-2 border text-sm sm:text-base rounded w-32 ${
                   category === filterItem
                     ? "bg-pink-600 text-white border-pink-600"
                     : "bg-gray-100 text-gray-700 border-gray-200"
