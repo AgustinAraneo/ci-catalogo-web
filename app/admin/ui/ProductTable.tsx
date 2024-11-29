@@ -34,13 +34,27 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               <TableHead className="w-[100px] font-semibold text-gray-500">
                 Nro. producto
               </TableHead>
-              <TableHead className="font-semibold text-gray-500">Nombre</TableHead>
-              <TableHead className="font-semibold text-gray-500">Precio</TableHead>
-              <TableHead className="font-semibold text-gray-500">P. oferta</TableHead>
-              <TableHead className="font-semibold text-gray-500">Talles</TableHead>
-              <TableHead className="font-semibold text-gray-500">Categoría</TableHead>
-              <TableHead className="font-semibold text-gray-500">Cantidad</TableHead>
-              <TableHead className="font-semibold text-gray-500">Imagen</TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Nombre
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Precio
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                P. oferta
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Talles
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Categoría
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Cantidad
+              </TableHead>
+              <TableHead className="font-semibold text-gray-500">
+                Imagen
+              </TableHead>
               <TableHead className="font-semibold text-gray-500 text-center">
                 Link
               </TableHead>
@@ -57,10 +71,18 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               <TableRow key={product.id} className="text-left">
                 <TableCell>{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
-                <TableCell>${product.price?.toFixed(2)}</TableCell>
+                <TableCell>
+                  {new Intl.NumberFormat("es-AR", {
+                    style: "currency",
+                    currency: "ARS",
+                  }).format(product.price)}
+                </TableCell>
                 <TableCell>
                   {product.discountPrice !== null
-                    ? `$${product.discountPrice.toFixed(2)}`
+                    ? new Intl.NumberFormat("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                      }).format(product.discountPrice)
                     : "-"}
                 </TableCell>
                 <TableCell>{product.sizes.join(", ")}</TableCell>
@@ -69,16 +91,18 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   {product.quantity !== null ? product.quantity : "-"}
                 </TableCell>
                 <TableCell className="w-[100px]">
-                <img
-                  src={
-                    product.id && typeof product.id === "string" && imageUrls[product.id]
-                      ? imageUrls[product.id]
-                      : "/assets/Productos/fallback-image.jpg"
-                  }
-                  alt={product.title || "Imagen por defecto"}
-                  className="w-[50px] h-[50px] object-cover rounded"
-                />
-              </TableCell>
+                  <img
+                    src={
+                      product.id &&
+                      typeof product.id === "string" &&
+                      imageUrls[product.id]
+                        ? imageUrls[product.id]
+                        : "/assets/Productos/fallback-image.jpg"
+                    }
+                    alt={product.title || "Imagen por defecto"}
+                    className="w-[50px] h-[50px] object-cover rounded"
+                  />
+                </TableCell>
 
                 <TableCell className="w-[50px]">
                   <a
@@ -120,22 +144,34 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               Nro. producto: <span className="text-gray-700">{product.id}</span>
             </p>
             <p className="text-gray-500 text-sm">
-              Precio: <span className="text-gray-700">${product.price?.toFixed(2)}</span>
+              Precio:{" "}
+              <span className="text-gray-700">
+                {new Intl.NumberFormat("es-AR", {
+                  style: "currency",
+                  currency: "ARS",
+                }).format(product.price)}
+              </span>
             </p>
             <p className="text-gray-500 text-sm">
               Precio oferta:{" "}
               <span className="text-gray-700">
                 {product.discountPrice !== null
-                  ? `$${product.discountPrice.toFixed(2)}`
+                  ? new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(product.discountPrice)
                   : "-"}
               </span>
             </p>
             <p className="text-gray-500 text-sm">
-              Talles: <span className="text-gray-700">{product.sizes.join(", ")}</span>
+              Talles:{" "}
+              <span className="text-gray-700">{product.sizes.join(", ")}</span>
             </p>
             <p className="text-gray-500 text-sm">
               Categoría:{" "}
-              <span className="text-gray-700">{product.category.join(", ")}</span>
+              <span className="text-gray-700">
+                {product.category.join(", ")}
+              </span>
             </p>
             <p className="text-gray-500 text-sm">
               Cantidad:{" "}
@@ -145,16 +181,17 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             </p>
             <div className="mt-2 flex justify-between items-center">
               <div className="w-[50px] h-[50px]">
-              <img
+                <img
                   src={
-                    product.id && typeof product.id === "string" && imageUrls[product.id]
+                    product.id &&
+                    typeof product.id === "string" &&
+                    imageUrls[product.id]
                       ? imageUrls[product.id]
                       : "/assets/Productos/fallback-image.jpg"
                   }
                   alt={product.title || "Imagen por defecto"}
                   className="w-full h-full object-cover rounded"
                 />
-
               </div>
               <div className="flex space-x-2 justify-end items-center">
                 <a
@@ -179,4 +216,3 @@ export const ProductTable: React.FC<ProductTableProps> = ({
     </div>
   );
 };
-

@@ -21,7 +21,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
 }) => {
   const [productState, setProductState] = useState<Product>(initialProduct);
   const [isOpen, setIsOpen] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [isFileSizeValid, setIsFileSizeValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,6 +65,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
         setIsFileSizeValid(true);
         setFile(selectedFile);
       }
+    } else {
+      setFile(undefined);
     }
   };
 
@@ -77,38 +79,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     setIsLoading(true);
 
     try {
-      if (!productState.id) {
-        console.error("El ID del producto no está definido.");
-        alert("No se puede actualizar un producto sin ID.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("title", productState.title);
-      formData.append("price", String(productState.price));
-      formData.append("quantity", String(productState.quantity || ""));
-      formData.append("sizes", JSON.stringify(productState.sizes));
-      formData.append("category", JSON.stringify(productState.category));
-      formData.append("description", productState.description || "");
-      formData.append("discountPrice", String(productState.discountPrice || ""));
-      if (file) {
-        formData.append("image", file);
-      }
-
-      const response = await fetch(`/api/v1/db/products/${productState.id}`, {
-        method: "PUT",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || "Error desconocido al actualizar el producto."
-        );
-      }
-
-      const updatedProduct = await response.json();
-      onUpdateProduct(updatedProduct);
+      await onUpdateProduct(productState, file);
       setIsOpen(false);
     } catch (error) {
       console.error("Error al guardar cambios:", error);
@@ -234,7 +205,10 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
             <Label>Categorías</Label>
             <div className="flex flex-wrap gap-2 mt-2">
               {filterList.map((category) => (
-                <div key={category.value} className="flex items-center space-x-2">
+                <div
+                  key={category.value}
+                  className="flex items-center space-x-2"
+                >
                   <Checkbox
                     id={`category-${category.value}`}
                     checked={productState.category.includes(category.value)}

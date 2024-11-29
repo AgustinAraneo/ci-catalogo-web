@@ -37,7 +37,7 @@ export interface Product {
 
 export interface EditProductDialogProps {
   product: Product;
-  onUpdateProduct: (product: Product) => void;
+  onUpdateProduct: (updatedProduct: Product, file?: File) => void;
 }
 
 export interface DeleteProductDialogProps {
