@@ -47,7 +47,7 @@ export const FormContact = () => {
     // Enviar mensaje a WhatsApp
     const whatsappMessage = `Hola soy ${nombre},\n\nMi correo es: ${correo}\n\nQuería consultarles:\n${mensaje}`;
     window.open(
-      `https://wa.me/5491171466601?text=${encodeURIComponent(whatsappMessage)}`,
+      `https://wa.me/5491134602955?text=${encodeURIComponent(whatsappMessage)}`,
       "_blank"
     );
 
