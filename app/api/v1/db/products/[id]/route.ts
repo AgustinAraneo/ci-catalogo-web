@@ -1,4 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
+// app/api/v1/db/products/[id]/route.ts
+
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import {
   S3Client,
@@ -22,15 +24,16 @@ const s3Client = new S3Client({
   },
 });
 
+// Tipos e interfaces utilizados
 interface FormFields {
   title?: string;
   description?: string;
   price?: string;
-  sizes?: string | string[];
+  sizes?: string;
   quantity?: string;
   discountPrice?: string;
-  category?: string | string[];
-  [key: string]: undefined | string | string[];
+  category?: string;
+  [key: string]: undefined | string;
 }
 
 interface FormFile {
@@ -44,6 +47,7 @@ interface FormFiles {
   [key: string]: FormFile;
 }
 
+// Función para parsear form-data en el handler PUT
 async function parseFormData(
   req: NextRequest
 ): Promise<{ fields: FormFields; files: FormFiles }> {
@@ -84,15 +88,7 @@ async function parseFormData(
     );
 
     busboy.on("field", (fieldname: string, val: string) => {
-      if (fields[fieldname]) {
-        if (Array.isArray(fields[fieldname])) {
-          (fields[fieldname] as string[]).push(val);
-        } else {
-          fields[fieldname] = [fields[fieldname] as string, val];
-        }
-      } else {
-        fields[fieldname] = val;
-      }
+      fields[fieldname] = val;
     });
 
     busboy.on("finish", () => {
@@ -128,6 +124,7 @@ async function parseFormData(
   });
 }
 
+// Handler para GET: Obtener un producto por ID
 export async function GET(
   _req: NextRequest,
   { params }: { params: { id: string } }
@@ -157,92 +154,7 @@ export async function GET(
   }
 }
 
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params;
-
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
-
-    if (!product) {
-      return NextResponse.json(
-        { error: "Producto no encontrado" },
-        { status: 404 }
-      );
-    }
-
-    // Eliminar imagen principal si existe
-    if (product.imageUrl) {
-      const imageKey = product.imageUrl.split("/").pop();
-      try {
-        await s3Client.send(
-          new DeleteObjectCommand({
-            Bucket: process.env.R2_BUCKET_NAME!,
-            Key: imageKey!,
-          })
-        );
-        console.log(`Imagen principal ${imageKey} eliminada del bucket.`);
-      } catch (error) {
-        console.error(
-          "Error al eliminar la imagen principal del bucket:",
-          error
-        );
-      }
-    }
-
-    if (product.secondaryImages && product.secondaryImages.length > 0) {
-      for (const secondaryImage of product.secondaryImages) {
-        const imageKey = secondaryImage.split("/").pop();
-        try {
-          await s3Client.send(
-            new DeleteObjectCommand({
-              Bucket: process.env.R2_BUCKET_NAME!,
-              Key: imageKey!,
-            })
-          );
-          console.log(`Imagen secundaria ${imageKey} eliminada del bucket.`);
-        } catch (error) {
-          console.error(
-            `Error al eliminar la imagen secundaria ${imageKey} del bucket:`,
-            error
-          );
-        }
-      }
-    }
-
-    // Eliminar el producto de la base de datos
-    const deletedProduct = await prisma.product.delete({
-      where: { id },
-    });
-
-    return NextResponse.json({
-      message: "Producto eliminado con éxito",
-      deletedProduct,
-    });
-  } catch (error) {
-    console.error("Error al eliminar el producto:", error);
-
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return NextResponse.json(
-        { error: "Producto no encontrado" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
-  }
-}
-
+// Handler para PUT: Actualizar un producto por ID
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -257,21 +169,29 @@ export async function PUT(
       );
     }
 
-    const formData = await parseFormData(req);
-    const { fields, files } = formData;
+    const { fields, files } = await parseFormData(req);
+
+    // Obtener el producto existente
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: "Producto no encontrado" },
+        { status: 404 }
+      );
+    }
 
     const data: Partial<ProductRequestBody> = {};
 
     // Validar y asignar campos
     if (fields.title) {
-      data.title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
+      data.title = fields.title;
     }
 
     if (fields.price) {
-      const priceValue = Array.isArray(fields.price)
-        ? fields.price[0]
-        : fields.price;
-      const parsedPrice = parseFloat(priceValue);
+      const parsedPrice = parseFloat(fields.price);
       if (isNaN(parsedPrice)) {
         throw new Error("El precio no es válido");
       }
@@ -279,14 +199,10 @@ export async function PUT(
     }
 
     if (fields.discountPrice !== undefined) {
-      const discountPriceValue = Array.isArray(fields.discountPrice)
-        ? fields.discountPrice[0]
-        : fields.discountPrice;
-
-      if (discountPriceValue === "") {
+      if (fields.discountPrice === "") {
         data.discountPrice = null;
       } else {
-        const parsedDiscountPrice = parseFloat(discountPriceValue);
+        const parsedDiscountPrice = parseFloat(fields.discountPrice);
         if (!isNaN(parsedDiscountPrice)) {
           data.discountPrice = parsedDiscountPrice;
         } else {
@@ -296,14 +212,10 @@ export async function PUT(
     }
 
     if (fields.quantity !== undefined) {
-      const quantityValue = Array.isArray(fields.quantity)
-        ? fields.quantity[0]
-        : fields.quantity;
-
-      if (quantityValue === "") {
+      if (fields.quantity === "") {
         data.quantity = null;
       } else {
-        const parsedQuantity = parseInt(quantityValue, 10);
+        const parsedQuantity = parseInt(fields.quantity, 10);
         if (!isNaN(parsedQuantity)) {
           data.quantity = parsedQuantity;
         } else {
@@ -313,11 +225,8 @@ export async function PUT(
     }
 
     if (fields.sizes) {
-      const sizesValue = Array.isArray(fields.sizes)
-        ? fields.sizes[0]
-        : fields.sizes;
       try {
-        data.sizes = JSON.parse(sizesValue);
+        data.sizes = JSON.parse(fields.sizes);
         if (!Array.isArray(data.sizes)) {
           throw new Error("Sizes debe ser un array");
         }
@@ -327,11 +236,8 @@ export async function PUT(
     }
 
     if (fields.category) {
-      const categoryValue = Array.isArray(fields.category)
-        ? fields.category[0]
-        : fields.category;
       try {
-        data.category = JSON.parse(categoryValue);
+        data.category = JSON.parse(fields.category);
         if (!Array.isArray(data.category)) {
           throw new Error("Category debe ser un array");
         }
@@ -341,18 +247,13 @@ export async function PUT(
     }
 
     if (fields.description) {
-      data.description = Array.isArray(fields.description)
-        ? fields.description[0]
-        : fields.description;
+      data.description = fields.description;
     }
 
+    // Procesar imagen principal si se proporciona
     if (files.image) {
       try {
-        const existingProduct = await prisma.product.findUnique({
-          where: { id },
-        });
-
-        if (existingProduct?.imageUrl) {
+        if (existingProduct.imageUrl) {
           const imageKey = existingProduct.imageUrl.split("/").pop();
           if (imageKey) {
             await s3Client.send(
@@ -383,6 +284,85 @@ export async function PUT(
       } catch (imageError) {
         console.error("Error al manejar la imagen:", imageError);
         throw new Error("Error al procesar la imagen");
+      }
+    }
+
+    // Procesar imágenes secundarias
+    if (existingProduct.secondaryImages) {
+      data.secondaryImages = [...existingProduct.secondaryImages];
+    } else {
+      data.secondaryImages = [];
+    }
+
+    for (const key in files) {
+      const match = key.match(/^secondaryImage-(\d+)$/);
+      if (match) {
+        const index = parseInt(match[1], 10);
+        const file = files[key];
+
+        // Eliminar la imagen antigua del bucket si existe
+        const oldImageUrl = existingProduct.secondaryImages
+          ? existingProduct.secondaryImages[index]
+          : null;
+        if (oldImageUrl) {
+          const imageKey = oldImageUrl.split("/").pop();
+          if (imageKey) {
+            await s3Client.send(
+              new DeleteObjectCommand({
+                Bucket: process.env.R2_BUCKET_NAME!,
+                Key: imageKey,
+              })
+            );
+          }
+        }
+
+        // Subir la nueva imagen
+        const sanitizedFilename = file.filename
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_\.-]/g, "");
+        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: fileKey,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+          })
+        );
+
+        const newImageUrl = `${process.env.R2_PUBLIC_HOST}/${fileKey}`;
+
+        // Actualizar el array de secondaryImages
+        data.secondaryImages[index] = newImageUrl;
+      }
+    }
+    for (const key in files) {
+      const match = key.match(/^newSecondaryImage-(\d+)$/);
+      if (match) {
+        const file = files[key];
+
+        // Subir la nueva imagen
+        const sanitizedFilename = file.filename
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_\.-]/g, "");
+        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: fileKey,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+          })
+        );
+
+        const newImageUrl = `${process.env.R2_PUBLIC_HOST}/${fileKey}`;
+
+        // Agregar la nueva imagen al array de secondaryImages
+        data.secondaryImages.push(newImageUrl);
       }
     }
 
@@ -417,6 +397,101 @@ export async function PUT(
     }
 
     console.error("Error desconocido al actualizar el producto:", error);
+    return NextResponse.json(
+      { error: "Error desconocido", details: String(error) },
+      { status: 500 }
+    );
+  }
+}
+
+// Handler para DELETE: Eliminar un producto por ID
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "ID no proporcionado" },
+        { status: 400 }
+      );
+    }
+
+    // Obtener el producto existente
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!existingProduct) {
+      return NextResponse.json(
+        { error: "Producto no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    // Eliminar imagen principal del bucket S3
+    if (existingProduct.imageUrl) {
+      const imageKey = existingProduct.imageUrl.split("/").pop();
+      if (imageKey) {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: imageKey,
+          })
+        );
+      }
+    }
+
+    // Eliminar imágenes secundarias del bucket S3
+    if (
+      existingProduct.secondaryImages &&
+      existingProduct.secondaryImages.length > 0
+    ) {
+      for (const imageUrl of existingProduct.secondaryImages) {
+        const imageKey = imageUrl.split("/").pop();
+        if (imageKey) {
+          await s3Client.send(
+            new DeleteObjectCommand({
+              Bucket: process.env.R2_BUCKET_NAME!,
+              Key: imageKey,
+            })
+          );
+        }
+      }
+    }
+
+    // Eliminar el producto de la base de datos
+    await prisma.product.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "Producto eliminado con éxito" },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    // Manejo específico para errores conocidos
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return NextResponse.json(
+        { error: "Producto no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    if (error instanceof Error) {
+      console.error("Error al eliminar el producto:", error.message);
+      return NextResponse.json(
+        { error: "Error interno del servidor", details: error.message },
+        { status: 500 }
+      );
+    }
+
+    console.error("Error desconocido al eliminar el producto:", error);
     return NextResponse.json(
       { error: "Error desconocido", details: String(error) },
       { status: 500 }

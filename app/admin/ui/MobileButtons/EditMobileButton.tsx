@@ -7,7 +7,12 @@ import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 
 interface HomeMobileButtonsAdminProps {
   onAddProduct: (newProduct: Product) => void;
-  onUpdateProduct: (updatedProduct: Product) => void;
+  onUpdateProduct: (
+    updatedProduct: Product,
+    file?: File,
+    secondaryFiles?: { [index: number]: File },
+    newSecondaryFiles?: File[]
+  ) => Promise<Product>;
 }
 
 export const HomeMobileButtonsAdmin: React.FC<HomeMobileButtonsAdminProps> = ({
@@ -41,17 +46,19 @@ export const HomeMobileButtonsAdmin: React.FC<HomeMobileButtonsAdminProps> = ({
 
       {/* Tarjetas de Productos */}
       <div className="space-y-4">
-        {[{
-          id: 1,
-          title: "Producto 1",
-          description: "Descripción del producto",
-          price: 100,
-          discountPrice: 80, // Precio con descuento
-          sizes: ["S", "M"],
-          quantity: 10,
-          imageUrl: "https://via.placeholder.com/150",
-          category: ["Categoría 1"],
-        }].map((product) => (
+        {[
+          {
+            id: 1,
+            title: "Producto 1",
+            description: "Descripción del producto",
+            price: 100,
+            discountPrice: 80, // Precio con descuento
+            sizes: ["S", "M"],
+            quantity: 10,
+            imageUrl: "https://via.placeholder.com/150",
+            category: ["Categoría 1"],
+          },
+        ].map((product) => (
           <div
             key={product.id}
             className="bg-white shadow rounded-lg p-4 flex justify-between items-center"
@@ -59,7 +66,11 @@ export const HomeMobileButtonsAdmin: React.FC<HomeMobileButtonsAdminProps> = ({
             <div>
               <h3 className="text-lg font-bold">{product.title}</h3>
               <p className="text-sm text-gray-500">
-                Precio: <span className="line-through">${product.price.toFixed(2)}</span> ${product.discountPrice?.toFixed(2)}
+                Precio:{" "}
+                <span className="line-through">
+                  ${product.price.toFixed(2)}
+                </span>{" "}
+                ${product.discountPrice?.toFixed(2)}
               </p>
               <p className="text-sm text-gray-500">
                 Categoría: {product.category.join(", ")}
@@ -77,14 +88,14 @@ export const HomeMobileButtonsAdmin: React.FC<HomeMobileButtonsAdminProps> = ({
               <button
                 className="text-yellow-500 hover:text-yellow-400"
                 onClick={() =>
-                    handleEditClick({
+                  handleEditClick({
                     ...product,
                     id: product.id.toString(), // Convertimos el id a string
-                    })
+                  })
                 }
-                >
+              >
                 <FaEdit className="w-5 h-5" />
-                </button>
+              </button>
 
               {/* Botón de Eliminar */}
               <button
@@ -118,9 +129,20 @@ export const HomeMobileButtonsAdmin: React.FC<HomeMobileButtonsAdminProps> = ({
           <div className="bg-white rounded-lg shadow-lg max-w-[90%] max-h-[90%] overflow-auto p-6">
             <EditProductDialog
               product={editingProduct}
-              onUpdateProduct={(updatedProduct) => {
-                onUpdateProduct(updatedProduct);
+              onUpdateProduct={async (
+                updatedProduct,
+                file,
+                secondaryFiles,
+                newSecondaryFiles
+              ) => {
+                const result = await onUpdateProduct(
+                  updatedProduct,
+                  file,
+                  secondaryFiles,
+                  newSecondaryFiles
+                );
                 setIsEditOpen(false);
+                return result;
               }}
             />
           </div>

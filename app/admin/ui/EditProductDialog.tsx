@@ -11,29 +11,37 @@ import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
-import type { ProductFormState } from "@/types/type";
+import type {
+  EditProductDialogProps,
+  Product,
+  ProductFormState,
+} from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 import { filterList } from "@/app/src/data/data.categorys";
-import type { EditProductDialogProps, Product } from "@/types/type";
 import CurrencyInput from "react-currency-input-field";
 
 export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product: initialProduct,
   onUpdateProduct,
 }) => {
-  //primero es string para poder manejar la librería nueva
+  // Inicializar el estado del formulario, incluyendo imágenes secundarias
   const initialFormState: ProductFormState = {
     ...initialProduct,
     price: initialProduct.price ? initialProduct.price.toString() : "",
     discountPrice: initialProduct.discountPrice
       ? initialProduct.discountPrice.toString()
       : "",
+    secondaryImages: initialProduct.secondaryImages || [],
   };
 
   const [productState, setProductState] =
     useState<ProductFormState>(initialFormState);
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState<File | undefined>(undefined);
+  const [secondaryFiles, setSecondaryFiles] = useState<{
+    [index: number]: File;
+  }>({});
+  const [newSecondaryFiles, setNewSecondaryFiles] = useState<File[]>([]); // Nuevo estado para nuevas imágenes secundarias
   const [isFileSizeValid, setIsFileSizeValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -79,6 +87,39 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     }
   };
 
+  const handleSecondaryFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setSecondaryFiles((prev) => ({
+        ...prev,
+        [index]: selectedFile,
+      }));
+    } else {
+      setSecondaryFiles((prev) => {
+        const newFiles = { ...prev };
+        delete newFiles[index];
+        return newFiles;
+      });
+    }
+  };
+
+  // Nuevo manejador para agregar nuevas imágenes secundarias
+  const handleNewSecondaryFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setNewSecondaryFiles((prev) => [...prev, selectedFile]);
+    }
+  };
+
+  const removeNewSecondaryFile = (index: number) => {
+    setNewSecondaryFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSave = async () => {
     if (!isFileSizeValid) {
       alert("El archivo supera el tamaño máximo permitido de 25 MB.");
@@ -116,11 +157,29 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
 
       const updatedProduct: Product = {
         ...productState,
+        id: initialProduct.id, // Asegúrate de incluir el ID
         price: priceValue,
         discountPrice: discountPriceValue,
       };
 
-      await onUpdateProduct(updatedProduct, file);
+      // Llamar a onUpdateProduct y obtener el producto actualizado
+      const updatedProductFromServer = await onUpdateProduct(
+        updatedProduct,
+        file,
+        secondaryFiles,
+        newSecondaryFiles // Pasamos las nuevas imágenes secundarias
+      );
+
+      // Actualizar el estado local con el producto actualizado
+      setProductState({
+        ...productState,
+        secondaryImages: updatedProductFromServer.secondaryImages || [],
+        imageUrl: updatedProductFromServer.imageUrl || productState.imageUrl,
+      });
+
+      // Limpiar las nuevas imágenes secundarias después de guardar
+      setNewSecondaryFiles([]);
+
       setIsOpen(false);
     } catch (error) {
       console.error("Error al guardar cambios:", error);
@@ -227,9 +286,9 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               className="w-full"
             />
           </div>
-          {/* Imagen */}
+          {/* Imagen Principal */}
           <div className="md:col-span-2">
-            <Label htmlFor="image">Imagen Actual</Label>
+            <Label>Imagen Principal</Label>
             {productState.imageUrl && (
               <div className="flex justify-center mb-4">
                 <img
@@ -239,7 +298,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
                 />
               </div>
             )}
-            <Label htmlFor="image">Subir Nueva Imagen</Label>
+            <Label htmlFor="image">Modificar imágen principal</Label>
             <div className="flex items-center space-x-4 mt-2">
               <input
                 type="file"
@@ -259,6 +318,95 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               </span>
             </div>
           </div>
+          {/* Imágenes Secundarias */}
+          <div className="md:col-span-2">
+            <Label>Imágenes Secundarias</Label>
+            {productState.secondaryImages &&
+            productState.secondaryImages.length > 0 ? (
+              productState.secondaryImages.map((imageUrl, index) => (
+                <div key={index} className="flex flex-col mb-4">
+                  <Label className="mb-4">{`Imagen Secundaria ${
+                    index + 1
+                  }`}</Label>
+                  <img
+                    src={imageUrl}
+                    alt={`Imagen secundaria ${index + 1}`}
+                    className="max-h-32 mb-2"
+                  />
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="file"
+                      id={`secondary-image-${index}`}
+                      name={`secondary-image-${index}`}
+                      onChange={(e) => handleSecondaryFileChange(e, index)}
+                      className="hidden"
+                    />
+                    <Button
+                      variant="default"
+                      onClick={() =>
+                        document
+                          .getElementById(`secondary-image-${index}`)
+                          ?.click()
+                      }
+                    >
+                      Reemplazar Imagen
+                    </Button>
+                    <span className="text-gray-600 text-sm">
+                      {secondaryFiles[index]
+                        ? secondaryFiles[index].name
+                        : "Ningún archivo seleccionado"}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No hay imágenes secundarias.</p>
+            )}
+          </div>
+
+          {/* Agregar Nuevas Imágenes Secundarias */}
+          <div className="md:col-span-2">
+            <Label>Agregar Nuevas Imágenes Secundarias</Label>
+            <div className="flex flex-col mb-4">
+              <Button
+                variant="default"
+                onClick={() =>
+                  document.getElementById("new-secondary-image")?.click()
+                }
+              >
+                Agregar Imagen Secundaria
+              </Button>
+              <input
+                type="file"
+                id="new-secondary-image"
+                name="new-secondary-image"
+                onChange={handleNewSecondaryFileChange}
+                className="hidden"
+              />
+            </div>
+            {/* Mostrar nuevas imágenes secundarias seleccionadas */}
+            {newSecondaryFiles.length > 0 && (
+              <div className="flex flex-col space-y-4">
+                {newSecondaryFiles.map((file, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Nueva Imagen Secundaria ${index + 1}`}
+                      className="max-h-32"
+                    />
+                    <span className="text-gray-600 text-sm">{file.name}</span>
+                    <Button
+                      variant="outline"
+                      onClick={() => removeNewSecondaryFile(index)}
+                    >
+                      Eliminar
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Categorías */}
           <div className="md:col-span-2">
             <Label>Categorías</Label>

@@ -52,7 +52,12 @@ export interface Product {
 
 export interface EditProductDialogProps {
   product: Product;
-  onUpdateProduct: (updatedProduct: Product, file?: File) => void;
+  onUpdateProduct: (
+    updatedProduct: Product,
+    file?: File,
+    secondaryFiles?: { [index: number]: File },
+    newSecondaryFiles?: File[]
+  ) => Promise<Product>;
 }
 
 export interface DeleteProductDialogProps {
@@ -62,7 +67,12 @@ export interface DeleteProductDialogProps {
 
 export interface ProductTableProps {
   products: Product[];
-  onUpdateProduct: (updatedProduct: Product) => void;
+  onUpdateProduct: (
+    updatedProduct: Product,
+    file?: File,
+    secondaryFiles?: { [index: number]: File },
+    newSecondaryFiles?: File[]
+  ) => Promise<Product>;
   onDeleteProduct: (productId: string | undefined) => void;
 }
 export interface LogoutButtonProps {

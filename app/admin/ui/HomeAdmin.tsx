@@ -35,26 +35,53 @@ export const HomeAdmin = () => {
     });
   };
 
-  const handleUpdateProduct = async (updatedProduct: Product, file?: File) => {
+  const handleUpdateProduct = async (
+    updatedProduct: Product,
+    file?: File,
+    secondaryFiles?: { [index: number]: File },
+    newSecondaryFiles?: File[]
+  ): Promise<Product> => {
     try {
       if (!updatedProduct.id) {
         toast.error("El producto no tiene un ID válido.", {
           duration: 3000,
           position: "top-center",
         });
-        return;
       }
 
       const formData = new FormData();
       formData.append("title", updatedProduct.title || "");
       formData.append("price", String(updatedProduct.price || ""));
-      formData.append("quantity", updatedProduct.quantity != null ? String(updatedProduct.quantity) : "");
+      formData.append(
+        "quantity",
+        updatedProduct.quantity != null ? String(updatedProduct.quantity) : ""
+      );
       formData.append("sizes", JSON.stringify(updatedProduct.sizes || []));
-      formData.append("category", JSON.stringify(updatedProduct.category || []));
+      formData.append(
+        "category",
+        JSON.stringify(updatedProduct.category || [])
+      );
       formData.append("description", updatedProduct.description || "");
-      formData.append("discountPrice", updatedProduct.discountPrice != null ? String(updatedProduct.discountPrice) : "");
+      formData.append(
+        "discountPrice",
+        updatedProduct.discountPrice != null
+          ? String(updatedProduct.discountPrice)
+          : ""
+      );
       if (file) {
         formData.append("image", file);
+      }
+
+      if (secondaryFiles) {
+        Object.entries(secondaryFiles).forEach(([index, file]) => {
+          formData.append(`secondaryImage-${index}`, file);
+        });
+      }
+
+      if (newSecondaryFiles && newSecondaryFiles.length > 0) {
+        newSecondaryFiles.forEach((file, index) => {
+          formData.append(`newSecondaryImage-${index}`, file);
+        });
       }
 
       const res = await fetch(`/api/v1/db/products/${updatedProduct.id}`, {
@@ -83,6 +110,7 @@ export const HomeAdmin = () => {
         duration: 3000,
         position: "top-center",
       });
+      return productFromServer;
     } catch (error) {
       if (error instanceof Error) {
         console.error("Error al actualizar el producto:", error.message);
@@ -97,6 +125,7 @@ export const HomeAdmin = () => {
           position: "top-center",
         });
       }
+      throw error;
     }
   };
 
