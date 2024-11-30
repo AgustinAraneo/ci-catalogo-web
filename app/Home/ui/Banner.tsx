@@ -7,7 +7,7 @@ export const Banner = () => {
       <div className="relative h-screen bg-banner-home bg-left bg-no-repeat bg-cover flex items-center lg:bg-center">
         <div className="container mx-auto px-4">
           <div className="pl-5 sm:pl-10 lg:pl-20">
-            <span className="text-4xl sm:text-5xl lg:text-[60px] pl-2 lg:pl-3 font-mrs-saint-delafield text-yellow-600">
+            <span className="text-5xl lg:text-[60px] pl-2 lg:pl-3 font-mrs-saint-delafield text-yellow-600">
               Calidad que se nota
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-tight sm:leading-snug mt-4">

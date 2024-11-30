@@ -5,8 +5,8 @@ export const Discount = () => {
   return (
     <div className="relative z-10 bg-center bg-cover bg-banner-discount min-h-[80vh]">
       <div className="container mx-auto py-16 sm:py-28 lg:py-52 flex flex-col-reverse lg:flex-row justify-end items-center">
-        <div className="max-w-full sm:max-w-lg lg:mr-20 text-center lg:text-left flex flex-col gap-4 bg-white/60 p-4 rounded-md lg:bg-transparent lg:p-0 lg:static lg:transform-none lg:items-start absolute inset-0 m-auto h-fit items-center justify-center">
-          <span className="text-3xl sm:text-4xl lg:text-5xl font-mrs-saint-delafield text-yellow-700">
+        <div className="max-w-full mx-4 sm:max-w-lg lg:mr-20 text-center lg:text-left flex flex-col gap-4 bg-white/60 p-4 rounded-md lg:bg-transparent lg:p-0 lg:static lg:transform-none lg:items-start absolute inset-0 m-auto h-fit items-center justify-center">
+          <span className="text-4xl lg:text-5xl font-mrs-saint-delafield text-yellow-700">
             Envios a todo el país
           </span>
           <div className="flex flex-col gap-4">

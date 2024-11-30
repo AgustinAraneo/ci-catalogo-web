@@ -27,10 +27,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     sizes: [],
     quantity: null,
     imageUrl: "",
+    secondaryImages: [],
     category: [],
   });
 
   const [file, setFile] = useState<File | null>(null);
+  const [secondaryFiles, setSecondaryFiles] = useState<File[]>([]); // Nuevo estado para imágenes secundarias
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleInputChange = (
@@ -77,6 +79,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     }
   };
 
+  const handleSecondaryFilesChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files) {
+      setSecondaryFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (!file) {
@@ -101,6 +111,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
         formData.append("category", category)
       );
       formData.append("image", file);
+      secondaryFiles.forEach((file) =>
+        formData.append("secondaryImages", file)
+      );
 
       // Enviar los datos al endpoint
       const response = await fetch("/api/v1/db/add-product", {
@@ -119,9 +132,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
           sizes: [],
           quantity: null,
           imageUrl: "",
+          secondaryImages: [],
           category: [],
         });
         setFile(null);
+        setSecondaryFiles([]);
         setIsDialogOpen(false);
       } else {
         const errorData = await response.json();
@@ -237,12 +252,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <div className="flex flex-wrap items-center space-x-2 mt-2">
+              <div className="flex truncate w-[90%] items-center space-x-2 mt-2">
                 <Button
                   variant="default"
                   onClick={() => document.getElementById("image")?.click()}
                 >
-                  Subir Imagen
+                  Subir
                 </Button>
                 <span className="text-gray-600 text-sm">
                   {file ? file.name : "Ningún archivo seleccionado"}
@@ -253,6 +268,34 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
                   El archivo supera el tamaño máximo permitido de 25 MB.
                 </p>
               )}
+            </div>
+            {/* Imagen secundarias */}
+            <div className="md:col-span-2">
+              <Label htmlFor="secondaryImages">Imágenes Secundarias</Label>
+              <input
+                type="file"
+                id="secondaryImages"
+                name="secondaryImages"
+                accept="image/*"
+                multiple
+                onChange={handleSecondaryFilesChange}
+                className="hidden"
+              />
+              <div className="flex truncate w-[90%] items-center space-x-2 mt-2">
+                <Button
+                  variant="default"
+                  onClick={() =>
+                    document.getElementById("secondaryImages")?.click()
+                  }
+                >
+                  Subir
+                </Button>
+                <span className="text-gray-600 text-sm">
+                  {secondaryFiles.length > 0
+                    ? `${secondaryFiles.length} archivos seleccionados`
+                    : "Ningún archivo seleccionado"}
+                </span>
+              </div>
             </div>
             {/* Talles */}
             <div className="md:col-span-2">

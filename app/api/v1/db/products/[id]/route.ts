@@ -175,6 +175,7 @@ export async function DELETE(
       );
     }
 
+    // Eliminar imagen principal si existe
     if (product.imageUrl) {
       const imageKey = product.imageUrl.split("/").pop();
       try {
@@ -184,9 +185,32 @@ export async function DELETE(
             Key: imageKey!,
           })
         );
-        console.log(`Imagen ${imageKey} eliminada del bucket.`);
+        console.log(`Imagen principal ${imageKey} eliminada del bucket.`);
       } catch (error) {
-        console.error("Error al eliminar la imagen del bucket:", error);
+        console.error(
+          "Error al eliminar la imagen principal del bucket:",
+          error
+        );
+      }
+    }
+
+    if (product.secondaryImages && product.secondaryImages.length > 0) {
+      for (const secondaryImage of product.secondaryImages) {
+        const imageKey = secondaryImage.split("/").pop();
+        try {
+          await s3Client.send(
+            new DeleteObjectCommand({
+              Bucket: process.env.R2_BUCKET_NAME!,
+              Key: imageKey!,
+            })
+          );
+          console.log(`Imagen secundaria ${imageKey} eliminada del bucket.`);
+        } catch (error) {
+          console.error(
+            `Error al eliminar la imagen secundaria ${imageKey} del bucket:`,
+            error
+          );
+        }
       }
     }
 

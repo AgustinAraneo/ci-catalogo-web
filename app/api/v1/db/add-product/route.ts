@@ -25,9 +25,11 @@ export async function POST(req: NextRequest) {
     // Extraer los campos y archivos
     const fields = formData.fields;
     const file = formData.files.image;
+    const secondaryFiles = formData.files.secondaryImages;
 
     console.log("Campos recibidos:", fields);
-    console.log("Archivo recibido:", file);
+    console.log("Archivo principal recibido:", file);
+    console.log("Imágenes secundarias recibidas:", secondaryFiles);
 
     const {
       title,
@@ -58,41 +60,89 @@ export async function POST(req: NextRequest) {
     console.log("Sizes procesados:", sizesArray);
     console.log("Categorías procesadas:", categoryArray);
 
-
     let imageUrl = "";
     if (file) {
-      console.log("Procesando archivo para subir a Cloudflare R2...");
+      const filesToProcess = Array.isArray(file) ? file : [file];
+      for (const singleFile of filesToProcess) {
+        console.log("Procesando archivo principal...");
 
-      const sanitizedFilename = file.filename
-        .toLowerCase()
-        .replace(/\s+/g, "_")
-        .replace(/[^a-z0-9_\.-]/g, "");
+        const sanitizedFilename = singleFile.filename
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_\.-]/g, "");
 
-      const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
 
-      const s3Client = new S3Client({
-        region: "auto",
-        endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-        },
-      });
+        const s3Client = new S3Client({
+          region: "auto",
+          endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+          credentials: {
+            accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+          },
+        });
 
-      const uploadParams = {
-        Bucket: process.env.R2_BUCKET_NAME!,
-        Key: fileKey,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-      };
+        const uploadParams = {
+          Bucket: process.env.R2_BUCKET_NAME!,
+          Key: fileKey,
+          Body: singleFile.buffer,
+          ContentType: singleFile.mimetype,
+        };
 
-      console.log("Subiendo archivo con los parámetros:", uploadParams);
-      const command = new PutObjectCommand(uploadParams);
-      await s3Client.send(command);
+        console.log(
+          "Subiendo archivo principal con los parámetros:",
+          uploadParams
+        );
+        const command = new PutObjectCommand(uploadParams);
+        await s3Client.send(command);
 
-      const encodedFileKey = encodeURIComponent(fileKey);
-      imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
-      console.log("Archivo subido exitosamente:", imageUrl);
+        const encodedFileKey = encodeURIComponent(fileKey);
+        imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
+        console.log("Archivo principal subido exitosamente:", imageUrl);
+      }
+    }
+
+    // Subir imágenes secundarias
+    const secondaryImagesUrls: string[] = [];
+    if (secondaryFiles) {
+      const filesToProcess = Array.isArray(secondaryFiles)
+        ? secondaryFiles
+        : [secondaryFiles];
+      for (const singleFile of filesToProcess) {
+        console.log("Procesando imagen secundaria...");
+
+        const sanitizedFilename = singleFile.filename
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_\.-]/g, "");
+
+        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+
+        const s3Client = new S3Client({
+          region: "auto",
+          endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+          credentials: {
+            accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+            secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+          },
+        });
+
+        const uploadParams = {
+          Bucket: process.env.R2_BUCKET_NAME!,
+          Key: fileKey,
+          Body: singleFile.buffer,
+          ContentType: singleFile.mimetype,
+        };
+
+        console.log("Subiendo imagen secundaria con parámetros:", uploadParams);
+        const command = new PutObjectCommand(uploadParams);
+        await s3Client.send(command);
+
+        const encodedFileKey = encodeURIComponent(fileKey);
+        const imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
+        secondaryImagesUrls.push(imageUrl);
+        console.log("Imagen secundaria subida exitosamente:", imageUrl);
+      }
     }
 
     console.log("Guardando producto en la base de datos...");
@@ -107,6 +157,7 @@ export async function POST(req: NextRequest) {
         sizes: sizesArray as string[],
         quantity: quantity ? parseInt(quantity as string, 10) : null,
         imageUrl: imageUrl,
+        secondaryImages: secondaryImagesUrls,
         category: categoryArray as string[],
       },
     });
@@ -141,7 +192,7 @@ interface FormFile {
 }
 
 interface FormFiles {
-  [key: string]: FormFile;
+  [key: string]: FormFile | FormFile[];
 }
 
 async function parseFormData(
@@ -173,12 +224,28 @@ async function parseFormData(
 
         file.on("end", () => {
           const buffer = Buffer.concat(chunks);
-          files[fieldname] = {
-            filename,
-            encoding,
-            mimetype: mimeType,
-            buffer,
-          };
+          if (files[fieldname]) {
+            if (Array.isArray(files[fieldname])) {
+              (files[fieldname] as FormFile[]).push({
+                filename,
+                encoding,
+                mimetype: mimeType,
+                buffer,
+              });
+            } else {
+              files[fieldname] = [
+                files[fieldname] as FormFile,
+                { filename, encoding, mimetype: mimeType, buffer },
+              ];
+            }
+          } else {
+            files[fieldname] = {
+              filename,
+              encoding,
+              mimetype: mimeType,
+              buffer,
+            };
+          }
         });
       }
     );

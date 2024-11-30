@@ -13,7 +13,15 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 }) => {
   const router = useRouter();
 
-  const imageUrl = product?.imageUrl || "/assets/Productos/fallback-image.jpg";
+  // Estado para manejar la imagen principal
+  const [mainImage, setMainImage] = useState(
+    product?.imageUrl || "/assets/Productos/fallback-image.jpg"
+  );
+  const [secondaryImages] = useState(product?.secondaryImages || []);
+
+  const handleImageClick = (clickedImage: string) => {
+    setMainImage(clickedImage);
+  };
 
   const handleBuy = () => {
     if (product) {
@@ -47,30 +55,54 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 
   const handleMouseLeave = () => setIsZoomed(false);
 
+  // Lista de imágenes a mostrar en miniaturas
+  const displayedImages = [product?.imageUrl || "", ...secondaryImages];
+
   return (
-    <div className="container mx-auto  flex flex-col items-center px-4 md:px-0">
-      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:justify-between w-full">
-        <div
-          className="relative w-full md:w-2/3 h-auto overflow-hidden"
-          onMouseEnter={handleMouseEnter}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
+    <div className="container mx-auto flex flex-col items-center px-4 md:px-0">
+      <div className="relative flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:justify-between w-full md:gap-16">
+        <div className="relative w-full md:w-[550px] h-auto overflow-hidden">
           {product?.discountPrice && (
-            <div className="absolute top-2 left-2  bg-red-500 text-white px-3 py-1 text-sm rounded font-lato z-[10]">
+            <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 text-sm rounded font-lato z-[10]">
               SALE
             </div>
           )}
-          <img
-            src={imageUrl}
-            alt={product?.title || "Producto"}
-            className={`w-full h-auto object-cover object-center transition-transform duration-300 w-full md:w-[550px] h-[55vh] md:h-[500px] ${
-              isZoomed ? "scale-150" : "scale-100"
-            }`}
-            style={{
-              transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-            }}
-          />
+          <div
+            className="relative w-full h-auto"
+            onMouseEnter={handleMouseEnter}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <img
+              src={mainImage}
+              alt={product?.title || "Producto"}
+              className={`object-cover object-center transition-transform duration-300 w-full md:w-[550px] h-[55vh] md:h-[500px] ${
+                isZoomed ? "scale-150" : "scale-100"
+              }`}
+              style={{
+                transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+              }}
+            />
+          </div>
+          {displayedImages.length > 0 && (
+            <div className="flex gap-2 mt-4">
+              {displayedImages.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`Imagen ${index === 0 ? "principal" : "secundaria"} ${
+                    index + 1
+                  }`}
+                  className={`w-16 h-16 object-cover cursor-pointer border ${
+                    mainImage === img
+                      ? "border-black"
+                      : "border-gray-300 hover:border-black"
+                  } rounded`}
+                  onClick={() => handleImageClick(img)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="w-full md:w-[60%]">

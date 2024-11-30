@@ -8,6 +8,7 @@ export interface ProductRequestBody {
   quantity: number | null;
   imageUrl: string;
   category: string[];
+  secondaryImages?: string[];
 }
 
 //Products
@@ -21,6 +22,7 @@ export interface ProductNeedId {
   quantity: number | null;
   imageUrl: string;
   category: string[];
+  secondaryImages?: string[];
 }
 
 export interface Product {
@@ -33,6 +35,7 @@ export interface Product {
   quantity: number | null;
   imageUrl: string;
   category: string[];
+  secondaryImages?: string[];
 }
 
 export interface EditProductDialogProps {

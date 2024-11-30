@@ -15,7 +15,8 @@ model Product {
   discountPrice Float?     
   sizes        String[]
   quantity     Int?
-  imageUrl     String     
+  imageUrl       String 
+  secondaryImages String[] @default([])
   category     String[]    
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt

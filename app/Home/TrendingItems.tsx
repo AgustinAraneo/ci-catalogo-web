@@ -34,7 +34,7 @@ export const TrendingItems = () => {
       </h6>
 
       {/* Contenedor con gap entre las imágenes */}
-      <div className="flex w-full pt-8 h-[700px] gap-8">
+      <div className="flex md:flex-row flex-col w-full pt-8 h-[700px] gap-8">
         <CategoryItem
           imageSrc="/assets/img/top-categories-decor.png"
           title="Blazers"
