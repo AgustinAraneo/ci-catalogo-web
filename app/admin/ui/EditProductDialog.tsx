@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
-import { ProductFormState } from "@/types/type";
+import type { ProductFormState } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 import { filterList } from "@/app/src/data/data.categorys";
 import type { EditProductDialogProps, Product } from "@/types/type";
