@@ -46,27 +46,13 @@ export const HomeAdmin = () => {
       }
 
       const formData = new FormData();
-      if (updatedProduct.title) formData.append("title", updatedProduct.title);
-      if (updatedProduct.price)
-        formData.append("price", String(updatedProduct.price));
-      if (
-        updatedProduct.quantity !== null &&
-        updatedProduct.quantity !== undefined
-      ) {
-        formData.append("quantity", String(updatedProduct.quantity));
-      }
-      if (updatedProduct.sizes)
-        formData.append("sizes", JSON.stringify(updatedProduct.sizes));
-      if (updatedProduct.category)
-        formData.append("category", JSON.stringify(updatedProduct.category));
-      if (updatedProduct.description)
-        formData.append("description", updatedProduct.description);
-      if (
-        updatedProduct.discountPrice !== null &&
-        updatedProduct.discountPrice !== undefined
-      ) {
-        formData.append("discountPrice", String(updatedProduct.discountPrice));
-      }
+      formData.append("title", updatedProduct.title || "");
+      formData.append("price", String(updatedProduct.price || ""));
+      formData.append("quantity", updatedProduct.quantity != null ? String(updatedProduct.quantity) : "");
+      formData.append("sizes", JSON.stringify(updatedProduct.sizes || []));
+      formData.append("category", JSON.stringify(updatedProduct.category || []));
+      formData.append("description", updatedProduct.description || "");
+      formData.append("discountPrice", updatedProduct.discountPrice != null ? String(updatedProduct.discountPrice) : "");
       if (file) {
         formData.append("image", file);
       }

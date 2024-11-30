@@ -278,23 +278,37 @@ export async function PUT(
       data.price = parsedPrice;
     }
 
-    if (fields.discountPrice) {
+    if (fields.discountPrice !== undefined) {
       const discountPriceValue = Array.isArray(fields.discountPrice)
         ? fields.discountPrice[0]
         : fields.discountPrice;
-      const parsedDiscountPrice = parseFloat(discountPriceValue);
-      if (!isNaN(parsedDiscountPrice)) {
-        data.discountPrice = parsedDiscountPrice;
+
+      if (discountPriceValue === "") {
+        data.discountPrice = null;
+      } else {
+        const parsedDiscountPrice = parseFloat(discountPriceValue);
+        if (!isNaN(parsedDiscountPrice)) {
+          data.discountPrice = parsedDiscountPrice;
+        } else {
+          throw new Error("El precio de descuento no es válido");
+        }
       }
     }
 
-    if (fields.quantity) {
+    if (fields.quantity !== undefined) {
       const quantityValue = Array.isArray(fields.quantity)
         ? fields.quantity[0]
         : fields.quantity;
-      const parsedQuantity = parseInt(quantityValue, 10);
-      if (!isNaN(parsedQuantity)) {
-        data.quantity = parsedQuantity;
+
+      if (quantityValue === "") {
+        data.quantity = null;
+      } else {
+        const parsedQuantity = parseInt(quantityValue, 10);
+        if (!isNaN(parsedQuantity)) {
+          data.quantity = parsedQuantity;
+        } else {
+          throw new Error("La cantidad no es válida");
+        }
       }
     }
 
