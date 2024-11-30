@@ -1,6 +1,6 @@
 // app/api/v1/db/products/[id]/route.ts
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import {
   S3Client,
