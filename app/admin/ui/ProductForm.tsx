@@ -10,20 +10,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog/dialog";
-import type { Product } from "@/types/type";
+import type { Product, ProductFormState } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 import { filterList } from "@/app/src/data/data.categorys";
+import CurrencyInput from "react-currency-input-field";
 
 interface ProductFormProps {
   onAddProduct: (newProduct: Product) => void;
 }
 
 export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
-  const [newProduct, setNewProduct] = useState<Product>({
+  const [newProduct, setNewProduct] = useState<ProductFormState>({
     title: "",
     description: "",
-    price: 0,
-    discountPrice: null,
+    price: "",
+    discountPrice: "",
     sizes: [],
     quantity: null,
     imageUrl: "",
@@ -32,7 +33,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
   });
 
   const [file, setFile] = useState<File | null>(null);
-  const [secondaryFiles, setSecondaryFiles] = useState<File[]>([]); // Nuevo estado para imágenes secundarias
+  const [secondaryFiles, setSecondaryFiles] = useState<File[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleInputChange = (
@@ -41,10 +42,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
       ...prev,
-      [name]:
-        name === "price" || name === "discountPrice"
-          ? parseFloat(value) || null
-          : value,
+      [name]: value,
     }));
   };
 
@@ -96,14 +94,31 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
 
       const formData = new FormData();
       formData.append("title", newProduct.title);
-      formData.append("price", newProduct.price.toString());
+
+      // Convertir el precio a número
+      const priceValue = parseFloat(
+        newProduct.price.replace(/\./g, "").replace(",", ".")
+      );
+      if (isNaN(priceValue)) {
+        alert("El precio no es válido.");
+        return;
+      }
+      formData.append("price", priceValue.toString());
+
+      // Convertir el precio con descuento a número si existe
+      if (newProduct.discountPrice) {
+        const discountPriceValue = parseFloat(
+          newProduct.discountPrice.replace(/\./g, "").replace(",", ".")
+        );
+        if (isNaN(discountPriceValue)) {
+          alert("El precio con descuento no es válido.");
+          return;
+        }
+        formData.append("discountPrice", discountPriceValue.toString());
+      }
+
       if (newProduct.description)
         formData.append("description", newProduct.description);
-      if (
-        newProduct.discountPrice !== null &&
-        newProduct.discountPrice !== undefined
-      )
-        formData.append("discountPrice", newProduct.discountPrice.toString());
       if (newProduct.quantity !== null && newProduct.quantity !== undefined)
         formData.append("quantity", newProduct.quantity.toString());
       newProduct.sizes.forEach((size) => formData.append("sizes", size));
@@ -127,8 +142,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
         setNewProduct({
           title: "",
           description: "",
-          price: 0,
-          discountPrice: null,
+          price: "",
+          discountPrice: "",
           sizes: [],
           quantity: null,
           imageUrl: "",
@@ -152,7 +167,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
 
   const isFormValid =
     newProduct.title.trim() !== "" &&
-    newProduct.price > 0 &&
+    newProduct.price !== "" &&
     newProduct.sizes.length > 0 &&
     isFileSizeValid &&
     file !== null;
@@ -190,15 +205,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
             {/* Precio */}
             <div>
               <Label htmlFor="price">Precio</Label>
-              <Input
-                type="number"
+              <CurrencyInput
                 id="price"
                 name="price"
-                value={newProduct.price || ""}
-                onChange={handleInputChange}
-                placeholder="Ejemplo: 199.99"
-                min="0"
-                className="w-full"
+                placeholder="Ejemplo: 2.330,00"
+                decimalsLimit={2}
+                decimalSeparator=","
+                groupSeparator="."
+                prefix="$ "
+                value={newProduct.price}
+                onValueChange={(value) => {
+                  setNewProduct((prev) => ({
+                    ...prev,
+                    price: value || "",
+                  }));
+                }}
+                className="w-full p-2 border rounded-md"
               />
             </div>
             {/* Descripción */}
@@ -216,15 +238,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
             {/* Precio con Descuento */}
             <div>
               <Label htmlFor="discountPrice">Precio con Descuento</Label>
-              <Input
-                type="number"
+              <CurrencyInput
                 id="discountPrice"
                 name="discountPrice"
+                placeholder="Ejemplo: 1.999,99"
+                decimalsLimit={2}
+                decimalSeparator=","
+                groupSeparator="."
+                prefix="$ "
                 value={newProduct.discountPrice || ""}
-                onChange={handleInputChange}
-                placeholder="Ejemplo: 149.99"
-                min="0"
-                className="w-full"
+                onValueChange={(value) => {
+                  setNewProduct((prev) => ({
+                    ...prev,
+                    discountPrice: value || "",
+                  }));
+                }}
+                className="w-full p-2 border rounded-md"
               />
             </div>
             {/* Cantidad */}
@@ -269,7 +298,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
                 </p>
               )}
             </div>
-            {/* Imagen secundarias */}
+            {/* Imágenes secundarias */}
             <div className="md:col-span-2">
               <Label htmlFor="secondaryImages">Imágenes Secundarias</Label>
               <input

@@ -11,15 +11,27 @@ import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
+import { ProductFormState } from "@/types/type";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 import { filterList } from "@/app/src/data/data.categorys";
 import type { EditProductDialogProps, Product } from "@/types/type";
+import CurrencyInput from "react-currency-input-field";
 
 export const EditProductDialog: React.FC<EditProductDialogProps> = ({
   product: initialProduct,
   onUpdateProduct,
 }) => {
-  const [productState, setProductState] = useState<Product>(initialProduct);
+  //primero es string para poder manejar la librería nueva
+  const initialFormState: ProductFormState = {
+    ...initialProduct,
+    price: initialProduct.price ? initialProduct.price.toString() : "",
+    discountPrice: initialProduct.discountPrice
+      ? initialProduct.discountPrice.toString()
+      : "",
+  };
+
+  const [productState, setProductState] =
+    useState<ProductFormState>(initialFormState);
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [isFileSizeValid, setIsFileSizeValid] = useState(true);
@@ -31,10 +43,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     const { name, value } = e.target;
     setProductState((prev) => ({
       ...prev,
-      [name]:
-        name === "price" || name === "discountPrice" || name === "quantity"
-          ? parseFloat(value) || null
-          : value,
+      [name]: value,
     }));
   };
 
@@ -79,7 +88,39 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
     setIsLoading(true);
 
     try {
-      await onUpdateProduct(productState, file);
+      // Convertir price y discountPrice a números para respetar los tipos de product (numbers)
+      const priceValue = parseFloat(
+        productState.price.replace(/\./g, "").replace(",", ".")
+      );
+      if (isNaN(priceValue)) {
+        alert("El precio no es válido.");
+        setIsLoading(false);
+        return;
+      }
+
+      const discountPriceValue = productState.discountPrice
+        ? parseFloat(
+            productState.discountPrice.replace(/\./g, "").replace(",", ".")
+          )
+        : null;
+
+      if (
+        productState.discountPrice &&
+        discountPriceValue !== null &&
+        isNaN(discountPriceValue)
+      ) {
+        alert("El precio con descuento no es válido.");
+        setIsLoading(false);
+        return;
+      }
+
+      const updatedProduct: Product = {
+        ...productState,
+        price: priceValue,
+        discountPrice: discountPriceValue,
+      };
+
+      await onUpdateProduct(updatedProduct, file);
       setIsOpen(false);
     } catch (error) {
       console.error("Error al guardar cambios:", error);
@@ -93,7 +134,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
 
   const isFormValid =
     productState.title.trim() !== "" &&
-    productState.price > 0 &&
+    productState.price.trim() !== "" &&
     productState.sizes.length > 0 &&
     isFileSizeValid;
 
@@ -123,25 +164,43 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           {/* Precio */}
           <div>
             <Label htmlFor="price">Precio</Label>
-            <Input
-              type="number"
+            <CurrencyInput
+              id="price"
               name="price"
-              placeholder="Precio"
+              placeholder="Ejemplo: 2.330,00"
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              prefix="$ "
               value={productState.price}
-              onChange={handleInputChange}
-              className="w-full"
+              onValueChange={(value) => {
+                setProductState((prev) => ({
+                  ...prev,
+                  price: value || "",
+                }));
+              }}
+              className="w-full p-2 border rounded-md"
             />
           </div>
           {/* Precio con Descuento */}
           <div>
             <Label htmlFor="discountPrice">Precio con Descuento</Label>
-            <Input
-              type="number"
+            <CurrencyInput
+              id="discountPrice"
               name="discountPrice"
-              placeholder="Precio con descuento"
+              placeholder="Ejemplo: 1.999,99"
+              decimalsLimit={2}
+              decimalSeparator=","
+              groupSeparator="."
+              prefix="$ "
               value={productState.discountPrice || ""}
-              onChange={handleInputChange}
-              className="w-full"
+              onValueChange={(value) => {
+                setProductState((prev) => ({
+                  ...prev,
+                  discountPrice: value || "",
+                }));
+              }}
+              className="w-full p-2 border rounded-md"
             />
           </div>
           {/* Cantidad */}
@@ -151,7 +210,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
               type="number"
               name="quantity"
               placeholder="Cantidad en stock"
-              value={productState.quantity || ""}
+              value={productState.quantity ?? ""}
               onChange={handleInputChange}
               className="w-full"
             />

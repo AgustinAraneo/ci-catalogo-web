@@ -11,6 +11,18 @@ export interface ProductRequestBody {
   secondaryImages?: string[];
 }
 
+export interface ProductFormState {
+  title: string;
+  description: string | null;
+  price: string;
+  discountPrice: string;
+  sizes: string[];
+  quantity: number | null;
+  imageUrl: string;
+  secondaryImages?: string[];
+  category: string[];
+}
+
 //Products
 export interface ProductNeedId {
   id: string;
