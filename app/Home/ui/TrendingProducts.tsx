@@ -100,7 +100,7 @@ export const TrendingProducts = () => {
               </div>
               <div>
                 <div className="sm:hidden">
-                  <Skeleton className="w-[290px] h-[420px]" />
+                  <Skeleton className="w-[340px] h-[420px]" />
                 </div>
                 <div className="hidden sm:grid sm:grid-cols-4 gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
