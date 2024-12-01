@@ -14,6 +14,7 @@ type FiltersProps = {
   setSearchQuery: (query: string) => void;
   priceLimits: [number, number];
   categoryCounts: Record<string, number>;
+  productsLenght: number;
 };
 
 export const Filters: FC<FiltersProps> = ({
@@ -25,11 +26,9 @@ export const Filters: FC<FiltersProps> = ({
   setSearchQuery,
   priceLimits,
   categoryCounts,
+  productsLenght,
 }) => {
-  const totalProducts = Object.values(categoryCounts).reduce(
-    (acc, count) => acc + count,
-    0
-  );
+  const totalProducts = productsLenght;
 
   return (
     <div className="relative md:w-1/4">

@@ -137,6 +137,7 @@ export const HomeShop = () => {
         setSearchQuery={setSearchQuery}
         priceLimits={priceLimits}
         categoryCounts={categoryCounts}
+        productsLenght={products.length}
       />
       <main className="w-full px-6 md:px-0 md:w-3/4">
         <ProductList products={filteredProducts} imageUrls={imageUrls} />
