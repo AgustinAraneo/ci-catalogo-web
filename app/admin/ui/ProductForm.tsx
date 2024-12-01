@@ -177,7 +177,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <button
-          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="pb-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           onClick={() => setIsDialogOpen(true)}
         >
           Agregar Producto
@@ -355,7 +355,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
             <div className="md:col-span-2">
               <Label>Talles</Label>
               <div className="flex flex-wrap gap-2 mt-2">
-                {["S", "M", "L", "XL"].map((size) => (
+                {["XS","S", "M", "L", "XL"].map((size) => (
                   <div key={size} className="flex items-center space-x-2">
                     <Checkbox
                       id={`size-${size}`}
