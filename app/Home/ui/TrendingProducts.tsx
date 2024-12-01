@@ -98,10 +98,15 @@ export const TrendingProducts = () => {
                   <Skeleton key={index} className="w-[128px] h-[42px]" />
                 ))}
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <Skeleton key={index} className="w-[290px] h-[420px]" />
-                ))}
+              <div>
+                <div className="sm:hidden">
+                  <Skeleton className="w-[290px] h-[420px]" />
+                </div>
+                <div className="hidden sm:grid sm:grid-cols-4 gap-4">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <Skeleton key={index} className="w-[290px] h-[420px]" />
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
