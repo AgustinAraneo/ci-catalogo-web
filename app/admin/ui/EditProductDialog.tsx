@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/Input/input";
 import { Checkbox } from "@/components/ui/Checkbox/checkbox";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/components/ui/Label/label";
+import { FaExchangeAlt , FaUpload  } from "react-icons/fa";
 import type {
   EditProductDialogProps,
   Product,
@@ -204,7 +205,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           <FiEdit className="text-gold hover:text-gold/80 transition duration-150 h-4 w-4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-screen overflow-y-auto max-w-xs sm:max-w-sm mx-auto">
+      <DialogContent className="max-h-screen overflow-y-auto w-full max-w-4xl mx-auto">
+
         <DialogHeader>
           <DialogTitle>Editar Producto</DialogTitle>
         </DialogHeader>
@@ -288,17 +290,28 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           </div>
           {/* Imagen Principal */}
           <div className="md:col-span-2">
-            <Label>Imagen Principal</Label>
+            <div className="flex items-center">
+              <Label>Imagen Principal</Label>
+            </div>
             {productState.imageUrl && (
-              <div className="flex justify-center mb-4">
+              <div className="flex flex-col items-center pb-2 pt-1">
                 <img
                   src={productState.imageUrl}
                   alt="Producto actual"
                   className="max-h-32"
                 />
+                <div className="flex items-center mt-2">
+                  <FaExchangeAlt
+                    className="text-xl cursor-pointer text-gray-500 hover:text-gold"
+                    onClick={() => document.getElementById("image")?.click()}
+                    title="Reemplazar imagen"
+                  />
+                  <span className="ml-2 text-gray-600 text-sm">
+                    {file ? file.name : "Ningún archivo seleccionado"}
+                  </span>
+                </div>
               </div>
             )}
-            <Label htmlFor="image">Modificar imágen principal</Label>
             <div className="flex items-center space-x-4 mt-2">
               <input
                 type="file"
@@ -307,110 +320,96 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <Button
-                variant="default"
-                onClick={() => document.getElementById("image")?.click()}
-              >
-                Subir Imagen
-              </Button>
-              <span className="text-gray-600 text-sm">
-                {file ? file.name : "Ningún archivo seleccionado"}
-              </span>
             </div>
           </div>
-          {/* Imágenes Secundarias */}
-          <div className="md:col-span-2">
-            <Label>Imágenes Secundarias</Label>
-            {productState.secondaryImages &&
-            productState.secondaryImages.length > 0 ? (
+        {/* Imágenes Secundarias */}
+        <div className="md:col-span-2">
+          <Label>Imágenes Secundarias</Label>
+          <div className="flex flex-wrap gap-4 overflow-x-auto py-2 items-center justify-center">
+            {/* Mostrar imágenes secundarias existentes */}
+            {productState.secondaryImages && productState.secondaryImages.length > 0 ? (
               productState.secondaryImages.map((imageUrl, index) => (
-                <div key={index} className="flex flex-col mb-4">
-                  <Label className="mb-4">{`Imagen Secundaria ${
-                    index + 1
-                  }`}</Label>
+                <div key={index} className="flex flex-col items-center">
                   <img
                     src={imageUrl}
                     alt={`Imagen secundaria ${index + 1}`}
-                    className="max-h-32 mb-2"
+                    className="w-32 h-32 object-cover border rounded"
                   />
-                  <div className="flex items-center space-x-4">
-                    <input
-                      type="file"
-                      id={`secondary-image-${index}`}
-                      name={`secondary-image-${index}`}
-                      onChange={(e) => handleSecondaryFileChange(e, index)}
-                      className="hidden"
-                    />
-                    <Button
-                      variant="default"
+                  <div className="flex items-center mt-2">
+                    <FaExchangeAlt
+                      className="text-xl cursor-pointer text-gray-500 hover:text-gold"
                       onClick={() =>
                         document
                           .getElementById(`secondary-image-${index}`)
                           ?.click()
                       }
-                    >
-                      Reemplazar Imagen
-                    </Button>
-                    <span className="text-gray-600 text-sm">
+                      title="Reemplazar imagen"
+                    />
+                    <span className="ml-2 text-gray-600 text-sm">
                       {secondaryFiles[index]
                         ? secondaryFiles[index].name
                         : "Ningún archivo seleccionado"}
                     </span>
                   </div>
+                  <input
+                    type="file"
+                    id={`secondary-image-${index}`}
+                    name={`secondary-image-${index}`}
+                    onChange={(e) => handleSecondaryFileChange(e, index)}
+                    className="hidden"
+                  />
                 </div>
               ))
             ) : (
               <p>No hay imágenes secundarias.</p>
             )}
-          </div>
 
-          {/* Agregar Nuevas Imágenes Secundarias */}
-          <div className="md:col-span-2">
-            <Label>Agregar Nuevas Imágenes Secundarias</Label>
-            <div className="flex flex-col mb-4">
-              <Button
-                variant="default"
-                onClick={() =>
-                  document.getElementById("new-secondary-image")?.click()
-                }
-              >
-                Agregar Imagen Secundaria
-              </Button>
+            {/* Botón para agregar nuevas imágenes secundarias */}
+            <div
+              className="flex flex-col items-center justify-center w-32 h-32 border border-dashed border-gray-400 rounded hover:border-blue-500 cursor-pointer"
+              onClick={() => document.getElementById("new-secondary-image")?.click()}
+            >
+              <FaUpload className="text-3xl text-gray-500 hover:text-blue-500" />
+              <span className="text-gray-600 text-sm mt-1">Agregar</span>
               <input
                 type="file"
                 id="new-secondary-image"
                 name="new-secondary-image"
+                multiple
                 onChange={handleNewSecondaryFileChange}
                 className="hidden"
               />
             </div>
-            {/* Mostrar nuevas imágenes secundarias seleccionadas */}
-            {newSecondaryFiles.length > 0 && (
-              <div className="flex flex-col space-y-4">
-                {newSecondaryFiles.map((file, index) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Nueva Imagen Secundaria ${index + 1}`}
-                      className="max-h-32"
-                    />
-                    <span className="text-gray-600 text-sm">{file.name}</span>
-                    <Button
-                      variant="outline"
-                      onClick={() => removeNewSecondaryFile(index)}
-                    >
-                      Eliminar
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
+          {/* Mostrar nuevas imágenes secundarias seleccionadas */}
+          {newSecondaryFiles.length > 0 && (
+            <div className="flex flex-wrap gap-4 py-2">
+              {newSecondaryFiles.map((file, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Nueva Imagen Secundaria ${index + 1}`}
+                    className="w-32 h-32 object-cover border rounded"
+                  />
+                  <span className="text-gray-600 text-sm mt-2">{file.name}</span>
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => removeNewSecondaryFile(index)}
+                  >
+                    Eliminar
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+ 
           {/* Categorías */}
           <div className="md:col-span-2">
             <Label>Categorías</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 pt-2">
               {filterList.map((category) => (
                 <div
                   key={category.value}
@@ -433,8 +432,8 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           {/* Talles */}
           <div className="md:col-span-2">
             <Label>Talles</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {["S", "M", "L", "XL"].map((size) => (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {["XS","S", "M", "L", "XL"].map((size) => (
                 <div key={size} className="flex items-center space-x-2">
                   <Checkbox
                     id={`size-${size}`}
