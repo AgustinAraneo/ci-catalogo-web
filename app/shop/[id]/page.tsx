@@ -15,8 +15,8 @@ import {
   DialogFooter,
 } from "@/components/ui/Dialog/dialog";
 import { Button } from "@/components/ui/Button/button";
-import { Skeleton } from "@/components/ui/Skeleton/skeleton"; // Importamos el componente Skeleton
 import { useProducts } from "@/hooks/useProducts";
+import { HomeIndividualSkeleton } from "./ui/HomeIndividualSkeleton";
 
 const IndividualItemView = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -92,22 +92,9 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
     return (
       <div>
         <Breadcrumb page="Productos" />
-        <div className="min-h-screen container mx-auto p-8 mt-10">
-          <div className="flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8">
-            {/* Componente Skeleton */}
-            <Skeleton className="w-full md:w-1/3 h-64" />
-            <div className="w-full md:w-1/2 space-y-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-6 w-1/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-6 w-1/3" />
-              <div className="flex space-x-2">
-                <Skeleton className="h-8 w-12" />
-                <Skeleton className="h-8 w-12" />
-                <Skeleton className="h-8 w-12" />
-              </div>
-              <Skeleton className="h-12 w-full" />
-            </div>
+        <div className="container mx-auto flex flex-col items-center py-10 md:py-20 gap-10 min-h-screen">
+          <div className="w-full max-w-6xl mx-auto">
+            <HomeIndividualSkeleton />
           </div>
         </div>
       </div>

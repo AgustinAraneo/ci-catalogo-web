@@ -1,20 +1,23 @@
 import type { CategoryItemProps } from "@/types/type";
+import Link from "next/link";
 
 const CategoryItem = ({ imageSrc, title, bgType }: CategoryItemProps) => (
   <div className={`flex-1 ${bgType} bg-cover bg-center relative group`}>
-    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity"></div>
-    <div className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-      <div className="relative w-full h-full flex items-center justify-center">
-        <img
-          src={imageSrc}
-          className="absolute inset-0 z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          style={{ objectFit: "contain" }}
-        />
-        <p className="text-2xl font-bold text-black-primary relative z-10">
-          {title}
-        </p>
+    <Link href={"/shop"}>
+      <div className="absolute inset-0 bg-black opacity-0 md:group-hover:opacity-50 transition-opacity"></div>
+      <div className="absolute inset-0 flex items-center justify-center text-white opacity-0 md:group-hover:opacity-100 transition-opacity">
+        <div className="relative w-full h-full flex items-center justify-center">
+          <img
+            src={imageSrc}
+            className="absolute inset-0 z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            style={{ objectFit: "contain" }}
+          />
+          <p className="text-2xl font-bold text-black-primary relative z-10">
+            {title}
+          </p>
+        </div>
       </div>
-    </div>
+    </Link>
   </div>
 );
 

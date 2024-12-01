@@ -12,7 +12,7 @@ export default function HeaderMobile() {
   };
 
   return (
-    <header className="sticky top-0 inset-x-0 p-6 bg-black z-[100] block md:hidden">
+    <header className="fixed top-0 inset-x-0 p-6 bg-black z-[100] block md:hidden">
       <nav className="container mx-auto">
         <div className="flex flex-auto items-center justify-between h-4">
           <motion.button
