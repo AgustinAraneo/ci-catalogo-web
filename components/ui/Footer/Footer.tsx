@@ -27,7 +27,7 @@ export const Footer = () => {
               <MdEmail className="h-6 w-6 text-gold" />
             </a>
             <a
-              href="https://wa.me/5491134602955"
+              href="https://wa.me/5491151205309"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gold"
@@ -98,12 +98,12 @@ export const Footer = () => {
               <div className="flex items-center space-x-2">
                 <FaPhone className="h-5 w-5 text-gold rotate-90" />
                 <a
-                  href="https://wa.me/5491134602955"
+                  href="https://wa.me/5491151205309"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  +54 9 1134602955
+                  +54 9 1151205309
                 </a>
               </div>
               <div className="flex items-center space-x-2">

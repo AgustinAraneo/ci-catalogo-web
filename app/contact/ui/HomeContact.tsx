@@ -28,7 +28,7 @@ export const HomeContact = () => {
               <MdEmail className="h-8 w-8 text-gold" />
             </div>
             <div className="text-white">
-              <h3 className="text-lg font-semibold">+54 9 1134602955</h3>
+              <h3 className="text-lg font-semibold">+54 9 1151205309</h3>
               <p className="text-gray-400">izquierdoceleste65@gmail.com</p>
             </div>
           </div>

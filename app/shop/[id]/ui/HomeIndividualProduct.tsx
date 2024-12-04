@@ -27,7 +27,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
     if (product) {
       const whatsappMessage = `Hola! \n\nQuería consultarles por el producto: "${product.title}"`;
       window.open(
-        `https://wa.me/5491134602955?text=${encodeURIComponent(
+        `https://wa.me/5491151205309?text=${encodeURIComponent(
           whatsappMessage
         )}`,
         "_blank"
@@ -168,7 +168,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             <div className="flex space-x-2">
               <div className="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition">
                 <a
-                  href="https://wa.me/5491134602955"
+                  href="https://wa.me/5491151205309"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
