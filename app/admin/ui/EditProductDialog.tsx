@@ -437,7 +437,7 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           <div className="md:col-span-2">
             <Label>Talles</Label>
             <div className="flex flex-wrap gap-2 pt-2">
-              {["XS", "S", "M", "L", "XL"].map((size) => (
+              {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                 <div key={size} className="flex items-center space-x-2">
                   <Checkbox
                     id={`size-${size}`}
