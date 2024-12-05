@@ -6,7 +6,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  CarouselApi,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { SingleProduct } from "./SingleProduct";
 import type { Product } from "@/types/type";
