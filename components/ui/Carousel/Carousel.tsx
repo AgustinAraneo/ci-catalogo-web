@@ -1,89 +1,83 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import * as React from "react";
+import {
+  Carousel as ShadcnCarousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  CarouselApi,
+} from "@/components/ui/carousel";
 import { SingleProduct } from "./SingleProduct";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import type { Product } from "@/types/type";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Carousel = ({ products }: { products: Product[] }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [productsPerView, setProductsPerView] = useState(4);
-  const totalProducts = products.length;
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+  const [count, setCount] = React.useState(0);
 
-  const itemWidth = 295;
-  const itemMargin = 16;
-  const itemTotalWidth = itemWidth + itemMargin * 2;
-
-  const updateProductsPerView = () => {
-    const width = window.innerWidth;
-    const possibleProductsPerView = Math.floor(width / itemTotalWidth);
-    setProductsPerView(Math.max(1, possibleProductsPerView));
-  };
-
-  useEffect(() => {
-    updateProductsPerView();
-    window.addEventListener("resize", updateProductsPerView);
-    return () => window.removeEventListener("resize", updateProductsPerView);
-  }, []);
-
-  useEffect(() => {
-    if (currentIndex > totalProducts - productsPerView) {
-      setCurrentIndex(Math.max(totalProducts - productsPerView, 0));
+  React.useEffect(() => {
+    if (!api) {
+      return;
     }
-  }, [productsPerView, totalProducts]);
 
-  const nextSlide = () => {
-    if (currentIndex < totalProducts - productsPerView) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
 
-  const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   return (
-    <div className="relative">
-      {totalProducts > productsPerView && currentIndex > 0 && (
-        <button
-          aria-label="Anterior"
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-200 focus:outline-none"
-          onClick={prevSlide}
-        >
-          <FaChevronLeft className="text-gray-800" />
-        </button>
-      )}
-
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{
-            transform: `translateX(-${currentIndex * itemTotalWidth}px)`,
-            width: `${totalProducts * itemTotalWidth}px`,
-          }}
-        >
-          {products.map((product: Product) => (
-            <div
+    <div className="w-full max-w-7xl mx-auto">
+      <ShadcnCarousel
+        setApi={setApi}
+        className="w-full"
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+      >
+        <CarouselContent>
+          {products.map((product) => (
+            <CarouselItem
               key={product.id}
-              className="flex-shrink-0"
-              style={{ width: `${itemTotalWidth}px` }}
+              className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
             >
-              <SingleProduct product={product} />
-            </div>
+              <div className="p-1">
+                <SingleProduct product={product} />
+              </div>
+            </CarouselItem>
           ))}
-        </div>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </ShadcnCarousel>
+      <div className="py-2 text-center text-sm text-muted-foreground">
+        Producto {current} de {count}
       </div>
-
-      {totalProducts > productsPerView &&
-        currentIndex < totalProducts - productsPerView && (
-          <button
-            aria-label="Siguiente"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-200 focus:outline-none"
-            onClick={nextSlide}
-          >
-            <FaChevronRight className="text-gray-800" />
-          </button>
-        )}
+      <div className="mt-2 flex justify-center gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => api?.scrollPrev()}
+          aria-label="Producto anterior"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => api?.scrollNext()}
+          aria-label="Siguiente producto"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

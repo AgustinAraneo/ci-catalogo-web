@@ -24,6 +24,7 @@
     "body-scroll-lock": "4.0.0-beta.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.5.1",
     "formidable": "^3.5.2",
     "framer-motion": "^11.11.17",
     "init": "^0.1.2",

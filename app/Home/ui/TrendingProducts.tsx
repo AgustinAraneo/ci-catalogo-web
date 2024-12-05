@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import type { Product } from "@/types/type";
 import { Carousel } from "@/components/ui/Carousel/Carousel";
 import { useProducts } from "@/hooks/useProducts";
-import { Skeleton } from "@/components/ui/Skeleton/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 export const TrendingProducts = () => {
   const { products: allProducts } = useProducts();
@@ -39,23 +40,29 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      const placeholdersNeeded = 4 - filteredProducts.length;
+      const placeholdersNeeded = Math.max(0, 10 - filteredProducts.length);
 
       if (placeholdersNeeded > 0) {
-        const placeholders = Array.from(
+        const placeholderImageUrl =
+          filteredProducts[0]?.imageUrl ||
+          "/placeholder.svg?height=400&width=300";
+        const placeholders: Product[] = Array.from(
           { length: placeholdersNeeded },
-          (_, index) => ({
-            ...filteredProducts[index % filteredProducts.length],
+          (_, index): Product => ({
             id: `placeholder-${index}`,
             title: "PRÓXIMAMENTE",
-            description: "Nuevos productos en camino",
+            description: "",
             price: 0,
             discountPrice: 0,
+            imageUrl: placeholderImageUrl,
+            category: [filterItem],
+            sizes: [],
+            quantity: 0,
           })
         );
         setProducts([...filteredProducts, ...placeholders]);
       } else {
-        setProducts(filteredProducts);
+        setProducts(filteredProducts.slice(0, 10));
       }
 
       setLoading(false);
@@ -77,20 +84,17 @@ export const TrendingProducts = () => {
         <ul className="flex justify-center pb-6 flex-wrap p-2">
           {categoriesWithProducts.map((category) => (
             <li key={category} className="mx-1 my-1">
-              <button
+              <Button
                 onClick={() => setFilterItem(category)}
-                className={`px-4 py-2 border text-sm sm:text-base rounded w-32 ${
-                  category === filterItem
-                    ? "bg-pink-600 text-white border-pink-600"
-                    : "bg-gray-100 text-gray-700 border-gray-200"
-                } hover:opacity-80`}
+                variant={category === filterItem ? "default" : "outline"}
+                className="w-32"
               >
                 {category}
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
-        <div className="mx-auto max-w-7xl overflow-hidden">
+        <div className="mx-auto max-w-7xl overflow-hidden px-4">
           {loading ? (
             <div className="flex flex-col gap-6">
               <div className="flex gap-4 justify-center">
@@ -104,7 +108,7 @@ export const TrendingProducts = () => {
                 </div>
                 <div className="hidden sm:grid sm:grid-cols-4 gap-4">
                   {Array.from({ length: 4 }).map((_, index) => (
-                    <Skeleton key={index} className="w-[290px] h-[420px]" />
+                    <Skeleton key={index} className="w-full h-[400px]" />
                   ))}
                 </div>
               </div>
