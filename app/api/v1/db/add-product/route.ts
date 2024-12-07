@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Busboy from "busboy";
 import { v4 as uuidv4 } from "uuid";
 import { Readable } from "stream";
+import sharp from "sharp";
 
 const prisma = new PrismaClient();
 
@@ -65,14 +66,22 @@ export async function POST(req: NextRequest) {
       const filesToProcess = Array.isArray(file) ? file : [file];
       for (const singleFile of filesToProcess) {
         console.log("Procesando archivo principal...");
-
+    
+        // Convertir el archivo a WebP con compresión
+        const processedBuffer = await sharp(singleFile.buffer)
+          .webp({ quality: 75 }) 
+          .resize({ width: 1920, withoutEnlargement: true })
+          .toBuffer();
+    
+        // Limpiar y generar un nombre único para el archivo
         const sanitizedFilename = singleFile.filename
           .toLowerCase()
           .replace(/\s+/g, "_")
           .replace(/[^a-z0-9_\.-]/g, "");
-
-        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
-
+    
+        const fileKey = `${uuidv4()}-${sanitizedFilename}.webp`;
+    
+        // Configuración del cliente S3 para Cloudflare R2
         const s3Client = new S3Client({
           region: "auto",
           endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -81,26 +90,31 @@ export async function POST(req: NextRequest) {
             secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
           },
         });
-
+    
+        // Configuración de los parámetros para subir el archivo
         const uploadParams = {
           Bucket: process.env.R2_BUCKET_NAME!,
           Key: fileKey,
-          Body: singleFile.buffer,
-          ContentType: singleFile.mimetype,
+          Body: processedBuffer, // Usar el buffer procesado
+          ContentType: "image/webp", // Indicar que el contenido es WebP
         };
-
+    
         console.log(
           "Subiendo archivo principal con los parámetros:",
           uploadParams
         );
+    
+        // Subir el archivo procesado al bucket de Cloudflare R2
         const command = new PutObjectCommand(uploadParams);
         await s3Client.send(command);
-
+    
+        // Construir la URL pública del archivo subido
         const encodedFileKey = encodeURIComponent(fileKey);
         imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
         console.log("Archivo principal subido exitosamente:", imageUrl);
       }
     }
+    
 
     // Subir imágenes secundarias
     const secondaryImagesUrls: string[] = [];
@@ -108,16 +122,24 @@ export async function POST(req: NextRequest) {
       const filesToProcess = Array.isArray(secondaryFiles)
         ? secondaryFiles
         : [secondaryFiles];
+    
       for (const singleFile of filesToProcess) {
         console.log("Procesando imagen secundaria...");
-
+    
+        // Convertir la imagen secundaria a WebP con compresión
+        const processedBuffer = await sharp(singleFile.buffer)
+          .webp({ quality: 75 })
+          .resize({ width: 1920, withoutEnlargement: true })
+          .toBuffer();
+    
+        // Generar un nombre único para la imagen secundaria
         const sanitizedFilename = singleFile.filename
           .toLowerCase()
           .replace(/\s+/g, "_")
           .replace(/[^a-z0-9_\.-]/g, "");
-
-        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
-
+        const fileKey = `${uuidv4()}-${sanitizedFilename}.webp`;
+    
+        // Configuración del cliente S3 para Cloudflare R2
         const s3Client = new S3Client({
           region: "auto",
           endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -126,24 +148,30 @@ export async function POST(req: NextRequest) {
             secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
           },
         });
-
+    
+        // Configuración de los parámetros para subir la imagen secundaria
         const uploadParams = {
           Bucket: process.env.R2_BUCKET_NAME!,
           Key: fileKey,
-          Body: singleFile.buffer,
-          ContentType: singleFile.mimetype,
+          Body: processedBuffer, // Usar el buffer procesado
+          ContentType: "image/webp", // Indicar que el contenido es WebP
         };
-
+    
         console.log("Subiendo imagen secundaria con parámetros:", uploadParams);
+    
+        // Subir la imagen secundaria procesada al bucket de Cloudflare R2
         const command = new PutObjectCommand(uploadParams);
         await s3Client.send(command);
-
+    
+        // Construir la URL pública de la imagen secundaria subida
         const encodedFileKey = encodeURIComponent(fileKey);
         const imageUrl = `${process.env.R2_PUBLIC_HOST}/${encodedFileKey}`;
         secondaryImagesUrls.push(imageUrl);
+    
         console.log("Imagen secundaria subida exitosamente:", imageUrl);
       }
     }
+    
 
     console.log("Guardando producto en la base de datos...");
     const newProduct = await prisma.product.create({

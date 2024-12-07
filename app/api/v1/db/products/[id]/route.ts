@@ -12,6 +12,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import Busboy from "busboy";
 import { Readable } from "stream";
 import type { ProductRequestBody } from "@/types/type";
+import sharp from "sharp";
 
 const prisma = new PrismaClient();
 
@@ -265,18 +266,24 @@ export async function PUT(
           }
         }
 
+        // Convertir la imagen principal a WebP
+        const processedBuffer = await sharp(files.image.buffer)
+          .webp({ quality: 75 }) 
+          .resize({ width: 1920, withoutEnlargement: true })
+          .toBuffer();
+
         const sanitizedFilename = files.image.filename
           .toLowerCase()
           .replace(/\s+/g, "_")
           .replace(/[^a-z0-9_\.-]/g, "");
-        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+        const fileKey = `${uuidv4()}-${sanitizedFilename}.webp`;
 
         await s3Client.send(
           new PutObjectCommand({
             Bucket: process.env.R2_BUCKET_NAME!,
             Key: fileKey,
-            Body: files.image.buffer,
-            ContentType: files.image.mimetype,
+            Body: processedBuffer, // Usar el buffer procesado
+            ContentType: "image/webp", // Indicar que el contenido es WebP
           })
         );
 
@@ -316,52 +323,57 @@ export async function PUT(
           }
         }
 
-        // Subir la nueva imagen
+        // Convertir la imagen secundaria a WebP
+        const processedBuffer = await sharp(file.buffer)
+          .webp({ quality: 80 }) // Convertir a WebP con compresión
+          .toBuffer();
+
         const sanitizedFilename = file.filename
           .toLowerCase()
           .replace(/\s+/g, "_")
           .replace(/[^a-z0-9_\.-]/g, "");
-        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+        const fileKey = `${uuidv4()}-${sanitizedFilename}.webp`;
 
         await s3Client.send(
           new PutObjectCommand({
             Bucket: process.env.R2_BUCKET_NAME!,
             Key: fileKey,
-            Body: file.buffer,
-            ContentType: file.mimetype,
+            Body: processedBuffer, // Usar el buffer procesado
+            ContentType: "image/webp", // Indicar que el contenido es WebP
           })
         );
 
         const newImageUrl = `${process.env.R2_PUBLIC_HOST}/${fileKey}`;
-
-        // Actualizar el array de secondaryImages
         data.secondaryImages[index] = newImageUrl;
       }
     }
+
     for (const key in files) {
       const match = key.match(/^newSecondaryImage-(\d+)$/);
       if (match) {
         const file = files[key];
 
-        // Subir la nueva imagen
+        // Convertir la nueva imagen secundaria a WebP
+        const processedBuffer = await sharp(file.buffer)
+          .webp({ quality: 80 }) // Convertir a WebP con compresión
+          .toBuffer();
+
         const sanitizedFilename = file.filename
           .toLowerCase()
           .replace(/\s+/g, "_")
           .replace(/[^a-z0-9_\.-]/g, "");
-        const fileKey = `${uuidv4()}-${sanitizedFilename}`;
+        const fileKey = `${uuidv4()}-${sanitizedFilename}.webp`;
 
         await s3Client.send(
           new PutObjectCommand({
             Bucket: process.env.R2_BUCKET_NAME!,
             Key: fileKey,
-            Body: file.buffer,
-            ContentType: file.mimetype,
+            Body: processedBuffer, // Usar el buffer procesado
+            ContentType: "image/webp", // Indicar que el contenido es WebP
           })
         );
 
         const newImageUrl = `${process.env.R2_PUBLIC_HOST}/${fileKey}`;
-
-        // Agregar la nueva imagen al array de secondaryImages
         data.secondaryImages.push(newImageUrl);
       }
     }
@@ -377,7 +389,7 @@ export async function PUT(
       updatedProduct,
     });
   } catch (error: unknown) {
-    // Manejo específico para errores conocidos
+    // Manejo de errores
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
