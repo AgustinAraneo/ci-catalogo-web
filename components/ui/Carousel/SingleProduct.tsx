@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { SingleProductProps } from "@/types/type";
@@ -7,6 +8,9 @@ export const SingleProduct = ({ product }: SingleProductProps) => {
   const isPlaceholder = product.id?.startsWith("placeholder") ?? false;
   const isOnSale =
     product.discountPrice && product.discountPrice < product.price;
+
+  // Puedes ajustar los tamaños según tu layout
+  const sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw";
 
   const ProductContent = (
     <Card
@@ -26,11 +30,23 @@ export const SingleProduct = ({ product }: SingleProductProps) => {
               SALE
             </Badge>
           )}
-          <img
-            src={product.imageUrl}
-            alt={isPlaceholder ? "Próximamente" : product.title}
-            className="w-full h-full object-cover transition-transform duration-300 transform hover:scale-105"
-          />
+          <div className="relative w-full h-full">
+            {product.imageUrl ? (
+              <Image
+                src={product.imageUrl}
+                alt={isPlaceholder ? "Próximamente" : product.title}
+                fill
+                sizes={sizes}
+                className="object-cover transition-transform duration-300 transform hover:scale-105"
+                // placeholder="blur" // Opcional, necesitas blurDataURL o imagen muy ligera
+                // blurDataURL="/path/to/placeholder.png"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500 italic">Sin imagen</span>
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start p-4 h-[180px] justify-between">

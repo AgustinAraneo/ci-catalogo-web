@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useState } from "react";
 import { FaWhatsapp, FaInstagram, FaEnvelope } from "react-icons/fa";
 import type { Product } from "@/types/type";
@@ -12,8 +13,6 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
   product,
 }) => {
   const router = useRouter();
-
-  // Estado para manejar la imagen principal
   const [mainImage, setMainImage] = useState(
     product?.imageUrl || "/assets/Productos/fallback-image.jpg"
   );
@@ -37,25 +36,20 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
 
   const inStock = product?.quantity && product.quantity > 0;
 
-  // Image zoom state
+  // Zoom
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseEnter = () => setIsZoomed(true);
-
-  const handleMouseMove = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ): void => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { left, top, width, height } =
       e.currentTarget.getBoundingClientRect();
-    const x = ((e.pageX - left) / width) * 100;
-    const y = ((e.pageY - top) / height) * 100;
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
     setZoomPosition({ x, y });
   };
-
   const handleMouseLeave = () => setIsZoomed(false);
 
-  // Lista de imágenes a mostrar en miniaturas
   const displayedImages = [product?.imageUrl || "", ...secondaryImages];
 
   return (
@@ -72,34 +66,42 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             onMouseEnter={handleMouseEnter}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            style={{ overflow: "hidden" }}
           >
-            <img
-              src={mainImage}
-              alt={product?.title || "Producto"}
-              className={`object-cover object-center transition-transform duration-300 w-full md:w-[550px] h-[55vh] md:h-[500px] ${
-                isZoomed ? "scale-150" : "scale-100"
-              }`}
-              style={{
-                transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-              }}
-            />
+            <div className="relative w-full h-[55vh] md:h-[500px]">
+              <Image
+                src={mainImage}
+                alt={product?.title || "Producto"}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className={`object-cover object-center transition-transform duration-300 ${
+                  isZoomed ? "scale-150" : "scale-100"
+                }`}
+                style={{
+                  transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                }}
+                // placeholder='blur' // Opcional, si tienes un blurDataURL o una imagen placeholder
+              />
+            </div>
           </div>
           {displayedImages.length > 0 && (
             <div className="flex gap-2 mt-4">
               {displayedImages.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt={`Imagen ${index === 0 ? "principal" : "secundaria"} ${
-                    index + 1
-                  }`}
-                  className={`w-16 h-16 object-cover cursor-pointer border ${
-                    mainImage === img
-                      ? "border-black"
-                      : "border-gray-300 hover:border-black"
-                  } rounded`}
-                  onClick={() => handleImageClick(img)}
-                />
+                <div key={index} className="relative w-16 h-16">
+                  <Image
+                    src={img}
+                    alt={`Imagen ${index === 0 ? "principal" : "secundaria"} ${
+                      index + 1
+                    }`}
+                    fill
+                    className={`object-cover cursor-pointer border ${
+                      mainImage === img
+                        ? "border-black"
+                        : "border-gray-300 hover:border-black"
+                    } rounded`}
+                    onClick={() => handleImageClick(img)}
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -162,7 +164,7 @@ export const HomeIndividualProduct: React.FC<HomeIndividualProductProps> = ({
             </div>
           )}
 
-          {/* Social Media Links */}
+          {/* Redes Sociales */}
           <div className="mb-6 flex items-center space-x-4">
             <p className="font-bold">Síguenos en nuestras redes:</p>
             <div className="flex space-x-2">
