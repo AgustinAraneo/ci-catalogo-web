@@ -11,10 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog/dialog";
 import type { Product, ProductFormState } from "@/types/type";
-import { FaUpload  } from "react-icons/fa";
+import { FaUpload } from "react-icons/fa";
 import { Textarea } from "@/components/ui/TextArea/textarea";
 import { filterList } from "@/app/src/data/data.categorys";
 import CurrencyInput from "react-currency-input-field";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 interface ProductFormProps {
   onAddProduct: (newProduct: Product) => void;
@@ -185,9 +186,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
       </DialogTrigger>
       <div className="pt-16 sm:pt-0">
         {/* Ajustamos el padding superior solo para móviles */}
-        <DialogContent className="max-h-screen overflow-y-auto w-full max-w-4xl mx-auto">
+        <DialogContent className="h-full md:h-[90vh] overflow-y-auto w-full max-w-4xl mx-auto">
           <DialogHeader>
-            <DialogTitle>Agregar Producto</DialogTitle>
+            <DialogTitle className="pt-12 md:pt-0">
+              Agregar Producto
+            </DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
             {/* Título */}
@@ -271,91 +274,97 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
                 className="w-full"
               />
             </div>
-          {/* Imagen */}
-          <div className="md:col-span-2">
-            <Label>Imagen</Label>
-            <div
-              className={`flex flex-col items-center justify-center w-32 h-32 border ${
-                file ? "border-solid" : "border-dashed"
-              } border-gray-400 rounded hover:border-blue-500 cursor-pointer`}
-              onClick={() => document.getElementById("image")?.click()}
-            >
-              {file ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="Previsualización"
-                  className="w-32 h-32 object-cover rounded"
-                />
-              ) : (
-                <>
-                  <FaUpload className="text-3xl text-gray-500 hover:text-blue-500" />
-                  <span className="text-gray-600 text-sm mt-1">Agregar Imagen</span>
-                </>
+            {/* Imagen */}
+            <div className="md:col-span-2">
+              <Label>Imagen</Label>
+              <div
+                className={`flex flex-col items-center justify-center w-32 h-32 border ${
+                  file ? "border-solid" : "border-dashed"
+                } border-gray-400 rounded hover:border-blue-500 cursor-pointer`}
+                onClick={() => document.getElementById("image")?.click()}
+              >
+                {file ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt="Previsualización"
+                    className="w-32 h-32 object-cover rounded"
+                  />
+                ) : (
+                  <>
+                    <FaUpload className="text-3xl text-gray-500 hover:text-blue-500" />
+                    <span className="text-gray-600 text-sm mt-1">
+                      Agregar Imagen
+                    </span>
+                  </>
+                )}
+              </div>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              {/* Mostrar el nombre del archivo si existe */}
+              {file && (
+                <div className="flex pl-6 pt-1">
+                  <span className="text-gray-600 text-sm">{file.name}</span>
+                </div>
+              )}
+              {/* Mostrar mensaje de error si el archivo excede el tamaño permitido */}
+              {!isFileSizeValid && (
+                <p className="text-red-500 text-sm mt-2">
+                  El archivo supera el tamaño máximo permitido de 25 MB.
+                </p>
               )}
             </div>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            {/* Mostrar el nombre del archivo si existe */}
-            {file && (
-              <div className="flex pl-6 pt-1">
-                <span className="text-gray-600 text-sm">{file.name}</span>
+            {/* Imágenes Secundarias */}
+            <div className="md:col-span-2">
+              <div className="flex items-center">
+                <Label>Imágenes Secundarias</Label>
+                <FaUpload
+                  className="ml-2 text-1xl cursor-pointer text-gray-500 hover:text-gold"
+                  onClick={() =>
+                    document.getElementById("secondaryImages")?.click()
+                  }
+                  title="Agregar imágenes"
+                />
               </div>
-            )}
-            {/* Mostrar mensaje de error si el archivo excede el tamaño permitido */}
-            {!isFileSizeValid && (
-              <p className="text-red-500 text-sm mt-2">
-                El archivo supera el tamaño máximo permitido de 25 MB.
-              </p>
-            )}
-          </div>
-          {/* Imágenes Secundarias */}
-          <div className="md:col-span-2">
-            <div className="flex items-center">
-              <Label>Imágenes Secundarias</Label>
-              <FaUpload
-                className="ml-2 text-1xl cursor-pointer text-gray-500 hover:text-gold"
-                onClick={() => document.getElementById("secondaryImages")?.click()}
-                title="Agregar imágenes"
+              <input
+                type="file"
+                id="secondaryImages"
+                name="secondaryImages"
+                accept="image/*"
+                multiple
+                onChange={handleSecondaryFilesChange}
+                className="hidden"
               />
+
+              {/* Mostrar previsualización de las imágenes secundarias seleccionadas */}
+              {secondaryFiles.length > 0 && (
+                <div className="flex flex-wrap gap-4 overflow-x-auto mt-4">
+                  {secondaryFiles.map((file, index) => (
+                    <div key={index} className="flex flex-col items-center">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Imagen secundaria ${index + 1}`}
+                        className="w-32 h-32 object-cover border rounded"
+                      />
+                      <span className="text-gray-600 text-sm mt-1">
+                        {file.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            <input
-              type="file"
-              id="secondaryImages"
-              name="secondaryImages"
-              accept="image/*"
-              multiple
-              onChange={handleSecondaryFilesChange}
-              className="hidden"
-            />
-            
-            {/* Mostrar previsualización de las imágenes secundarias seleccionadas */}
-            {secondaryFiles.length > 0 && (
-              <div className="flex flex-wrap gap-4 overflow-x-auto mt-4">
-                {secondaryFiles.map((file, index) => (
-                  <div key={index} className="flex flex-col items-center">
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Imagen secundaria ${index + 1}`}
-                      className="w-32 h-32 object-cover border rounded"
-                    />
-                    <span className="text-gray-600 text-sm mt-1">{file.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
 
             {/* Talles */}
             <div className="md:col-span-2">
               <Label>Talles</Label>
               <div className="flex flex-wrap gap-2 mt-2">
-                {["XS","S", "M", "L", "XL", "XXL"].map((size) => (
+                {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                   <div key={size} className="flex items-center space-x-2">
                     <Checkbox
                       id={`size-${size}`}
@@ -393,14 +402,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ onAddProduct }) => {
               </div>
             </div>
             {/* Botón */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 flex flex-row justify-between">
               <Button
                 onClick={handleSubmit}
                 disabled={!isFormValid}
-                className="w-full sm:w-auto"
+                className="w-fit md:w-full "
               >
                 Agregar Producto
               </Button>
+              <DialogClose className="block md:hidden bg-red-500 rounded-[8px] px-8 text-white">
+                Cancelar
+              </DialogClose>
             </div>
           </div>
         </DialogContent>

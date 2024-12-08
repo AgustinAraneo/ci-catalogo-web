@@ -205,9 +205,9 @@ export const EditProductDialog: React.FC<EditProductDialogProps> = ({
           <FiEdit className="text-gold hover:text-gold/80 transition duration-150 h-4 w-4" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-screen overflow-y-auto w-full max-w-4xl xl:max-w-5xl mx-auto h-[90vh]">
+      <DialogContent className="max-h-screen overflow-y-auto w-full max-w-4xl xl:max-w-5xl mx-auto h-full md:h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Editar Producto</DialogTitle>
+          <DialogTitle className="pt-12 md:pt-0">Editar Producto</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Título */}
