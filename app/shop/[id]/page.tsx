@@ -109,10 +109,10 @@ const IndividualItemView = ({ params }: { params: { id: string } }) => {
           <HomeIndividualProduct product={product} />
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 pt-12">
+        <h2 className="text-2xl font-bold text-center text-gray-800 pt-12">
           Productos relacionados
         </h2>
-        <div className="w-full max-w-5xl pb-12">
+        <div className="w-full max-w-7xl pb-12">
           {displayProducts.length > 0 ? (
             <Carousel products={displayProducts} />
           ) : (

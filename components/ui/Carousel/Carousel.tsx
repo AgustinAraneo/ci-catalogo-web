@@ -4,8 +4,6 @@ import {
   Carousel as ShadcnCarousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { SingleProduct } from "./SingleProduct";
@@ -15,21 +13,30 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Carousel = ({ products }: { products: Product[] }) => {
   const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
+
+  // Determina el número de columnas según el tamaño de pantalla
+  const getGridColumns = () => {
+    if (typeof window !== "undefined") {
+      const width = window.innerWidth;
+      if (width >= 1280) return 5; // xl
+      if (width >= 1024) return 4; // lg
+      if (width >= 768) return 3; // md
+      return 2; // sm
+    }
+    return 5; // Default to xl
+  };
+
+  const [gridColumns, setGridColumns] = React.useState(getGridColumns);
 
   React.useEffect(() => {
-    if (!api) {
-      return;
-    }
+    const handleResize = () => setGridColumns(getGridColumns());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+  // Si hay menos productos que columnas, centra los elementos
+  const justifyClass =
+    products.length < gridColumns ? "justify-center" : "justify-start";
 
   return (
     <div className="w-full max-w-7xl mx-auto">
@@ -41,7 +48,7 @@ export const Carousel = ({ products }: { products: Product[] }) => {
           loop: true,
         }}
       >
-        <CarouselContent>
+        <CarouselContent className={`flex ${justifyClass}`}>
           {products.map((product) => (
             <CarouselItem
               key={product.id}
@@ -53,12 +60,7 @@ export const Carousel = ({ products }: { products: Product[] }) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </ShadcnCarousel>
-      <div className="py-2 text-center text-sm text-muted-foreground">
-        Producto {current} de {count}
-      </div>
       <div className="mt-2 flex justify-center gap-2">
         <Button
           variant="outline"

@@ -50,9 +50,9 @@ export const SingleProduct = ({ product }: SingleProductProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col items-start p-4 h-[180px] justify-between">
-        <div>
+        <div className="w-full">
           <h2
-            className="text-lg font-semibold mb-2 h-[56px] overflow-hidden line-clamp-2"
+            className="text-lg text-center font-semibold mb-2 h-[56px] overflow-hidden line-clamp-2"
             style={{
               display: "-webkit-box",
               WebkitLineClamp: 2,

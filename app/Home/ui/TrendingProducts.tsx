@@ -30,7 +30,7 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(initialCategory)
       );
-      setProducts(filteredProducts);
+      setProducts(filteredProducts.slice(0, 10));
       setLoading(false);
     }
   }, [allProducts]);
@@ -40,31 +40,7 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      const placeholdersNeeded = Math.max(0, 10 - filteredProducts.length);
-
-      if (placeholdersNeeded > 0) {
-        const placeholderImageUrl =
-          filteredProducts[0]?.imageUrl ||
-          "/placeholder.svg?height=400&width=300";
-        const placeholders: Product[] = Array.from(
-          { length: placeholdersNeeded },
-          (_, index): Product => ({
-            id: `placeholder-${index}`,
-            title: "PRÓXIMAMENTE",
-            description: "",
-            price: 0,
-            discountPrice: 0,
-            imageUrl: placeholderImageUrl,
-            category: [filterItem],
-            sizes: [],
-            quantity: 0,
-          })
-        );
-        setProducts([...filteredProducts, ...placeholders]);
-      } else {
-        setProducts(filteredProducts.slice(0, 10));
-      }
-
+      setProducts(filteredProducts.slice(0, 10));
       setLoading(false);
     }
   }, [filterItem, allProducts]);
