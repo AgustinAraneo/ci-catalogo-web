@@ -12,6 +12,7 @@ import { EditProductDialog } from "./EditProductDialog";
 import { DeleteProductDialog } from "./DeleteProductDialog";
 import { ProductTableLoading } from "./ProductTableLoading/ProductTableLoading";
 import { useImageLoader } from "@/hooks/useImageLoader";
+import Image from "next/image"; // Importamos el componente Image de next/image
 
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,
@@ -67,151 +68,165 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product: Product) => (
-              <TableRow key={product.id} className="text-left">
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.title}</TableCell>
-                <TableCell>
-                  {new Intl.NumberFormat("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  }).format(product.price)}
-                </TableCell>
-                <TableCell>
-                  {product.discountPrice !== null
-                    ? new Intl.NumberFormat("es-AR", {
-                        style: "currency",
-                        currency: "ARS",
-                      }).format(product.discountPrice)
-                    : "-"}
-                </TableCell>
-                <TableCell>{product.sizes.join(", ")}</TableCell>
-                <TableCell>{product.category.join(", ")}</TableCell>
-                <TableCell>
-                  {product.quantity !== null ? product.quantity : "-"}
-                </TableCell>
-                <TableCell className="w-[100px]">
-                  <img
-                    src={
-                      product.id &&
-                      typeof product.id === "string" &&
-                      imageUrls[product.id]
-                        ? imageUrls[product.id]
-                        : "/assets/Productos/fallback-image.jpg"
-                    }
-                    alt={product.title || "Imagen por defecto"}
-                    className="w-[50px] h-[50px] object-cover rounded"
-                  />
-                </TableCell>
+            {products.map((product: Product) => {
+              const imageSrc =
+                product.id &&
+                typeof product.id === "string" &&
+                imageUrls[product.id]
+                  ? imageUrls[product.id]
+                  : "/assets/Productos/fallback-image.jpg";
 
-                <TableCell className="w-[50px]">
-                  <a
-                    className="text-blue-500 hover:text-blue-400 transition-all flex justify-center"
-                    href={`/shop/${product.id}`}
-                  >
-                    <FaEye className="w-4 h-4" />
-                  </a>
-                </TableCell>
-                <TableCell className="w-[70px]">
-                  <EditProductDialog
-                    product={product}
-                    onUpdateProduct={onUpdateProduct}
-                  />
-                </TableCell>
-                <TableCell className="w-[0px]">
-                  <DeleteProductDialog
-                    product={product}
-                    onDeleteProduct={onDeleteProduct}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+              return (
+                <TableRow key={product.id} className="text-left">
+                  <TableCell>{product.id}</TableCell>
+                  <TableCell>{product.title}</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(product.price)}
+                  </TableCell>
+                  <TableCell>
+                    {product.discountPrice !== null
+                      ? new Intl.NumberFormat("es-AR", {
+                          style: "currency",
+                          currency: "ARS",
+                        }).format(product.discountPrice)
+                      : "-"}
+                  </TableCell>
+                  <TableCell>{product.sizes.join(", ")}</TableCell>
+                  <TableCell>{product.category.join(", ")}</TableCell>
+                  <TableCell>
+                    {product.quantity !== null ? product.quantity : "-"}
+                  </TableCell>
+                  <TableCell className="w-[100px]">
+                    <div className="relative w-[50px] h-[50px]">
+                      <Image
+                        src={imageSrc}
+                        alt={product.title || "Imagen por defecto"}
+                        fill
+                        className="object-cover rounded"
+                        sizes="50px"
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell className="w-[50px]">
+                    <a
+                      className="text-blue-500 hover:text-blue-400 transition-all flex justify-center"
+                      href={`/shop/${product.id}`}
+                    >
+                      <FaEye className="w-4 h-4" />
+                    </a>
+                  </TableCell>
+                  <TableCell className="w-[70px]">
+                    <EditProductDialog
+                      product={product}
+                      onUpdateProduct={onUpdateProduct}
+                    />
+                  </TableCell>
+                  <TableCell className="w-[0px]">
+                    <DeleteProductDialog
+                      product={product}
+                      onDeleteProduct={onDeleteProduct}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
 
       {/* Tarjetas para dispositivos móviles */}
       <div className="block sm:hidden">
-        {products.map((product: Product) => (
-          <div
-            key={product.id}
-            className="border rounded-lg p-4 mb-4 bg-white shadow-md"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-lg">{product.title}</h2>
-            </div>
-            <p className="text-gray-500 text-sm">
-              Nro. producto: <span className="text-gray-700">{product.id}</span>
-            </p>
-            <p className="text-gray-500 text-sm">
-              Precio:{" "}
-              <span className="text-gray-700">
-                {new Intl.NumberFormat("es-AR", {
-                  style: "currency",
-                  currency: "ARS",
-                }).format(product.price)}
-              </span>
-            </p>
-            <p className="text-gray-500 text-sm">
-              Precio oferta:{" "}
-              <span className="text-gray-700">
-                {product.discountPrice !== null
-                  ? new Intl.NumberFormat("es-AR", {
-                      style: "currency",
-                      currency: "ARS",
-                    }).format(product.discountPrice)
-                  : "-"}
-              </span>
-            </p>
-            <p className="text-gray-500 text-sm">
-              Talles:{" "}
-              <span className="text-gray-700">{product.sizes.join(", ")}</span>
-            </p>
-            <p className="text-gray-500 text-sm">
-              Categoría:{" "}
-              <span className="text-gray-700">
-                {product.category.join(", ")}
-              </span>
-            </p>
-            <p className="text-gray-500 text-sm">
-              Cantidad:{" "}
-              <span className="text-gray-700">
-                {product.quantity !== null ? product.quantity : "-"}
-              </span>
-            </p>
-            <div className="mt-2 flex justify-between items-center">
-              <div className="w-[50px] h-[50px]">
-                <img
-                  src={
-                    product.id &&
-                    typeof product.id === "string" &&
-                    imageUrls[product.id]
-                      ? imageUrls[product.id]
-                      : "/assets/Productos/fallback-image.jpg"
-                  }
-                  alt={product.title || "Imagen por defecto"}
-                  className="w-full h-full object-cover rounded"
-                />
+        {products.map((product: Product) => {
+          const imageSrc =
+            product.id &&
+            typeof product.id === "string" &&
+            imageUrls[product.id]
+              ? imageUrls[product.id]
+              : "/assets/Productos/fallback-image.jpg";
+
+          return (
+            <div
+              key={product.id}
+              className="border rounded-lg p-4 mb-4 bg-white shadow-md"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-lg">{product.title}</h2>
               </div>
-              <div className="flex space-x-2 justify-end items-center">
-                <a
-                  className="text-blue-500 hover:text-blue-400 transition-all"
-                  href={`/shop/${product.id}`}
-                >
-                  <FaEye className="w-6 h-6" />
-                </a>
-                <EditProductDialog
-                  product={product}
-                  onUpdateProduct={onUpdateProduct}
-                />
-                <DeleteProductDialog
-                  product={product}
-                  onDeleteProduct={onDeleteProduct}
-                />
+              <p className="text-gray-500 text-sm">
+                Nro. producto:{" "}
+                <span className="text-gray-700">{product.id}</span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                Precio:{" "}
+                <span className="text-gray-700">
+                  {new Intl.NumberFormat("es-AR", {
+                    style: "currency",
+                    currency: "ARS",
+                  }).format(product.price)}
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                Precio oferta:{" "}
+                <span className="text-gray-700">
+                  {product.discountPrice !== null
+                    ? new Intl.NumberFormat("es-AR", {
+                        style: "currency",
+                        currency: "ARS",
+                      }).format(product.discountPrice)
+                    : "-"}
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                Talles:{" "}
+                <span className="text-gray-700">
+                  {product.sizes.join(", ")}
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                Categoría:{" "}
+                <span className="text-gray-700">
+                  {product.category.join(", ")}
+                </span>
+              </p>
+              <p className="text-gray-500 text-sm">
+                Cantidad:{" "}
+                <span className="text-gray-700">
+                  {product.quantity !== null ? product.quantity : "-"}
+                </span>
+              </p>
+              <div className="mt-2 flex justify-between items-center">
+                <div className="relative w-[50px] h-[50px]">
+                  <Image
+                    src={imageSrc}
+                    alt={product.title || "Imagen por defecto"}
+                    fill
+                    className="object-cover rounded"
+                    sizes="50px"
+                  />
+                </div>
+                <div className="flex space-x-2 justify-end items-center">
+                  <a
+                    className="text-blue-500 hover:text-blue-400 transition-all"
+                    href={`/shop/${product.id}`}
+                  >
+                    <FaEye className="w-6 h-6" />
+                  </a>
+                  <EditProductDialog
+                    product={product}
+                    onUpdateProduct={onUpdateProduct}
+                  />
+                  <DeleteProductDialog
+                    product={product}
+                    onDeleteProduct={onDeleteProduct}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
