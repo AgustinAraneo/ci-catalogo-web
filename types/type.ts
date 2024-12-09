@@ -89,6 +89,7 @@ export interface ProductFormProps {
 
 export type SingleProductProps = {
   product: Product;
+  isMobile?: boolean;
 };
 
 //Nav

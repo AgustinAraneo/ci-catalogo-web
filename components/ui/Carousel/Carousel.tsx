@@ -13,6 +13,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Carousel = ({ products }: { products: Product[] }) => {
   const [api, setApi] = React.useState<CarouselApi>();
+  const [isMobile, setIsMobile] = React.useState(false);
 
   // Determina el número de columnas según el tamaño de pantalla
   const getGridColumns = () => {
@@ -21,6 +22,7 @@ export const Carousel = ({ products }: { products: Product[] }) => {
       if (width >= 1280) return 5; // xl
       if (width >= 1024) return 4; // lg
       if (width >= 768) return 3; // md
+      setIsMobile(width < 768);
       return 2; // sm
     }
     return 5; // Default to xl
@@ -29,14 +31,20 @@ export const Carousel = ({ products }: { products: Product[] }) => {
   const [gridColumns, setGridColumns] = React.useState(getGridColumns);
 
   React.useEffect(() => {
-    const handleResize = () => setGridColumns(getGridColumns());
+    const handleResize = () => {
+      setGridColumns(getGridColumns());
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Si hay menos productos que columnas, centra los elementos
   const justifyClass =
-    products.length < gridColumns ? "justify-center" : "justify-start";
+    products.length < gridColumns && !isMobile
+      ? "justify-center"
+      : "justify-start";
 
   return (
     <div className="w-full max-w-7xl mx-auto">
@@ -52,10 +60,14 @@ export const Carousel = ({ products }: { products: Product[] }) => {
           {products.map((product) => (
             <CarouselItem
               key={product.id}
-              className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+              className={
+                isMobile
+                  ? "basis-full"
+                  : "basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
+              }
             >
-              <div className="p-1">
-                <SingleProduct product={product} />
+              <div className={isMobile ? "p-1" : "p-1 h-full"}>
+                <SingleProduct product={product} isMobile={isMobile} />
               </div>
             </CarouselItem>
           ))}
