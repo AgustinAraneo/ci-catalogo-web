@@ -30,7 +30,7 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(initialCategory)
       );
-      setProducts(filteredProducts.slice(0, 10));
+      setProducts(filteredProducts);
       setLoading(false);
     }
   }, [allProducts]);
@@ -40,7 +40,7 @@ export const TrendingProducts = () => {
       const filteredProducts = allProducts.filter((product: Product) =>
         product.category.includes(filterItem)
       );
-      setProducts(filteredProducts.slice(0, 10));
+      setProducts(filteredProducts);
       setLoading(false);
     }
   }, [filterItem, allProducts]);
